@@ -1,6 +1,6 @@
-# AGIGx - AI-Powered Privacy Compliance Solutions
+# DPDPConsultancy - AI-Powered Privacy Compliance Solutions
 
-A modern website for AGIGx, providing complete end-to-end automation and monitoring with continuous scanning for GDPR, DPDP, and global privacy compliance.
+A modern website for DPDPConsultancy, providing complete end-to-end automation and monitoring with continuous scanning for GDPR, DPDP, and global privacy compliance.
 
 ## Features
 
@@ -14,7 +14,7 @@ A modern website for AGIGx, providing complete end-to-end automation and monitor
 ## Project Structure
 
 ```
-agigx-website/
+dpdpconsultancy-website/
 ├── index.html      # Homepage
 ├── services.html   # Services page
 ├── products.html   # Products page
@@ -140,8 +140,8 @@ To add images:
 
 ## License
 
-© 2026 AGIGx. All rights reserved.
+© 2026 DPDPConsultancy. All rights reserved.
 
 ## Contact
 
-For questions or support, please contact the AGIGx team.
+For questions or support, please contact the DPDPConsultancy team.
