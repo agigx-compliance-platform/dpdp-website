@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -24,6 +25,7 @@ import {
   AccordionContent,
 } from '@/components/ui/Accordion'
 import Link from 'next/link'
+import { servicesPlatformStrip } from '@/lib/agigx-ui-screenshots'
 
 const SERVICE_CATEGORIES = [
   {
@@ -455,6 +457,50 @@ export default function ServicesPage() {
             assessment to continuous managed operations.
           </p>
         </motion.div>
+      </SectionWrapper>
+
+      <SectionWrapper className="pb-14">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="max-w-4xl mx-auto text-center mb-10"
+        >
+          <h2 className="text-xl md:text-2xl font-semibold mb-2">
+            Platform views behind our <span className="gradient-text">services delivery</span>
+          </h2>
+          <p className="text-sm text-muted-foreground">
+            Screens from AGIGx consent-management: domains & scans, analytics, and DSAR operations —
+            where advisory and implementation engagements meet the product.
+          </p>
+        </motion.div>
+        <div className="grid md:grid-cols-3 gap-6">
+          {servicesPlatformStrip.map((item, i) => (
+            <motion.div
+              key={item.title}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.45, delay: i * 0.08 }}
+              className="glass-card overflow-hidden p-0 flex flex-col"
+            >
+              <div className="relative aspect-[16/10] border-b border-border/40">
+                <Image
+                  src={item.src}
+                  alt={item.title}
+                  fill
+                  className="object-cover object-top"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                />
+              </div>
+              <div className="p-4">
+                <h3 className="font-medium text-foreground">{item.title}</h3>
+                <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{item.caption}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </SectionWrapper>
 
       <SectionWrapper className="py-8">

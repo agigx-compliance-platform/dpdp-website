@@ -22,6 +22,33 @@ npm run dev
 
 Open [http://localhost:8000](http://localhost:8000).
 
+## Static assets
+
+### Hero video & poster (`public/`)
+
+- `images/hero-poster.png` — full-bleed hero background (shown on all breakpoints; dominant on mobile)
+- `videos/hero.mp4` — muted loop from `md` breakpoint up
+
+In **light theme**, the hero uses a **dark scrim** over the video so it stays readable. **`NEXT_PUBLIC_HERO_VIDEO_DISCLAIMER`** in `.env.local` can correct on-page copy if the clip still shows draft text.
+
+### CMP screenshots (products & services)
+
+Real UI captures from **AGIGx** (`consent-management`). Mapped in [`src/lib/agigx-ui-screenshots.ts`](src/lib/agigx-ui-screenshots.ts).
+
+**Unauthenticated (public shell only):**
+
+1. Start AGIGx UI: `cd ../agigx-ui && npm run dev` (default [http://127.0.0.1:3000](http://127.0.0.1:3000))
+2. One-time Chromium: `cd ../agigx-ui && npx playwright install chromium`
+3. From this folder: `npm run capture:agigx-ui`
+
+**Authenticated (full CMP after login)** — set `AGIGX_UI_LOGIN_EMAIL` and `AGIGX_UI_LOGIN_PASSWORD` in `.env.local` (gitignored), or export them in your shell, or use a local-only `.env.capture.local`. The script loads `/login`, submits the form, then captures routes with your session cookies.
+
+Never commit passwords. Rotate any credential that was pasted into git history or chat.
+
+Output: `public/images/products/agigx-ui/*.png`.
+
+Optional: **`NEXT_PUBLIC_SITE_URL`** for Open Graph image URLs in production.
+
 ## Project Structure
 
 ```

@@ -103,12 +103,17 @@ const config: Config = {
         'scale-in': 'scaleIn 0.3s ease-out',
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         shimmer: 'skeleton-shimmer 1.5s ease-in-out infinite',
-        'marquee': 'marquee 30s linear infinite',
+        marquee: 'marquee 30s linear infinite',
+        'ken-burns': 'kenBurns 22s ease-in-out infinite alternate',
       },
       keyframes: {
         marquee: {
           '0%': { transform: 'translateX(0%)' },
           '100%': { transform: 'translateX(-50%)' },
+        },
+        kenBurns: {
+          '0%': { transform: 'scale(1.06) translate(0, 0)' },
+          '100%': { transform: 'scale(1.14) translate(-1.5%, -0.5%)' },
         },
       },
       spacing: {

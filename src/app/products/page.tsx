@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import {
   ArrowRight,
@@ -16,6 +17,7 @@ import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent } from '@/components/ui/Card'
 import Link from 'next/link'
+import { productScreenshots } from '@/lib/agigx-ui-screenshots'
 
 const PRODUCTS = [
   {
@@ -164,33 +166,55 @@ export default function ProductsPage() {
                 isEven && 'lg:[direction:rtl] lg:[&>*]:[direction:ltr]'
               )}
             >
-              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-border/50">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background-secondary to-primary/5">
-                  <div className="absolute inset-4 rounded-xl border border-border/30 bg-[var(--glass-bg)] backdrop-blur-sm p-6 flex flex-col justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-3 h-3 rounded-full bg-destructive/60" />
-                      <div className="w-3 h-3 rounded-full bg-warning/60" />
-                      <div className="w-3 h-3 rounded-full bg-success/60" />
-                      <div className="flex-1 h-6 rounded bg-secondary/50 ml-4" />
+              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-border/50 shadow-card bg-card">
+                {product.id in productScreenshots ? (
+                  <>
+                    <Image
+                      src={
+                        productScreenshots[product.id as keyof typeof productScreenshots].src
+                      }
+                      alt={`Screenshot: ${product.name}`}
+                      fill
+                      className="object-cover object-top"
+                      sizes="(max-width: 1024px) 100vw, 50vw"
+                    />
+                    <div className="absolute inset-x-0 bottom-0 z-[1] bg-gradient-to-t from-background via-background/90 to-transparent p-4 pt-12 md:pt-16">
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        {
+                          productScreenshots[product.id as keyof typeof productScreenshots]
+                            .caption
+                        }
+                      </p>
                     </div>
-                    <div className="space-y-3 mt-6">
-                      <div className="h-4 rounded bg-secondary/40 w-3/4" />
-                      <div className="h-4 rounded bg-secondary/30 w-1/2" />
-                      <div className="h-8 rounded bg-primary/20 w-full mt-4" />
-                      <div className="grid grid-cols-3 gap-2 mt-4">
-                        <div className="h-16 rounded bg-secondary/30" />
-                        <div className="h-16 rounded bg-secondary/30" />
-                        <div className="h-16 rounded bg-secondary/30" />
+                  </>
+                ) : (
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background-secondary to-primary/5">
+                    <div className="absolute inset-4 rounded-xl border border-border/30 bg-[var(--glass-bg)] backdrop-blur-sm p-6 flex flex-col justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-3 h-3 rounded-full bg-destructive/60" />
+                        <div className="w-3 h-3 rounded-full bg-warning/60" />
+                        <div className="w-3 h-3 rounded-full bg-success/60" />
+                        <div className="flex-1 h-6 rounded bg-secondary/50 ml-4" />
+                      </div>
+                      <div className="space-y-3 mt-6">
+                        <div className="h-4 rounded bg-secondary/40 w-3/4" />
+                        <div className="h-4 rounded bg-secondary/30 w-1/2" />
+                        <div className="h-8 rounded bg-primary/20 w-full mt-4" />
+                        <div className="grid grid-cols-3 gap-2 mt-4">
+                          <div className="h-16 rounded bg-secondary/30" />
+                          <div className="h-16 rounded bg-secondary/30" />
+                          <div className="h-16 rounded bg-secondary/30" />
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 mt-4">
+                        <Icon className="w-5 h-5 text-primary" />
+                        <span className="text-xs text-muted-foreground font-medium">
+                          {product.name}
+                        </span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 mt-4">
-                      <Icon className="w-5 h-5 text-primary" />
-                      <span className="text-xs text-muted-foreground font-medium">
-                        {product.name}
-                      </span>
-                    </div>
                   </div>
-                </div>
+                )}
               </div>
 
               <div>

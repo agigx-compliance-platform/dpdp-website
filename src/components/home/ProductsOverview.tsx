@@ -1,10 +1,12 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Fingerprint, ScanSearch, FileKey, ArrowRight } from 'lucide-react'
 import { SectionWrapper } from '@/components/ui/SectionWrapper'
 import { Button } from '@/components/ui/Button'
+import { productPreviewThumbs } from '@/lib/agigx-ui-screenshots'
 
 const products = [
   {
@@ -62,8 +64,18 @@ export function ProductsOverview() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: i * 0.12 }}
-            className="glass-card p-6 flex flex-col"
+            className="glass-card p-0 overflow-hidden flex flex-col"
           >
+            <div className="relative aspect-[16/10] w-full shrink-0 border-b border-border/40">
+              <Image
+                src={productPreviewThumbs[i]?.src ?? productPreviewThumbs[0].src}
+                alt={productPreviewThumbs[i]?.alt ?? ''}
+                fill
+                className="object-cover object-top"
+                sizes="(max-width: 640px) 100vw, 33vw"
+              />
+            </div>
+            <div className="p-6 flex flex-col flex-1">
             <prod.icon className="w-9 h-9 text-primary mb-4" />
             <h3 className="text-lg font-semibold">{prod.name}</h3>
             <p className="text-sm text-muted-foreground mt-1">{prod.tagline}</p>
@@ -81,6 +93,7 @@ export function ProductsOverview() {
             >
               Explore <ArrowRight className="w-3.5 h-3.5" />
             </Link>
+            </div>
           </motion.div>
         ))}
       </div>

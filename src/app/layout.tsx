@@ -5,6 +5,10 @@ import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 
 export const metadata: Metadata = {
+  metadataBase:
+    typeof process.env.NEXT_PUBLIC_SITE_URL === 'string'
+      ? new URL(process.env.NEXT_PUBLIC_SITE_URL)
+      : new URL('http://localhost:8000'),
   title: {
     default: 'AGIGx — DPDP Compliance Intelligence Platform',
     template: '%s | AGIGx',
@@ -31,12 +35,21 @@ export const metadata: Metadata = {
     title: 'AGIGx — DPDP Compliance Intelligence Platform',
     description:
       'Transform DPDP, GDPR, and AI governance into a living, enforceable compliance engine.',
+    images: [
+      {
+        url: '/images/hero-poster.png',
+        width: 1536,
+        height: 1024,
+        alt: 'AGIGx compliance intelligence',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'AGIGx — DPDP Compliance Intelligence Platform',
     description:
       'Transform DPDP, GDPR, and AI governance into a living, enforceable compliance engine.',
+    images: ['/images/hero-poster.png'],
   },
   robots: {
     index: true,
