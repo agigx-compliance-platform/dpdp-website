@@ -1,147 +1,67 @@
-# DPDPConsultancy - AI-Powered Privacy Compliance Solutions
+# AGIGx DPDP Website
 
-A modern website for DPDPConsultancy, providing complete end-to-end automation and monitoring with continuous scanning for GDPR, DPDP, and global privacy compliance.
+DPDP compliance intelligence platform website built with Next.js 14, Tailwind CSS, and Framer Motion. Aligned with the agigx-ui design system (HSL token-based dark/light themes, glass morphism, gradient accents).
 
-## Features
+## Tech Stack
 
-- **Modern Design**: Clean, professional design inspired by dpdpconsultancy.in
-- **AI-Powered Solutions**: Showcase of AI-driven privacy compliance tools
-- **Continuous Scanning**: Emphasis on automation and real-time monitoring
-- **Multi-Framework Support**: GDPR, DPDP, CCPA, LGPD, and more
-- **Responsive Design**: Fully responsive across all devices
-- **Smooth Animations**: Engaging user experience with scroll animations
+- **Framework**: Next.js 14 (App Router)
+- **Styling**: Tailwind CSS 3.4 with HSL CSS variable design tokens
+- **Animations**: Framer Motion
+- **Forms**: React Hook Form + Zod validation
+- **UI Primitives**: Radix UI (Accordion, Dialog, Select, Tabs, Toast, Progress)
+- **Icons**: Lucide React
+- **HTTP**: Axios (placeholder API endpoints)
+
+## Getting Started
+
+```bash
+npm install
+cp .env.local.example .env.local
+npm run dev
+```
+
+Open [http://localhost:8000](http://localhost:8000).
 
 ## Project Structure
 
 ```
-dpdpconsultancy-website/
-├── index.html      # Homepage
-├── services.html   # Services page
-├── products.html   # Products page
-├── contact.html    # Contact page
-├── styles.css      # Stylesheet with modern design
-├── script.js       # JavaScript for interactivity
-└── README.md       # Project documentation
+src/
+  app/                  # Next.js App Router pages
+    page.tsx            # Homepage (16 scroll sections)
+    services/           # 8 service categories with sub-offerings
+    products/           # 6 product showcases
+    solutions/          # 7 industry-specific solutions
+    questionnaire/      # 10-step assessment wizard
+      results/          # Personalized recommendations
+    contact/            # Contact form + FAQ
+    partnership/        # Partnership models
+    about/              # Company info
+  components/
+    layout/             # Navbar, Footer
+    home/               # 16 homepage section components
+    questionnaire/      # Wizard, steps, results
+    ui/                 # Shared UI components
+    providers/          # ThemeProvider
+  lib/
+    api.ts              # API client (placeholder endpoints)
+    constants.ts        # All content data (services, products, solutions)
+    types.ts            # TypeScript interfaces
+    recommendation-logic.ts  # Questionnaire + scan recommendation engine
+    questionnaire-schema.ts  # Zod validation schemas
+  hooks/                # useTheme, useInView
 ```
 
-## Getting Started
+## Theme
 
-### Option 1: Simple HTTP Server
+Dark mode (default) and light mode via `data-theme` attribute toggle. Design tokens are HSL CSS variables shared with agigx-ui.
 
-1. Open the project directory in your terminal
-2. Run a simple HTTP server:
+## API Integration
 
-**Python 3:**
-```bash
-python -m http.server 8000
-```
+All API calls use placeholder URLs configured via `NEXT_PUBLIC_CONSENT_API_URL`. Endpoints:
 
-**Python 2:**
-```bash
-python -m SimpleHTTPServer 8000
-```
-
-**Node.js (with http-server):**
-```bash
-npx http-server -p 8000
-```
-
-3. Open your browser and navigate to `http://localhost:8000`
-
-### Option 2: Live Server (VS Code)
-
-1. Install the "Live Server" extension in VS Code
-2. Right-click on `index.html`
-3. Select "Open with Live Server"
-
-### Option 3: Direct File Opening
-
-Simply open `index.html` in your web browser (some features may be limited)
-
-## Pages
-
-### Homepage (index.html)
-1. **Hero Section**: Eye-catching introduction with key statistics
-2. **Services**: Overview of privacy compliance services
-3. **AI Products**: Overview of AI-powered tools and solutions
-4. **AI Consultation**: Interactive demo of AI assistant
-5. **Continuous Scanning**: End-to-end automation features
-6. **360° Solutions**: Complete compliance coverage
-7. **Trusted By**: Client testimonials and logos
-8. **Contact CTA**: Call-to-action section
-
-### Services Page (services.html)
-Detailed information about all consulting services:
-- Gap Assessment Review
-- Consulting, Advisory & Audit
-- Data Protection Officer as a Service
-- Training Programs
-- Contract Review & Data Processing Agreements
-- Continuous Monitoring & Scanning
-
-### Products Page (products.html)
-Detailed information about AI-powered products:
-- AI Compliance Assistant
-- Smart Consent Intelligence Platform
-- Privacy Risk Predictor
-- Continuous Compliance Scanner
-- Adaptive Compliance Engine
-- End-to-End Automation
-
-### Contact Page (contact.html)
-- Contact form with product interest selection
-- Contact information (phone, email, location)
-- Office hours
-
-## Customization
-
-### Colors
-
-Edit the CSS variables in `styles.css`:
-
-```css
-:root {
-    --primary-color: #6366f1;
-    --secondary-color: #8b5cf6;
-    --accent-color: #ec4899;
-    /* ... more variables */
-}
-```
-
-### Content
-
-- Edit `index.html` to update text content
-- Replace placeholder company names in the "Trusted By" section
-- Update statistics in the hero section
-- Modify service/product descriptions
-
-### Images
-
-To add images:
-1. Create an `images/` folder
-2. Add your images
-3. Update image paths in HTML
-
-## Browser Support
-
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
-
-## Future Enhancements
-
-- Add contact form functionality
-- Integrate with backend API
-- Add blog section
-- Include case studies
-- Add pricing page
-- Implement user dashboard
-
-## License
-
-© 2026 DPDPConsultancy. All rights reserved.
-
-## Contact
-
-For questions or support, please contact the DPDPConsultancy team.
+- `POST /api/enquiry` — Contact form submission
+- `POST /api/questionnaire` — Questionnaire response submission
+- `POST /api/scan/initiate` — Trigger website privacy scan
+- `GET /api/scan/status/:id` — Poll scan progress
+- `GET /api/scan/report/:id` — Get scan results
+- `POST /api/contact` — Contact form submission
