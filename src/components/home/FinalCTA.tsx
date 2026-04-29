@@ -19,7 +19,7 @@ export function FinalCTA() {
   return (
     <section
       id="final-cta"
-      className="relative py-20 md:py-28 px-4 sm:px-6 lg:px-8 overflow-hidden"
+      className="relative py-14 md:py-20 px-4 sm:px-6 lg:px-8 overflow-hidden"
     >
       <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-[hsl(var(--gradient-end)/0.05)]" />
 
@@ -51,7 +51,7 @@ export function FinalCTA() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10"
         >
           <Link href="/questionnaire">
             <Button variant="primary" size="lg">

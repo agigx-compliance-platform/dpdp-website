@@ -10,7 +10,7 @@ const myths = [
   {
     myth: 'A privacy policy is enough',
     reality:
-      'DPDP requires operational controls — not just documents. You need consent management, data mapping, breach response, and audit trails.',
+      'DPDP requires operational controls: not just documents. You need consent management, data mapping, breach response, and audit trails.',
   },
   {
     myth: 'Consent banners solve everything',
@@ -37,7 +37,7 @@ export function MythBreaker() {
 
   return (
     <SectionWrapper id="myths">
-      <div className="text-center mb-16">
+      <div className="text-center mb-10">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

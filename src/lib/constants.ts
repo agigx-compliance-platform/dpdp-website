@@ -79,7 +79,7 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
     subOfferings: [
       {
         title: 'Data Inventory, Visibility and Flow Mapping',
-        description: 'Build a live inventory of all personal data your organisation holds — where it resides, who can access it, and how it flows between systems. Maps data lineage and traceability to satisfy Section 8(5) reasonable security safeguard requirements and provides the foundational visibility needed for every other compliance activity.',
+        description: 'Build a live inventory of all personal data your organisation holds, where it resides, who can access it, and how it flows between systems. Maps data lineage and traceability to satisfy Section 8(5) reasonable security safeguard requirements and provides the foundational visibility needed for every other compliance activity.',
         dpdpSections: ['8(5)'],
         penalties: ['₹250 Crore'],
         whoIsThisFor: 'Organisations lacking visibility into their personal data landscape',
@@ -258,7 +258,7 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
       },
       {
         title: 'Gap Assessment and Remediation Planning',
-        description: 'Detailed gap analysis with penalty exposure calculation per compliance domain — up to ₹250 Crore per violation across Consent & Notice, Data Principal Rights, Data Minimisation, Data Security, Vendors, and Governance. Delivers prioritised remediation roadmaps with implementation timelines.',
+        description: 'Detailed gap analysis with penalty exposure calculation per compliance domain, up to ₹250 Crore per violation across Consent & Notice, Data Principal Rights, Data Minimisation, Data Security, Vendors, and Governance. Delivers prioritised remediation roadmaps with implementation timelines.',
         dpdpSections: ['5', '6', '8', '9', '10', '11', '12', '13', '16'],
         penalties: ['₹50 Crore', '₹200 Crore', '₹250 Crore'],
         whoIsThisFor: 'Organisations with identified gaps needing structured remediation plans',
@@ -378,7 +378,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'consent-platform',
     name: 'AGIGx Consent Management Platform',
-    tagline: 'Consent that satisfies Section 6 — from capture to withdrawal to proof',
+    tagline: 'Consent that satisfies Section 6 from capture to withdrawal to proof',
     description: 'Enterprise-grade consent management platform built specifically for DPDP 2023 compliance. Handles the full consent lifecycle from banner presentation through granular preference management to immutable audit trails, ensuring every consent interaction is legally defensible.',
     features: [
       {
@@ -387,7 +387,7 @@ export const PRODUCTS: Product[] = [
       },
       {
         title: 'Cookie Discovery and Classification',
-        description: 'Playwright-powered headless browser scanning discovers all cookies including HTTP and JavaScript-set variants. Auto-classification against a 500+ known cookie database covering Google, Meta, Microsoft, HubSpot, and more with categorisation into analytics, marketing, functional, and preferences — flagging cookies set before consent as critical DPDP/GDPR violations.',
+        description: 'Playwright-powered headless browser scanning discovers all cookies including HTTP and JavaScript-set variants. Auto-classification against a 500+ known cookie database covering Google, Meta, Microsoft, HubSpot, and more with categorisation into analytics, marketing, functional, and preferences, flagging cookies set before consent as critical DPDP/GDPR violations.',
       },
       {
         title: 'Immutable Consent Audit Trail',
@@ -677,7 +677,7 @@ export const QUESTIONNAIRE_STEPS: QuestionnaireStep[] = [
     description: 'Understanding your current stage helps us recommend the right starting point.',
     type: 'single',
     options: [
-      { id: 'just-starting', label: 'Just starting — need clarity', description: 'Haven\'t begun DPDP compliance activities', icon: 'HelpCircle' },
+      { id: 'just-starting', label: 'Just starting, need clarity', description: 'Haven\'t begun DPDP compliance activities', icon: 'HelpCircle' },
       { id: 'basic-policies', label: 'Have basic policies in place', description: 'Privacy policy exists but not DPDP-aligned', icon: 'FileText' },
       { id: 'know-gaps', label: 'Know our gaps, need help fixing', description: 'Completed assessment, need implementation help', icon: 'Wrench' },
       { id: 'implemented', label: 'Implemented controls, need validation', description: 'Controls in place, need assurance and audit', icon: 'CheckCircle' },
@@ -736,7 +736,7 @@ export const QUESTIONNAIRE_STEPS: QuestionnaireStep[] = [
   {
     id: 'scan-option',
     title: 'Would you like a free privacy risk score?',
-    description: 'We can scan your website\'s public-facing privacy posture and generate a compliance health report — the same way a regulator would assess you.',
+    description: 'We can scan your website\'s public-facing privacy posture and generate a compliance health report, the same way a regulator would assess you.',
     type: 'boolean',
     options: [
       { id: 'yes', label: 'Yes, scan my website', description: 'Get a free compliance health score with actionable insights' },

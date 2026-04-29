@@ -15,12 +15,13 @@ const dimensions = [
   {
     icon: Building2,
     title: 'Industry Vertical',
-    description: 'Healthcare, fintech, e-commerce, edtech — compliance rules vary by sector.',
+    description: 'Healthcare, fintech, e-commerce, edtech: compliance rules vary by sector.',
   },
   {
     icon: Layers,
     title: 'Tech Stack',
-    description: 'Cloud-native, legacy, hybrid — we integrate with your actual infrastructure.',
+    description:
+      'Cloud-native, legacy, hybrid: we integrate with your actual infrastructure.',
   },
   {
     icon: Users,
@@ -30,7 +31,8 @@ const dimensions = [
   {
     icon: Globe,
     title: 'Regulatory Scope',
-    description: 'DPDP, GDPR, CCPA, AI Act — map overlapping obligations automatically.',
+    description:
+      'DPDP, GDPR, CCPA, AI Act: map overlapping obligations automatically.',
   },
   {
     icon: Database,
@@ -47,7 +49,7 @@ const dimensions = [
 export function CustomizationSection() {
   return (
     <SectionWrapper id="customization">
-      <div className="text-center mb-16">
+      <div className="text-center mb-10">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -65,7 +67,7 @@ export function CustomizationSection() {
           transition={{ duration: 0.6, delay: 0.15 }}
           className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto"
         >
-          Every compliance engine we deliver is bespoke — shaped by your industry,
+          Every compliance engine we deliver is bespoke, shaped by your industry,
           stack, and regulatory landscape.
         </motion.p>
       </div>

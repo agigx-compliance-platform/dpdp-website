@@ -5,7 +5,7 @@
  *   cd agigx-ui && npm run dev
  *   npx playwright install chromium   # from agigx-ui once
  *
- * Authenticated CMP (recommended): set credentials via env — never commit them.
+ * Authenticated CMP (recommended): set credentials via env: never commit them.
  *   AGIGX_UI_LOGIN_EMAIL   AGIGX_UI_LOGIN_PASSWORD
  * Optional files: loads `.env.local` then `.env.capture.local` (latter overrides for capture-only vars).
  *
@@ -105,7 +105,7 @@ async function loginIfConfigured(page) {
   const password = process.env.AGIGX_UI_LOGIN_PASSWORD
   if (!email || !password) {
     console.log(
-      'No AGIGX_UI_LOGIN_EMAIL / AGIGX_UI_LOGIN_PASSWORD — public routes only (set env for full CMP UI).'
+      'No AGIGX_UI_LOGIN_EMAIL / AGIGX_UI_LOGIN_PASSWORD (public routes only; set env for full CMP UI).'
     )
     return
   }
@@ -130,7 +130,7 @@ async function loginIfConfigured(page) {
         .catch(() => '')) || ''
     throw new Error(
       err.trim() ||
-        'Login did not leave /login — check AGIGX_UI_LOGIN_* and that auth-service is reachable from agigx-ui.'
+        'Login did not leave /login. Check AGIGX_UI_LOGIN_* and that auth-service is reachable from agigx-ui.'
     )
   }
   await page.waitForLoadState('networkidle').catch(() => {})

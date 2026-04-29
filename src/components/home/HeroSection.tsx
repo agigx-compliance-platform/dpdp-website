@@ -117,7 +117,7 @@ export function HeroSection() {
             isLight ? 'text-white/95' : 'text-muted-foreground'
           )}
         >
-          Transform DPDP, GDPR, and AI governance into a living, enforceable compliance engine — not
+          Transform DPDP, GDPR, and AI governance into a living, enforceable compliance engine, not
           a checklist.
         </motion.p>
 

@@ -87,7 +87,7 @@ const SERVICE_CATEGORIES = [
       {
         title: 'Data Inventory, Visibility and Flow Mapping',
         description:
-          'Build live inventory of personal data — where it lives, who accesses it (Section 8(5)). Data flow mapping and lineage traceability across systems, databases, and third-party integrations.',
+          'Build live inventory of personal data where it lives, who accesses it (Section 8(5)). Data flow mapping and lineage traceability across systems, databases, and third-party integrations.',
         dpdpSections: ['8(5)'],
         penalties: ['₹250 Crore'],
         whoIsThisFor: 'Organizations lacking visibility into their data landscape',
@@ -453,7 +453,7 @@ export default function ServicesPage() {
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
             DPDP 2023 enforcement brings penalties up to ₹250 Crore. Our 8 service
-            pillars cover every compliance obligation — from initial readiness
+            pillars cover every compliance obligation, from initial readiness
             assessment to continuous managed operations.
           </p>
         </motion.div>
@@ -471,7 +471,7 @@ export default function ServicesPage() {
             Platform views behind our <span className="gradient-text">services delivery</span>
           </h2>
           <p className="text-sm text-muted-foreground">
-            Screens from AGIGx consent-management: domains & scans, analytics, and DSAR operations —
+            Screens from AGIGx consent-management: domains & scans, analytics, and DSAR operations,
             where advisory and implementation engagements meet the product.
           </p>
         </motion.div>

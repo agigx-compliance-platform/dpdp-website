@@ -15,7 +15,7 @@ const painPoints = [
     icon: AlertTriangle,
     title: 'Reactive Firefighting',
     description:
-      'You learn about violations after regulators notice. By then, the damage — financial and reputational — is done.',
+      'You learn about violations after regulators notice. By then, the damage (financial and reputational) is done.',
   },
   {
     icon: PackageX,
@@ -28,7 +28,7 @@ const painPoints = [
 export function ProblemSection() {
   return (
     <SectionWrapper id="problem">
-      <div className="text-center mb-16">
+      <div className="text-center mb-10">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

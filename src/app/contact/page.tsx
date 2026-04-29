@@ -14,6 +14,7 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from '@/components/ui/Accordion'
+import { submitEnquiry } from '@/lib/api'
 
 const ROLES = [
   'DPO / Privacy Officer',
@@ -34,7 +35,7 @@ const FAQ_ITEMS = [
   {
     question: 'What are the maximum penalties under DPDP?',
     answer:
-      'DPDP 2023 prescribes penalties up to ₹250 Crore for non-compliance with specific provisions. Different violations carry different penalty amounts — from ₹50 Crore for failure to implement security safeguards to ₹250 Crore for non-compliance with provisions relating to children\'s data or Data Protection Board orders.',
+      'DPDP 2023 prescribes penalties up to ₹250 Crore for non-compliance with specific provisions. Different violations carry different penalty amounts, from ₹50 Crore for failure to implement security safeguards to ₹250 Crore for non-compliance with provisions relating to children\'s data or Data Protection Board orders.',
   },
   {
     question: 'How long does a typical DPDP compliance engagement take?',
@@ -100,11 +101,27 @@ export default function ContactPage() {
     return Object.keys(newErrors).length === 0
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!validate()) return
-    console.log('Contact form submission:', form)
-    setSubmitted(true)
+    setIsSubmitting(true)
+    try {
+      await submitEnquiry({
+        name: form.name,
+        email: form.email,
+        company: form.company,
+        role: form.role,
+        subject: form.subject,
+        message: form.message,
+      })
+      setSubmitted(true)
+    } catch {
+      setErrors({ message: 'Something went wrong. Please try again.' })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   function handleChange(
@@ -244,8 +261,8 @@ export default function ContactPage() {
                     <p className="mt-1.5 text-xs text-destructive">{errors.message}</p>
                   )}
                 </div>
-                <Button type="submit" variant="primary" size="lg" className="w-full sm:w-auto">
-                  Send Message
+                <Button type="submit" variant="primary" size="lg" className="w-full sm:w-auto" disabled={isSubmitting}>
+                  {isSubmitting ? 'Sending...' : 'Send Message'}
                   <ArrowRight className="w-5 h-5" />
                 </Button>
               </form>
@@ -279,7 +296,7 @@ export default function ContactPage() {
                 <div>
                   <h3 className="text-sm font-semibold text-foreground mb-1">Phone</h3>
                   <p className="text-sm text-muted-foreground">+91 80 4567 8900</p>
-                  <p className="text-xs text-muted-foreground mt-1">Mon-Fri, 9:00 AM - 6:00 PM IST</p>
+                  <p className="text-xs text-muted-foreground mt-1">Mon-Fri, 9:00 AM to 6:00 PM IST</p>
                 </div>
               </CardContent>
             </Card>

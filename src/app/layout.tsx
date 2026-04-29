@@ -10,7 +10,7 @@ export const metadata: Metadata = {
       ? new URL(process.env.NEXT_PUBLIC_SITE_URL)
       : new URL('http://localhost:8000'),
   title: {
-    default: 'AGIGx — DPDP Compliance Intelligence Platform',
+    default: 'AGIGx DPDP Compliance Intelligence Platform',
     template: '%s | AGIGx',
   },
   description:
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_IN',
     siteName: 'AGIGx',
-    title: 'AGIGx — DPDP Compliance Intelligence Platform',
+    title: 'AGIGx DPDP Compliance Intelligence Platform',
     description:
       'Transform DPDP, GDPR, and AI governance into a living, enforceable compliance engine.',
     images: [
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'AGIGx — DPDP Compliance Intelligence Platform',
+    title: 'AGIGx DPDP Compliance Intelligence Platform',
     description:
       'Transform DPDP, GDPR, and AI governance into a living, enforceable compliance engine.',
     images: ['/images/hero-poster.png'],

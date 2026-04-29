@@ -71,31 +71,60 @@ export interface QuestionnaireResponses {
   consentGiven: boolean
 }
 
-export interface ScanResult {
+// Backend scan status response
+export interface ScanStatusResponse {
+  scanId: string
+  status: 'pending' | 'in_progress' | 'completed' | 'failed'
+  progress: number
+}
+
+// Backend scan report response (summary for UI display)
+export interface ScanReportResponse {
+  scannedUrl: string
+  score: number
+  grade: 'A' | 'B' | 'C' | 'D' | 'F'
+  summary: {
+    criticalIssues: number
+    highIssues: number
+    warnings: number
+    passed: number
+  }
+  consentBannerPresent: boolean
+  consentRejectOption: boolean
+  complianceFlags: ComplianceFlag[]
+  totalCookies: number
+  totalTrackers: number
+  cmpProvider: string | null
+  pagesScanned: number
+}
+
+export interface ComplianceFlag {
   id: string
-  domain: string
+  severity: 'critical' | 'high' | 'medium' | 'low'
+  title: string
+  description: string
+  passed: boolean
+  evidence?: unknown
+}
+
+// Mapped ScanResult for the recommendation engine and results page
+export interface ScanResult {
+  scanId?: string
+  scannedUrl: string
   overallScore: number
   grade: 'A' | 'B' | 'C' | 'D' | 'F'
-  categories: ScanCategory[]
-  checks: ScanCheck[]
+  summary: {
+    criticalIssues: number
+    highIssues: number
+    warnings: number
+    passed: number
+  }
+  complianceFlags: ComplianceFlag[]
+  totalCookies: number
+  totalTrackers: number
+  consentBannerPresent: boolean
+  consentRejectOption: boolean
   penaltyExposure: string
-}
-
-export interface ScanCategory {
-  name: string
-  score: number
-  maxScore: number
-  weight: number
-}
-
-export interface ScanCheck {
-  id: string
-  name: string
-  category: string
-  passed: boolean
-  points: number
-  maxPoints: number
-  description: string
 }
 
 export interface Recommendation {
@@ -113,6 +142,7 @@ export interface EnquiryFormData {
   email: string
   company: string
   role: string
+  subject?: string
   message: string
 }
 

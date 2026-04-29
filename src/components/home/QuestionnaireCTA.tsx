@@ -35,7 +35,7 @@ export function QuestionnaireCTA() {
           className="mt-4 text-muted-foreground max-w-xl mx-auto"
         >
           Take our interactive assessment that scans your website, evaluates your
-          current compliance posture, and recommends tailored solutions — all in
+          current compliance posture, and recommends tailored solutions, all in
           under 5 minutes.
         </motion.p>
 

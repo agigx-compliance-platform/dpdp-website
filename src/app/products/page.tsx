@@ -23,7 +23,8 @@ const PRODUCTS = [
   {
     id: 'consent-platform',
     name: 'AGIGx Consent Management Platform',
-    tagline: 'Consent that satisfies Section 6 — from capture to withdrawal to proof',
+    tagline:
+      'Consent that satisfies Section 6 from capture to withdrawal to proof',
     description:
       'A full-lifecycle consent management platform that handles banner deployment, preference collection, version tracking, and immutable audit trails. Built specifically for DPDP Section 6 compliance with purpose-based granular consent and one-click withdrawal.',
     icon: 'Fingerprint',
@@ -143,7 +144,7 @@ export default function ProductsPage() {
             <span className="gradient-text">AI-Powered Compliance Products</span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-            Purpose-built technology products that automate DPDP compliance —
+            Purpose-built technology products that automate DPDP compliance:
             from consent management and scanning to AI-assisted advisory and
             adaptive governance.
           </p>

@@ -9,7 +9,7 @@ export const productScreenshots = {
   trustscope: {
     src: `${AGIGX_UI_SCREENSHOT_DIR}/cmp-dashboard.png`,
     caption:
-      'Consent Management home — compliance health score, domain scan overview, and quick actions aligned with TrustScope-style scanning.',
+      'Consent Management home: compliance health score, domain scan overview, and quick actions aligned with TrustScope-style scanning.',
   },
   'dsar-platform': {
     src: `${AGIGX_UI_SCREENSHOT_DIR}/cmp-dsar-requests.png`,

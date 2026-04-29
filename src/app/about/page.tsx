@@ -27,7 +27,7 @@ const VALUES = [
     icon: Zap,
     title: 'Adaptability',
     description:
-      'Regulatory landscapes evolve. Our platforms self-adapt to amendments, new rules, and enforcement guidance — keeping you compliant without manual rework.',
+      'Regulatory landscapes evolve. Our platforms self-adapt to amendments, new rules, and enforcement guidance, keeping you compliant without manual rework.',
   },
   {
     icon: Eye,
@@ -39,7 +39,7 @@ const VALUES = [
     icon: Heart,
     title: 'Client-First',
     description:
-      'We design for your context — your industry, your data patterns, your maturity level. No one-size-fits-all frameworks. Compliance that fits how you actually operate.',
+      'We design for your context: your industry, your data patterns, your maturity level. No one-size-fits-all frameworks. Compliance that fits how you actually operate.',
   },
 ]
 
@@ -84,9 +84,9 @@ export default function AboutPage() {
             <span className="gradient-text">About AGIGx</span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-            We&apos;re building the compliance infrastructure India needs —
-            where regulatory obligations become executable systems, not
-            static documents gathering dust.
+            We&apos;re building the compliance infrastructure India needs where
+            regulatory obligations become executable systems, not static
+            documents gathering dust.
           </p>
         </motion.div>
       </SectionWrapper>
@@ -107,7 +107,7 @@ export default function AboutPage() {
           <p className="text-muted-foreground mt-6 leading-relaxed max-w-3xl mx-auto">
             DPDP 2023 represents a fundamental shift in how Indian organisations
             must treat personal data. AGIGx exists to make that transition
-            achievable — through technology that automates controls, services
+            achievable through technology that automates controls, services
             that build capability, and products that provide continuous assurance.
           </p>
         </motion.div>

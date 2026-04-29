@@ -17,7 +17,7 @@ export function ScanOptionStep({ value, onChange }: ScanOptionStepProps) {
         </h2>
         <p className="mt-2 text-muted-foreground">
           We&apos;ll scan your website for consent banners, cookie compliance, privacy
-          policies, and DSAR mechanisms — giving you an instant compliance score.
+          policies, and DSAR mechanisms, giving you an instant compliance score.
         </p>
       </div>
 
