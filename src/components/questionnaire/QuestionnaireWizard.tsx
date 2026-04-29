@@ -122,24 +122,7 @@ export function QuestionnaireWizard() {
     }
   }, [currentStep, formData])
 
-  const goNext = useCallback(() => {
-    if (!validateCurrentStep()) return
-
-    setDirection(1)
-    if (currentStep === 7 && !formData.wantsScan) {
-      handleSubmitWithoutScan()
-      return
-    }
-    setCurrentStep((s) => Math.min(s + 1, totalSteps))
-  }, [currentStep, totalSteps, formData.wantsScan, validateCurrentStep])
-
-  const goBack = useCallback(() => {
-    setDirection(-1)
-    setErrors({})
-    setCurrentStep((s) => Math.max(s - 1, 1))
-  }, [])
-
-  const handleSubmitWithoutScan = async () => {
+  const handleSubmitWithoutScan = useCallback(async () => {
     setIsSubmitting(true)
     try {
       await submitQuestionnaire(formData)
@@ -151,9 +134,9 @@ export function QuestionnaireWizard() {
     } finally {
       setIsSubmitting(false)
     }
-  }
+  }, [formData, router])
 
-  const handleSubmitWithScan = async () => {
+  const handleSubmitWithScan = useCallback(async () => {
     if (!validateCurrentStep()) return
     setIsSubmitting(true)
     setIsScanning(true)
@@ -197,7 +180,30 @@ export function QuestionnaireWizard() {
     } finally {
       setIsSubmitting(false)
     }
-  }
+  }, [validateCurrentStep, formData, router])
+
+  const goNext = useCallback(() => {
+    if (!validateCurrentStep()) return
+
+    setDirection(1)
+    if (currentStep === 7 && !formData.wantsScan) {
+      void handleSubmitWithoutScan()
+      return
+    }
+    setCurrentStep((s) => Math.min(s + 1, totalSteps))
+  }, [
+    currentStep,
+    totalSteps,
+    formData.wantsScan,
+    validateCurrentStep,
+    handleSubmitWithoutScan,
+  ])
+
+  const goBack = useCallback(() => {
+    setDirection(-1)
+    setErrors({})
+    setCurrentStep((s) => Math.max(s - 1, 1))
+  }, [])
 
   const updateField = (field: keyof QuestionnaireResponses, value: unknown) => {
     setFormData((prev) => ({ ...prev, [field]: value }))

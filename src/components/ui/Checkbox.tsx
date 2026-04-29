@@ -14,7 +14,8 @@ interface CheckboxProps {
 }
 
 function Checkbox({ label, checked = false, onChange, className, id, disabled }: CheckboxProps) {
-  const checkboxId = id || React.useId()
+  const generatedId = React.useId()
+  const checkboxId = id ?? generatedId
 
   return (
     <label
