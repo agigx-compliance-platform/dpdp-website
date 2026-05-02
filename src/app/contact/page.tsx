@@ -1,120 +1,123 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import { Mail, Phone, MapPin, Send, ArrowRight } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { SectionWrapper } from '@/components/ui/SectionWrapper'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
-import { Card, CardContent } from '@/components/ui/Card'
-import {
-  AccordionRoot,
-  AccordionItem,
-  AccordionTrigger,
-  AccordionContent,
-} from '@/components/ui/Accordion'
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Mail, Phone, MapPin, Send, ArrowRight, BookOpen } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { SectionWrapper } from "@/components/ui/SectionWrapper";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Card, CardContent } from "@/components/ui/Card";
 
 const ROLES = [
-  'DPO / Privacy Officer',
-  'CTO / CIO',
-  'Legal / Compliance',
-  'CISO / Security',
-  'CEO / Founder',
-  'Consultant / Advisor',
-  'Other',
-]
+  "DPO / Privacy Officer",
+  "CTO / CIO",
+  "Legal / Compliance",
+  "CISO / Security",
+  "CEO / Founder",
+  "Consultant / Advisor",
+  "Other",
+];
 
 const FAQ_ITEMS = [
   {
-    question: 'When does DPDP 2023 come into effect?',
+    question: "When does DPDP 2023 come into effect?",
     answer:
-      'The Digital Personal Data Protection Act 2023 received Presidential assent in August 2023. The implementation rules were notified in November 2025, with phased enforcement timelines for different provisions. Organizations should begin compliance preparation immediately to avoid penalties.',
+      "The Digital Personal Data Protection Act 2023 received Presidential assent in August 2023. The implementation rules were notified in November 2025, with phased enforcement timelines for different provisions. Organizations should begin compliance preparation immediately to avoid penalties.",
   },
   {
-    question: 'What are the maximum penalties under DPDP?',
+    question: "What are the maximum penalties under DPDP?",
     answer:
-      'DPDP 2023 prescribes penalties up to ₹250 Crore for non-compliance with specific provisions. Different violations carry different penalty amounts — from ₹50 Crore for failure to implement security safeguards to ₹250 Crore for non-compliance with provisions relating to children\'s data or Data Protection Board orders.',
+      "DPDP 2023 prescribes penalties up to ₹250 Crore for non-compliance with specific provisions. Different violations carry different penalty amounts — from ₹50 Crore for failure to implement security safeguards to ₹250 Crore for non-compliance with provisions relating to children's data or Data Protection Board orders.",
   },
   {
-    question: 'How long does a typical DPDP compliance engagement take?',
+    question: "How long does a typical DPDP compliance engagement take?",
     answer:
-      'Timeline varies based on organizational complexity and current maturity. A readiness assessment typically takes 2-4 weeks. Full compliance implementation ranges from 3-9 months depending on scope, number of data systems, cross-border considerations, and whether SDF classification applies.',
+      "Timeline varies based on organizational complexity and current maturity. A readiness assessment typically takes 2-4 weeks. Full compliance implementation ranges from 3-9 months depending on scope, number of data systems, cross-border considerations, and whether SDF classification applies.",
   },
   {
-    question: 'Do we need a Data Protection Officer?',
+    question: "Do we need a Data Protection Officer?",
     answer:
-      'Under DPDP 2023, DPO appointment is mandatory for Significant Data Fiduciaries (Section 10(2)(b)). Even if not classified as SDF, having a designated privacy lead is strongly recommended. AGIGx offers Virtual DPO services for organizations that need expert coverage without full-time hiring.',
+      "Under DPDP 2023, DPO appointment is mandatory for Significant Data Fiduciaries (Section 10(2)(b)). Even if not classified as SDF, having a designated privacy lead is strongly recommended. AGIGx offers Virtual DPO services for organizations that need expert coverage without full-time hiring.",
   },
   {
-    question: 'Can AGIGx help with both DPDP and GDPR compliance?',
+    question: "Can AGIGx help with both DPDP and GDPR compliance?",
     answer:
-      'Yes. Our Adaptive Compliance Engine supports multi-framework compliance including DPDP, GDPR, CCPA, and LGPD. Many Indian enterprises have dual obligations under DPDP and GDPR. We provide cross-mapped controls and unified compliance dashboards.',
+      "Yes. Our Adaptive Compliance Engine supports multi-framework compliance including DPDP, GDPR, CCPA, and LGPD. Many Indian enterprises have dual obligations under DPDP and GDPR. We provide cross-mapped controls and unified compliance dashboards.",
   },
-]
+];
 
 interface FormState {
-  name: string
-  email: string
-  company: string
-  role: string
-  subject: string
-  message: string
+  name: string;
+  email: string;
+  company: string;
+  role: string;
+  subject: string;
+  message: string;
 }
 
 interface FormErrors {
-  name?: string
-  email?: string
-  company?: string
-  role?: string
-  subject?: string
-  message?: string
+  name?: string;
+  email?: string;
+  company?: string;
+  role?: string;
+  subject?: string;
+  message?: string;
 }
 
 export default function ContactPage() {
   const [form, setForm] = useState<FormState>({
-    name: '',
-    email: '',
-    company: '',
-    role: '',
-    subject: '',
-    message: '',
-  })
-  const [errors, setErrors] = useState<FormErrors>({})
-  const [submitted, setSubmitted] = useState(false)
+    name: "",
+    email: "",
+    company: "",
+    role: "",
+    subject: "",
+    message: "",
+  });
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [submitted, setSubmitted] = useState(false);
+
+  // State to track the currently open FAQ item
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   function validate(): boolean {
-    const newErrors: FormErrors = {}
-    if (!form.name.trim()) newErrors.name = 'Name is required'
+    const newErrors: FormErrors = {};
+    if (!form.name.trim()) newErrors.name = "Name is required";
     if (!form.email.trim()) {
-      newErrors.email = 'Email is required'
+      newErrors.email = "Email is required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-      newErrors.email = 'Invalid email address'
+      newErrors.email = "Invalid email address";
     }
-    if (!form.company.trim()) newErrors.company = 'Company is required'
-    if (!form.role) newErrors.role = 'Please select a role'
-    if (!form.subject.trim()) newErrors.subject = 'Subject is required'
-    if (!form.message.trim()) newErrors.message = 'Message is required'
+    if (!form.company.trim()) newErrors.company = "Company is required";
+    if (!form.role) newErrors.role = "Please select a role";
+    if (!form.subject.trim()) newErrors.subject = "Subject is required";
+    if (!form.message.trim()) newErrors.message = "Message is required";
 
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   }
 
   function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    if (!validate()) return
-    console.log('Contact form submission:', form)
-    setSubmitted(true)
+    e.preventDefault();
+    if (!validate()) return;
+    console.log("Contact form submission:", form);
+    setSubmitted(true);
   }
 
   function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
   ) {
-    const { name, value } = e.target
-    setForm((prev) => ({ ...prev, [name]: value }))
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
     if (errors[name as keyof FormErrors]) {
-      setErrors((prev) => ({ ...prev, [name]: undefined }))
+      setErrors((prev) => ({ ...prev, [name]: undefined }));
     }
+  }
+
+  function toggleFaq(idx: number) {
+    setOpenFaq(openFaq === idx ? null : idx);
   }
 
   return (
@@ -130,8 +133,8 @@ export default function ContactPage() {
             <span className="gradient-text">Get in Touch</span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-            Ready to start your DPDP compliance journey? Our team of experts
-            is here to help you navigate the path to full compliance.
+            Ready to start your DPDP compliance journey? Our team of experts is
+            here to help you navigate the path to full compliance.
           </p>
         </motion.div>
       </SectionWrapper>
@@ -199,8 +202,9 @@ export default function ContactPage() {
                       value={form.role}
                       onChange={handleChange}
                       className={cn(
-                        'input-field w-full',
-                        errors.role && 'border-destructive focus:ring-destructive/50'
+                        "input-field w-full",
+                        errors.role &&
+                          "border-destructive focus:ring-destructive/50",
                       )}
                     >
                       <option value="">Select your role</option>
@@ -211,7 +215,9 @@ export default function ContactPage() {
                       ))}
                     </select>
                     {errors.role && (
-                      <p className="mt-1.5 text-xs text-destructive">{errors.role}</p>
+                      <p className="mt-1.5 text-xs text-destructive">
+                        {errors.role}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -235,16 +241,24 @@ export default function ContactPage() {
                     onChange={handleChange}
                     rows={5}
                     className={cn(
-                      'input-field w-full resize-none',
-                      errors.message && 'border-destructive focus:ring-destructive/50'
+                      "input-field w-full resize-none",
+                      errors.message &&
+                        "border-destructive focus:ring-destructive/50",
                     )}
                     placeholder="Tell us about your compliance needs..."
                   />
                   {errors.message && (
-                    <p className="mt-1.5 text-xs text-destructive">{errors.message}</p>
+                    <p className="mt-1.5 text-xs text-destructive">
+                      {errors.message}
+                    </p>
                   )}
                 </div>
-                <Button type="submit" variant="primary" size="lg" className="w-full sm:w-auto">
+                <Button
+                  type="submit"
+                  variant="primary"
+                  size="lg"
+                  className="w-full sm:w-auto"
+                >
                   Send Message
                   <ArrowRight className="w-5 h-5" />
                 </Button>
@@ -264,9 +278,15 @@ export default function ContactPage() {
                   <Mail className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-foreground mb-1">Email</h3>
-                  <p className="text-sm text-muted-foreground">contact@agigx.com</p>
-                  <p className="text-sm text-muted-foreground">privacy@agigx.com</p>
+                  <h3 className="text-sm font-semibold text-foreground mb-1">
+                    Email
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    contact@agigx.com
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    privacy@agigx.com
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -277,9 +297,15 @@ export default function ContactPage() {
                   <Phone className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-foreground mb-1">Phone</h3>
-                  <p className="text-sm text-muted-foreground">+91 80 4567 8900</p>
-                  <p className="text-xs text-muted-foreground mt-1">Mon-Fri, 9:00 AM - 6:00 PM IST</p>
+                  <h3 className="text-sm font-semibold text-foreground mb-1">
+                    Phone
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    +91 80 4567 8900
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Mon-Fri, 9:00 AM - 6:00 PM IST
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -290,7 +316,9 @@ export default function ContactPage() {
                   <MapPin className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-foreground mb-1">Office</h3>
+                  <h3 className="text-sm font-semibold text-foreground mb-1">
+                    Office
+                  </h3>
                   <p className="text-sm text-muted-foreground">
                     AGIGx Technologies Pvt Ltd
                   </p>
@@ -314,22 +342,81 @@ export default function ContactPage() {
           <h2 className="text-3xl font-bold text-center mb-8">
             <span className="gradient-text">Frequently Asked Questions</span>
           </h2>
-          <div className="max-w-3xl mx-auto">
-            <AccordionRoot type="single" collapsible>
-              {FAQ_ITEMS.map((faq, idx) => (
-                <AccordionItem key={idx} value={`faq-${idx}`}>
-                  <AccordionTrigger>{faq.question}</AccordionTrigger>
-                  <AccordionContent>
-                    <p className="text-muted-foreground leading-relaxed">
-                      {faq.answer}
-                    </p>
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </AccordionRoot>
+
+          <div className="max-w-2xl mx-auto">
+            <ul className="m-0 list-none p-0">
+              {FAQ_ITEMS.map((faq, idx) => {
+                const isOpen = openFaq === idx;
+                return (
+                  <li
+                    key={idx}
+                    className="w-full border-b border-border dark:border-neutral-700 list-none last:border-none"
+                    data-open={isOpen ? "" : undefined}
+                  >
+                    <button
+                      type="button"
+                      aria-expanded={isOpen}
+                      onClick={() => toggleFaq(idx)}
+                      className="w-full flex select-none justify-between items-center font-semibold text-foreground cursor-pointer py-5 group"
+                    >
+                      <span className="flex items-center gap-4 flex-1 text-left">
+                        <span className="flex items-center justify-center w-5 h-5 text-muted-foreground opacity-70">
+                          <BookOpen className="w-5 h-5" />
+                        </span>
+                        <span className="text-lg">{faq.question}</span>
+                      </span>
+                      <svg
+                        aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth="1.5"
+                        stroke="currentColor"
+                        className={cn(
+                          "w-5 h-5 shrink-0 transition-all duration-300 ease-[cubic-bezier(0.215,0.61,0.355,1)]",
+                          isOpen
+                            ? "rotate-[225deg] opacity-100"
+                            : "opacity-30 group-hover:opacity-100",
+                        )}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M12 4.5v15m7.5-7.5h-15"
+                        />
+                      </svg>
+                    </button>
+
+                    <div
+                      className={cn(
+                        "grid transition-[grid-template-rows] duration-300 ease-[cubic-bezier(0.215,0.61,0.355,1)]",
+                        isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
+                      )}
+                    >
+                      <div className="overflow-hidden min-h-0">
+                        <div
+                          className={cn(
+                            "pb-5 transition-all duration-300 ease-[cubic-bezier(0.215,0.61,0.355,1)] flex gap-4",
+                            isOpen
+                              ? "translate-y-0 opacity-100"
+                              : "translate-y-2 opacity-0",
+                          )}
+                        >
+                          {/* Spacer to align the text with the header's text (accounting for the icon width) */}
+                          <span className="w-5 shrink-0" />
+                          <p className="text-muted-foreground leading-relaxed m-0 flex-1">
+                            {faq.answer}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
         </motion.div>
       </SectionWrapper>
     </div>
-  )
+  );
 }

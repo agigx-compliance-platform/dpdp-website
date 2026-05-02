@@ -18,6 +18,7 @@ import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/Card'
 import Link from 'next/link'
+import { useQuestionnaireStore } from '@/store/questionnaireStore'
 
 const INDUSTRIES = [
   'All',
@@ -260,12 +261,10 @@ export default function SolutionsPage() {
                       </div>
                     </CardContent>
                     <CardFooter>
-                      <Link href="/questionnaire" className="w-full">
-                        <Button variant="outline" size="sm" className="w-full">
-                          Get Started
-                          <ArrowRight className="w-4 h-4" />
-                        </Button>
-                      </Link>
+                      <Button variant="outline" size="sm" className="w-full" onClick={() => useQuestionnaireStore.getState().openModal()}>
+                        Get Started
+                        <ArrowRight className="w-4 h-4" />
+                      </Button>
                     </CardFooter>
                   </Card>
                 </motion.div>
@@ -290,12 +289,10 @@ export default function SolutionsPage() {
             Our guided questionnaire analyses your organization&apos;s profile and
             recommends the optimal solution package for your industry and compliance maturity.
           </p>
-          <Link href="/questionnaire">
-            <Button variant="primary" size="lg">
-              Take the Assessment
-              <ArrowRight className="w-5 h-5" />
-            </Button>
-          </Link>
+          <Button variant="primary" size="lg" onClick={() => useQuestionnaireStore.getState().openModal()}>
+            Take the Assessment
+            <ArrowRight className="w-5 h-5" />
+          </Button>
         </motion.div>
       </SectionWrapper>
     </div>

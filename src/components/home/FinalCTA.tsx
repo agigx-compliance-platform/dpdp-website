@@ -3,7 +3,9 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
+import { useQuestionnaireStore } from '@/store/questionnaireStore'
 import { Button } from '@/components/ui/Button'
+
 
 export function FinalCTA() {
   const [form, setForm] = useState({ name: '', email: '', company: '', message: '' })
@@ -25,6 +27,7 @@ export function FinalCTA() {
 
       <div className="relative z-10 max-w-5xl mx-auto">
         <div className="text-center mb-12">
+
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -53,11 +56,9 @@ export function FinalCTA() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
         >
-          <Link href="/questionnaire">
-            <Button variant="primary" size="lg">
-              Start Assessment
-            </Button>
-          </Link>
+          <Button variant="primary" size="lg" onClick={() => useQuestionnaireStore.getState().openModal()}>
+            Start Assessment
+          </Button>
           <Link href="/contact">
             <Button variant="outline" size="lg">
               Schedule a Call

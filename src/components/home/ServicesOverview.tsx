@@ -5,27 +5,32 @@ import { motion } from 'framer-motion'
 import { Compass, ShieldCheck, Brain, Wrench, ArrowRight } from 'lucide-react'
 import { SectionWrapper } from '@/components/ui/SectionWrapper'
 import { Button } from '@/components/ui/Button'
+import { TorchGrid, TorchCard } from '@/components/ui/TorchGrid'
 
 const services = [
   {
     icon: Compass,
     title: 'Advisory',
-    description: 'Strategic compliance roadmaps, gap assessments, and board-level advisory for data protection regulations.',
+    description:
+      'Strategic compliance roadmaps, gap assessments, and board-level advisory for data protection regulations.',
   },
   {
     icon: ShieldCheck,
     title: 'Privacy Ops',
-    description: 'End-to-end privacy operations — consent management, DSAR workflows, breach response, and vendor risk.',
+    description:
+      'End-to-end privacy operations — consent management, DSAR workflows, breach response, and vendor risk.',
   },
   {
     icon: Brain,
     title: 'AI Governance',
-    description: 'Responsible AI frameworks, algorithmic audits, and AI Act readiness assessments.',
+    description:
+      'Responsible AI frameworks, algorithmic audits, and AI Act readiness assessments.',
   },
   {
     icon: Wrench,
     title: 'Technical Implementation',
-    description: 'Privacy-by-design engineering, SDK integration, cookie management, and data classification tooling.',
+    description:
+      'Privacy-by-design engineering, SDK integration, cookie management, and data classification tooling.',
   },
 ]
 
@@ -44,7 +49,7 @@ export function ServicesOverview() {
         </motion.h2>
       </div>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+      <TorchGrid cols="sm:grid-cols-2 lg:grid-cols-4" gap="gap-6" className="mb-10">
         {services.map((svc, i) => (
           <motion.div
             key={svc.title}
@@ -52,22 +57,24 @@ export function ServicesOverview() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: i * 0.1 }}
-            className="glass-card p-6 flex flex-col"
+            className="h-full"
           >
-            <svc.icon className="w-9 h-9 text-primary mb-4" />
-            <h3 className="text-lg font-semibold mb-2">{svc.title}</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed flex-1">
-              {svc.description}
-            </p>
-            <Link
-              href="/services"
-              className="mt-4 inline-flex items-center gap-1 text-sm text-primary font-medium hover:underline"
-            >
-              Learn More <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+            <TorchCard className="p-6 flex flex-col">
+              <svc.icon className="w-9 h-9 text-primary mb-4 shrink-0" />
+              <h3 className="text-lg font-semibold mb-2">{svc.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed flex-1">
+                {svc.description}
+              </p>
+              <Link
+                href="/services"
+                className="mt-4 inline-flex items-center gap-1 text-sm text-primary font-medium hover:underline"
+              >
+                Learn More <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </TorchCard>
           </motion.div>
         ))}
-      </div>
+      </TorchGrid>
 
       <div className="text-center">
         <Link href="/services">

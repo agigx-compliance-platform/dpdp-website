@@ -1,20 +1,23 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowLeft, ArrowRight, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { StepProgress } from './StepProgress'
+import { RiskMeter } from './RiskMeter'
 import { RoleStep } from './steps/RoleStep'
 import { OrgTypeStep } from './steps/OrgTypeStep'
 import { JourneyStep } from './steps/JourneyStep'
 import { DataTypesStep } from './steps/DataTypesStep'
 import { PrioritiesStep } from './steps/PrioritiesStep'
 import { SupportTypeStep } from './steps/SupportTypeStep'
-import { ScanOptionStep } from './steps/ScanOptionStep'
-import { ScanDetailsStep } from './steps/ScanDetailsStep'
+import { ScanLaunchStep } from './steps/ScanLaunchStep'
 import { ConsentStep } from './steps/ConsentStep'
+import { ResultsView } from './ResultsView'
+import { usePersistedQuestionnaireState } from '@/hooks/usePersistedQuestionnaireState'
+import { useQuestionnaireStore } from '@/store/questionnaireStore'
 import {
   step1Schema,
   step2Schema,
@@ -22,11 +25,9 @@ import {
   step4Schema,
   step5Schema,
   step6Schema,
-  step8Schema,
   step9Schema,
 } from '@/lib/questionnaire-schema'
-import { submitQuestionnaire, initiateScan, getScanStatus, getScanReport } from '@/lib/api'
-import type { QuestionnaireResponses, ScanResult } from '@/lib/types'
+import { submitQuestionnaire, initiateScan } from '@/lib/api'
 
 const slideVariants = {
   enter: (direction: number) => ({
@@ -45,29 +46,56 @@ const slideVariants = {
 
 export function QuestionnaireWizard() {
   const router = useRouter()
-  const [currentStep, setCurrentStep] = useState(1)
-  const [direction, setDirection] = useState(1)
+  const { closeModal } = useQuestionnaireStore()
+  const {
+    currentStep,
+    direction,
+    formData,
+    wantsScan,
+    scanProgress,
+    scanDone,
+    scanResult,
+    scanId,
+    updateState,
+    updateFormData,
+    clearPersistedState,
+  } = usePersistedQuestionnaireState()
+
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [scanProgress, setScanProgress] = useState(0)
-  const [isScanning, setIsScanning] = useState(false)
+  const [isResuming, setIsResuming] = useState(false)
+  const [isFinalizing, setIsFinalizing] = useState(false)
+  const [scrollProgress, setScrollProgress] = useState(0)
 
-  const [formData, setFormData] = useState<QuestionnaireResponses>({
-    role: '',
-    orgType: '',
-    journeyStage: '',
-    dataTypes: [],
-    priorities: [],
-    supportType: [],
-    wantsScan: false,
-    websiteUrl: '',
-    email: '',
-    name: '',
-    company: '',
-    consentGiven: false,
-  })
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const target = e.currentTarget
+    const scrollHeight = target.scrollHeight - target.clientHeight
+    if (scrollHeight > 0) {
+      setScrollProgress(target.scrollTop / scrollHeight)
+    } else {
+      setScrollProgress(0)
+    }
+  }
 
-  const totalSteps = formData.wantsScan ? 9 : 7
+  // Resume animation
+  useEffect(() => {
+    if (currentStep > 0) {
+      setIsResuming(true)
+      const t = setTimeout(() => setIsResuming(false), 400)
+      return () => clearTimeout(t)
+    }
+  }, []) // run once on mount
+
+  // Check if finalizing is done
+  useEffect(() => {
+    if (isFinalizing && (scanDone || !wantsScan)) {
+      routeToResults()
+    }
+  }, [isFinalizing, scanDone, wantsScan])
+
+  const routeToResults = useCallback(() => {
+    updateState({ currentStep: 8, direction: 1 })
+  }, [updateState])
 
   const validateCurrentStep = useCallback((): boolean => {
     setErrors({})
@@ -91,18 +119,8 @@ export function QuestionnaireWizard() {
         case 6:
           step6Schema.parse({ supportType: formData.supportType })
           break
-        case 8:
-          if (formData.wantsScan) {
-            step8Schema.parse({
-              websiteUrl: formData.websiteUrl,
-              email: formData.email,
-              name: formData.name,
-              company: formData.company,
-            })
-          }
-          break
-        case 9:
-          if (formData.wantsScan) {
+        case 7:
+          if (wantsScan) {
             step9Schema.parse({ consentGiven: formData.consentGiven })
           }
           break
@@ -120,29 +138,11 @@ export function QuestionnaireWizard() {
       }
       return false
     }
-  }, [currentStep, formData])
+  }, [currentStep, formData, wantsScan])
 
-  const handleSubmitWithoutScan = useCallback(async () => {
+  const handleStartScan = async () => {
     setIsSubmitting(true)
     try {
-      await submitQuestionnaire(formData)
-      const params = new URLSearchParams()
-      params.set('data', btoa(JSON.stringify(formData)))
-      router.push(`/questionnaire/results?${params.toString()}`)
-    } catch {
-      setErrors({ general: 'Something went wrong. Please try again.' })
-    } finally {
-      setIsSubmitting(false)
-    }
-  }, [formData, router])
-
-  const handleSubmitWithScan = useCallback(async () => {
-    if (!validateCurrentStep()) return
-    setIsSubmitting(true)
-    setIsScanning(true)
-
-    try {
-      await submitQuestionnaire(formData)
       const { data } = await initiateScan({
         url: formData.websiteUrl!,
         email: formData.email!,
@@ -150,243 +150,232 @@ export function QuestionnaireWizard() {
         company: formData.company!,
         consent: formData.consentGiven,
       })
-
-      const scanId = data.scanId
-      let scanResult: ScanResult | null = null
-
-      while (!scanResult) {
-        await new Promise((resolve) => setTimeout(resolve, 2000))
-        const { data: status } = await getScanStatus(scanId)
-        setScanProgress(status.progress)
-
-        if (status.status === 'completed') {
-          const { data: report } = await getScanReport(scanId)
-          scanResult = report
-        } else if (status.status === 'failed') {
-          throw new Error('Scan failed')
-        }
-      }
-
-      const params = new URLSearchParams()
-      params.set('data', btoa(JSON.stringify(formData)))
-      params.set('scan', btoa(JSON.stringify(scanResult)))
-      router.push(`/questionnaire/results?${params.toString()}`)
-    } catch {
-      setErrors({ general: 'Scan failed. Showing recommendations based on your answers.' })
-      setIsScanning(false)
-      const params = new URLSearchParams()
-      params.set('data', btoa(JSON.stringify(formData)))
-      router.push(`/questionnaire/results?${params.toString()}`)
+      updateState({
+        wantsScan: true,
+        scanId: data.scanId,
+        scanDone: false,
+        scanProgress: 0,
+        scanResult: null,
+        direction: 1,
+        currentStep: 1,
+      })
+    } catch (e: any) {
+      setErrors({ scan: e.message || 'Failed to start scan. Please try again.' })
     } finally {
       setIsSubmitting(false)
     }
-  }, [validateCurrentStep, formData, router])
-
-  const goNext = useCallback(() => {
-    if (!validateCurrentStep()) return
-
-    setDirection(1)
-    if (currentStep === 7 && !formData.wantsScan) {
-      void handleSubmitWithoutScan()
-      return
-    }
-    setCurrentStep((s) => Math.min(s + 1, totalSteps))
-  }, [
-    currentStep,
-    totalSteps,
-    formData.wantsScan,
-    validateCurrentStep,
-    handleSubmitWithoutScan,
-  ])
-
-  const goBack = useCallback(() => {
-    setDirection(-1)
-    setErrors({})
-    setCurrentStep((s) => Math.max(s - 1, 1))
-  }, [])
-
-  const updateField = (field: keyof QuestionnaireResponses, value: unknown) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
-    setErrors({})
   }
 
-  if (isScanning) {
+  const handleSkipScan = () => {
+    updateState({
+      wantsScan: false,
+      scanId: null,
+      scanDone: false,
+      scanProgress: 0,
+      scanResult: null,
+      direction: 1,
+      currentStep: 1,
+    })
+  }
+
+  const handleFinalSubmit = async () => {
+    setIsSubmitting(true)
+    try {
+      await submitQuestionnaire(formData)
+      if (wantsScan && !scanDone) {
+        setIsFinalizing(true)
+      } else {
+        routeToResults()
+      }
+    } catch {
+      setErrors({ general: 'Something went wrong. Please try again.' })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  const goNext = () => {
+    if (!validateCurrentStep()) return
+    if (currentStep === 7) {
+      handleFinalSubmit()
+      return
+    }
+    updateState({ direction: 1, currentStep: currentStep + 1 })
+  }
+
+  const goBack = () => {
+    setErrors({})
+    updateState({ direction: -1, currentStep: Math.max(currentStep - 1, 1) })
+  }
+
+  if (isFinalizing) {
     return (
-      <div className="flex min-h-[400px] flex-col items-center justify-center gap-6">
-        <motion.div
-          className="relative flex h-32 w-32 items-center justify-center"
-          animate={{ rotate: 360 }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
-        >
-          <div className="absolute inset-0 rounded-full border-4 border-primary/20" />
-          <motion.div
-            className="absolute inset-0 rounded-full border-4 border-transparent border-t-primary"
-            animate={{ rotate: 360 }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
-          />
-          <Loader2 className="h-10 w-10 text-primary" />
-        </motion.div>
-        <div className="text-center">
-          <h3 className="text-xl font-semibold text-foreground">Scanning in progress...</h3>
-          <p className="mt-2 text-muted-foreground">
-            Analyzing your website for privacy compliance
-          </p>
-          <div className="mt-4 h-2 w-64 overflow-hidden rounded-full bg-secondary">
-            <motion.div
-              className="h-full rounded-full bg-gradient-to-r from-primary to-[hsl(var(--gradient-end))]"
-              animate={{ width: `${scanProgress}%` }}
-              transition={{ duration: 0.5 }}
-            />
+      <div className="flex min-h-[400px] flex-col items-center justify-center p-8 text-center bg-background rounded-2xl">
+        <Loader2 className="h-10 w-10 text-primary animate-spin mb-4" />
+        <h3 className="text-xl font-semibold text-foreground">Finalizing your scan results...</h3>
+        <p className="mt-2 text-muted-foreground">Almost done!</p>
+        {scanProgress > 0 && (
+          <div className="mt-6 w-full max-w-sm">
+            <div className="h-2 w-full overflow-hidden rounded-full bg-secondary">
+              <motion.div
+                className="h-full rounded-full bg-gradient-to-r from-primary to-[hsl(var(--gradient-end))]"
+                animate={{ width: `${scanProgress}%` }}
+                transition={{ duration: 0.5 }}
+              />
+            </div>
+            <p className="mt-2 text-sm font-medium text-primary text-right">{scanProgress}%</p>
           </div>
-          <p className="mt-2 text-sm font-medium text-primary">{scanProgress}%</p>
-        </div>
+        )}
       </div>
     )
   }
 
   const renderStep = () => {
     switch (currentStep) {
-      case 1:
+      case 0:
         return (
-          <RoleStep
-            value={formData.role}
-            onChange={(v) => updateField('role', v)}
-            error={errors.role}
-          />
-        )
-      case 2:
-        return (
-          <OrgTypeStep
-            value={formData.orgType}
-            onChange={(v) => updateField('orgType', v)}
-            error={errors.orgType}
-          />
-        )
-      case 3:
-        return (
-          <JourneyStep
-            value={formData.journeyStage}
-            onChange={(v) => updateField('journeyStage', v)}
-            error={errors.journeyStage}
-          />
-        )
-      case 4:
-        return (
-          <DataTypesStep
-            value={formData.dataTypes}
-            onChange={(v) => updateField('dataTypes', v)}
-            error={errors.dataTypes}
-          />
-        )
-      case 5:
-        return (
-          <PrioritiesStep
-            value={formData.priorities}
-            onChange={(v) => updateField('priorities', v)}
-            error={errors.priorities}
-          />
-        )
-      case 6:
-        return (
-          <SupportTypeStep
-            value={formData.supportType}
-            onChange={(v) => updateField('supportType', v)}
-            error={errors.supportType}
-          />
-        )
-      case 7:
-        return (
-          <ScanOptionStep
-            value={formData.wantsScan === true ? true : formData.wantsScan === false ? false : undefined}
-            onChange={(v) => updateField('wantsScan', v)}
-          />
-        )
-      case 8:
-        return (
-          <ScanDetailsStep
+          <ScanLaunchStep
             values={{
               websiteUrl: formData.websiteUrl || '',
               name: formData.name || '',
               company: formData.company || '',
               email: formData.email || '',
             }}
-            onChange={(field, value) => updateField(field as keyof QuestionnaireResponses, value)}
-            errors={errors}
+            onChange={updateFormData}
+            onStartScan={handleStartScan}
+            onSkipScan={handleSkipScan}
+            isSubmitting={isSubmitting}
+            scanError={errors.scan}
           />
         )
-      case 9:
+      case 1:
+        return <RoleStep value={formData.role} onChange={(v) => updateFormData('role', v)} error={errors.role} />
+      case 2:
+        return <OrgTypeStep value={formData.orgType} onChange={(v) => updateFormData('orgType', v)} error={errors.orgType} />
+      case 3:
+        return <JourneyStep value={formData.journeyStage} onChange={(v) => updateFormData('journeyStage', v)} error={errors.journeyStage} />
+      case 4:
+        return <DataTypesStep value={formData.dataTypes} onChange={(v) => updateFormData('dataTypes', v)} error={errors.dataTypes} />
+      case 5:
+        return <PrioritiesStep value={formData.priorities} onChange={(v) => updateFormData('priorities', v)} error={errors.priorities} />
+      case 6:
+        return <SupportTypeStep value={formData.supportType} onChange={(v) => updateFormData('supportType', v)} error={errors.supportType} />
+      case 7:
         return (
           <ConsentStep
             value={formData.consentGiven}
-            onChange={(v) => updateField('consentGiven', v)}
-            onSubmit={handleSubmitWithScan}
-            isSubmitting={isSubmitting}
+            onChange={(v) => updateFormData('consentGiven', v)}
             error={errors.consentGiven}
           />
         )
+      case 8:
+        return <ResultsView responses={formData} scanResult={scanResult || undefined} />
       default:
         return null
     }
   }
 
-  const showNextButton = currentStep < totalSteps && currentStep !== 9
-
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
-      <StepProgress currentStep={currentStep} totalSteps={totalSteps} />
+    <div 
+      onScroll={handleScroll}
+      data-lenis-prevent="true"
+      className="flex flex-col w-full h-full bg-background min-h-[400px] overflow-y-auto overflow-x-hidden scrollbar-hide relative"
+    >
+      {/* Custom Scroll Progress Indicator */}
+      <div className="sticky top-0 z-50 h-1 w-full bg-transparent pointer-events-none">
+        <motion.div
+          className="h-full bg-gradient-to-r from-primary to-[hsl(var(--gradient-end))] shadow-[0_0_10px_rgba(var(--primary),0.5)]"
+          style={{ scaleX: scrollProgress, transformOrigin: 'left' }}
+        />
+      </div>
 
-      <div className="glass-card overflow-hidden rounded-xl p-6 sm:p-8">
-        <AnimatePresence mode="wait" custom={direction}>
-          <motion.div
-            key={currentStep}
-            custom={direction}
-            variants={slideVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
-          >
-            {renderStep()}
-          </motion.div>
-        </AnimatePresence>
+      {/* Scan status bar — visible when scan is running */}
+      {wantsScan && scanId && currentStep > 0 && (
+        <div className="w-full bg-secondary/30 px-6 py-2 border-b border-border flex items-center justify-between text-xs sm:text-sm">
+          <div className="flex items-center gap-2">
+            <div className={`h-2 w-2 rounded-full ${scanDone ? 'bg-green-500' : 'bg-primary animate-pulse'}`} />
+            <span className="text-muted-foreground">
+              {scanDone ? 'Scan Complete' : 'Scanning in background...'}
+            </span>
+            <span className="font-medium text-foreground ml-1 hidden sm:inline">
+              {formData.websiteUrl && new URL(formData.websiteUrl).hostname}
+            </span>
+          </div>
+          <span className="font-semibold text-primary">{scanProgress}%</span>
+        </div>
+      )}
 
-        {errors.general && (
-          <p className="mt-4 text-sm text-destructive">{errors.general}</p>
-        )}
+      {currentStep > 0 && currentStep < 8 && (
+        <div className="px-4 pt-6 sm:px-8">
+          <StepProgress currentStep={currentStep} totalSteps={8} />
+          <div className="mt-6">
+            <RiskMeter formData={formData} isVisible={true} />
+          </div>
+        </div>
+      )}
 
-        <div className="mt-8 flex items-center justify-between">
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={goBack}
-            disabled={currentStep === 1}
-            className={currentStep === 1 ? 'invisible' : ''}
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back
-          </Button>
-
-          {showNextButton && (
-            <Button
-              type="button"
-              variant="primary"
-              onClick={goNext}
-              disabled={isSubmitting}
+      {isResuming && currentStep > 0 ? (
+        <div className="flex flex-col items-center justify-center p-12 flex-1">
+          <p className="text-sm text-muted-foreground mb-4">Resuming from step {currentStep}...</p>
+          <div className="w-48 h-1 bg-secondary rounded-full overflow-hidden">
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: '100%' }}
+              transition={{ duration: 0.4, ease: 'linear' }}
+              className="h-full bg-primary"
+            />
+          </div>
+        </div>
+      ) : (
+        <div className="flex-1 p-4 sm:p-8 flex flex-col">
+          <AnimatePresence mode="wait" custom={direction}>
+            <motion.div
+              key={currentStep}
+              custom={direction}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              className="flex-1"
             >
-              {isSubmitting ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <>
-                  {currentStep === 7 && !formData.wantsScan
-                    ? 'View Recommendations'
-                    : 'Next'}
-                  <ArrowRight className="h-4 w-4" />
-                </>
-              )}
-            </Button>
+              {renderStep()}
+            </motion.div>
+          </AnimatePresence>
+
+          {errors.general && (
+            <p className="mt-4 text-sm text-destructive">{errors.general}</p>
+          )}
+
+          {currentStep > 0 && currentStep < 8 && (
+            <div className="mt-8 flex items-center justify-between pt-6 border-t border-border">
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={goBack}
+                disabled={currentStep === 1 || isSubmitting}
+                className={currentStep === 1 ? 'invisible' : ''}
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back
+              </Button>
+
+              <Button
+                type="button"
+                variant="primary"
+                onClick={goNext}
+                disabled={isSubmitting || (currentStep === 7 && wantsScan && !formData.consentGiven)}
+              >
+                {isSubmitting ? (
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                ) : null}
+                {currentStep === 7 ? 'Submit' : 'Next'}
+                {!isSubmitting && <ArrowRight className="h-4 w-4 ml-2" />}
+              </Button>
+            </div>
           )}
         </div>
-      </div>
+      )}
     </div>
   )
 }

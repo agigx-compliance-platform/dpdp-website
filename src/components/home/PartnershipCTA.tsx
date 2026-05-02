@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { MessageSquare, Cog, HeadphonesIcon } from 'lucide-react'
 import { SectionWrapper } from '@/components/ui/SectionWrapper'
 import { Button } from '@/components/ui/Button'
+import { TorchGrid, TorchCard } from '@/components/ui/TorchGrid'
 
 const models = [
   {
@@ -42,7 +43,7 @@ export function PartnershipCTA() {
         </motion.h2>
       </div>
 
-      <div className="grid sm:grid-cols-3 gap-6 mb-10">
+      <TorchGrid cols="sm:grid-cols-3" gap="gap-6" className="mb-10">
         {models.map((model, i) => (
           <motion.div
             key={model.title}
@@ -50,16 +51,17 @@ export function PartnershipCTA() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: i * 0.12 }}
-            className="glass-card p-6 text-center"
           >
-            <model.icon className="w-10 h-10 text-primary mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">{model.title}</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              {model.description}
-            </p>
+            <TorchCard className="p-6 text-center">
+              <model.icon className="w-10 h-10 text-primary mx-auto mb-4" />
+              <h3 className="text-lg font-semibold mb-2">{model.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">
+                {model.description}
+              </p>
+            </TorchCard>
           </motion.div>
         ))}
-      </div>
+      </TorchGrid>
 
       <div className="text-center">
         <Link href="/partnership">

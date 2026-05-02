@@ -1,39 +1,39 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { XCircle, CheckCircle2 } from 'lucide-react'
-import { SectionWrapper } from '@/components/ui/SectionWrapper'
-import { cn } from '@/lib/utils'
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { XCircle, CheckCircle2, ArrowRight } from "lucide-react";
+import { SectionWrapper } from "@/components/ui/SectionWrapper";
+import { cn } from "@/lib/utils";
 
 const myths = [
   {
-    myth: 'A privacy policy is enough',
+    myth: "A privacy policy is enough",
     reality:
-      'DPDP requires operational controls — not just documents. You need consent management, data mapping, breach response, and audit trails.',
+      "DPDP requires operational controls — not just documents. You need consent management, data mapping, breach response, and audit trails.",
   },
   {
-    myth: 'Consent banners solve everything',
+    myth: "Consent banners solve everything",
     reality:
-      'Banners without blocking still set cookies illegally. True compliance means no data processing until valid consent is obtained.',
+      "Banners without blocking still set cookies illegally. True compliance means no data processing until valid consent is obtained.",
   },
   {
     myth: "We don't handle much personal data",
     reality:
-      'DPDP covers all digital personal data including employee data, vendor contacts, and visitor analytics. Nearly every business is in scope.',
+      "DPDP covers all digital personal data including employee data, vendor contacts, and visitor analytics. Nearly every business is in scope.",
   },
   {
-    myth: 'Compliance is a one-time project',
+    myth: "Compliance is a one-time project",
     reality:
-      'DPDP requires continuous monitoring, regular audits, and ongoing evidence collection. Compliance is a living process.',
+      "DPDP requires continuous monitoring, regular audits, and ongoing evidence collection. Compliance is a living process.",
   },
-]
+];
 
 export function MythBreaker() {
-  const [revealed, setRevealed] = useState<Record<number, boolean>>({})
+  const [revealed, setRevealed] = useState<Record<number, boolean>>({});
 
   const toggle = (idx: number) =>
-    setRevealed((prev) => ({ ...prev, [idx]: !prev[idx] }))
+    setRevealed((prev) => ({ ...prev, [idx]: !prev[idx] }));
 
   return (
     <SectionWrapper id="myths">
@@ -43,15 +43,16 @@ export function MythBreaker() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-3xl sm:text-4xl font-bold"
+          className="text-3xl sm:text-4xl font-bold tracking-tight"
         >
-          Compliance Myths, <span className="gradient-text">Debunked</span>
+          Compliance Myths, <span className="text-emerald-500">Debunked</span>
         </motion.h2>
       </div>
 
       <div className="grid sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
         {myths.map((item, i) => {
-          const isRevealed = revealed[i]
+          const isRevealed = revealed[i];
+
           return (
             <motion.button
               key={i}
@@ -61,60 +62,76 @@ export function MythBreaker() {
               transition={{ duration: 0.5, delay: i * 0.1 }}
               onClick={() => toggle(i)}
               className={cn(
-                'glass-card p-6 text-left cursor-pointer transition-all w-full',
-                isRevealed && 'border-primary/30'
+                "relative w-full text-left p-6 sm:p-8 rounded-2xl overflow-hidden transition-all duration-500 group",
+                "border backdrop-blur-sm",
+                isRevealed
+                  ? "bg-primary/10 border-primary/30 shadow-glow-primary"
+                  : "bg-card border-border hover:border-primary/50 hover:bg-muted",
               )}
             >
-              <AnimatePresence mode="wait">
-                {!isRevealed ? (
-                  <motion.div
-                    key="myth"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <div className="flex items-start gap-3">
-                      <XCircle className="w-5 h-5 text-destructive mt-0.5 shrink-0" />
-                      <div>
-                        <span className="text-xs font-medium text-destructive uppercase tracking-wider">
-                          Myth
-                        </span>
-                        <p className="text-foreground font-medium mt-1">
-                          &ldquo;{item.myth}&rdquo;
-                        </p>
-                        <p className="text-xs text-muted-foreground mt-2">
-                          Tap to reveal reality →
-                        </p>
-                      </div>
+              {/* 
+                CSS Grid Overlap Trick: 
+                Both elements occupy the same cell. The container fits the tallest one automatically, preventing height shifts!
+              */}
+              <div className="grid">
+                {/* --- MYTH LAYER --- */}
+                <motion.div
+                  className="col-start-1 row-start-1 flex items-start gap-4"
+                  initial={false}
+                  animate={{
+                    opacity: isRevealed ? 0 : 1,
+                    y: isRevealed ? -15 : 0,
+                    scale: isRevealed ? 0.95 : 1,
+                    pointerEvents: isRevealed ? "none" : "auto",
+                  }}
+                  transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+                >
+                  <div className="bg-red-500/10 p-2 rounded-full shrink-0 mt-0.5">
+                    <XCircle className="w-5 h-5 text-red-400" />
+                  </div>
+                  <div className="flex-1">
+                    <span className="text-xs font-bold text-red-400 uppercase tracking-widest mb-2 block">
+                      The Myth
+                    </span>
+                    <p className="text-foreground font-medium text-lg leading-snug">
+                      &ldquo;{item.myth}&rdquo;
+                    </p>
+                    <div className="flex items-center gap-2 mt-4 text-xs text-muted-foreground font-medium group-hover:text-foreground transition-colors">
+                      Tap to reveal reality
+                      <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-1" />
                     </div>
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="reality"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <div className="flex items-start gap-3">
-                      <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 shrink-0" />
-                      <div>
-                        <span className="text-xs font-medium text-primary uppercase tracking-wider">
-                          Reality
-                        </span>
-                        <p className="text-foreground leading-relaxed mt-1">
-                          {item.reality}
-                        </p>
-                      </div>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                  </div>
+                </motion.div>
+
+                {/* --- REALITY LAYER --- */}
+                <motion.div
+                  className="col-start-1 row-start-1 flex items-start gap-4"
+                  initial={false}
+                  animate={{
+                    opacity: isRevealed ? 1 : 0,
+                    y: isRevealed ? 0 : 15,
+                    scale: isRevealed ? 1 : 0.95,
+                    pointerEvents: isRevealed ? "auto" : "none",
+                  }}
+                  transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+                >
+                  <div className="bg-primary/10 p-2 rounded-full shrink-0 mt-0.5">
+                    <CheckCircle2 className="w-5 h-5 text-primary" />
+                  </div>
+                  <div className="flex-1">
+                    <span className="text-xs font-bold text-primary uppercase tracking-widest mb-2 block">
+                      The Reality
+                    </span>
+                    <p className="text-foreground text-base leading-relaxed">
+                      {item.reality}
+                    </p>
+                  </div>
+                </motion.div>
+              </div>
             </motion.button>
-          )
+          );
         })}
       </div>
     </SectionWrapper>
-  )
+  );
 }

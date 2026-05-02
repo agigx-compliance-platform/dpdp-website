@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { FileWarning, AlertTriangle, PackageX } from 'lucide-react'
 import { SectionWrapper } from '@/components/ui/SectionWrapper'
+import { TorchGrid, TorchCard } from '@/components/ui/TorchGrid'
 
 const painPoints = [
   {
@@ -21,7 +22,7 @@ const painPoints = [
     icon: PackageX,
     title: 'One-Size-Fits-None',
     description:
-      "Generic tools that don\u2019t fit your industry, tech stack, or organizational complexity. Cookie-cutter compliance fails.",
+      "Generic tools that don't fit your industry, tech stack, or organizational complexity. Cookie-cutter compliance fails.",
   },
 ]
 
@@ -49,7 +50,7 @@ export function ProblemSection() {
         </motion.p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6">
+      <TorchGrid cols="md:grid-cols-3" gap="gap-6">
         {painPoints.map((point, i) => (
           <motion.div
             key={point.title}
@@ -57,16 +58,18 @@ export function ProblemSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: i * 0.15 }}
-            className="glass-card p-6 sm:p-8"
+            className="h-full"
           >
-            <point.icon className="w-10 h-10 text-primary mb-4" />
-            <h3 className="text-xl font-semibold mb-2">{point.title}</h3>
-            <p className="text-muted-foreground leading-relaxed">
-              {point.description}
-            </p>
+            <TorchCard className="p-6 sm:p-8 flex flex-col">
+              <point.icon className="w-10 h-10 text-primary mb-4 shrink-0" />
+              <h3 className="text-xl font-semibold mb-2">{point.title}</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                {point.description}
+              </p>
+            </TorchCard>
           </motion.div>
         ))}
-      </div>
+      </TorchGrid>
     </SectionWrapper>
   )
 }

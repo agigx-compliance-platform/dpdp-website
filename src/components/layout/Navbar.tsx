@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Sun, Moon, Menu, X } from 'lucide-react'
 import { useTheme } from '@/hooks/useTheme'
 import { cn } from '@/lib/utils'
+import { useQuestionnaireStore } from '@/store/questionnaireStore'
 
 const navLinks = [
   { href: '/', label: 'Home' },
@@ -19,6 +20,7 @@ export function Navbar() {
   const { theme, toggleTheme } = useTheme()
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const openModal = useQuestionnaireStore((state) => state.openModal)
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50)
@@ -63,9 +65,9 @@ export function Navbar() {
               >
                 {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
               </button>
-              <Link href="/questionnaire" className="btn-primary text-sm">
+              <button onClick={openModal} className="btn-primary text-sm">
                 Start Assessment
-              </Link>
+              </button>
             </div>
 
             <button
@@ -118,13 +120,15 @@ export function Navbar() {
                 {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
                 {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
               </button>
-              <Link
-                href="/questionnaire"
-                onClick={() => setMobileOpen(false)}
+              <button
+                onClick={() => {
+                  setMobileOpen(false)
+                  openModal()
+                }}
                 className="btn-primary text-sm text-center"
               >
                 Start Assessment
-              </Link>
+              </button>
             </div>
           </div>
         </div>
