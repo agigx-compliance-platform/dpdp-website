@@ -19,11 +19,13 @@ export function Marquee({ items, speed = 60 }: MarqueeProps) {
   });
 
   useEffect(() => {
-    const track = trackRef.current;
-    if (!track) return;
     const s = state.current;
 
     function tick(now: number) {
+      const track = trackRef.current;
+      if (!track) {
+        return;
+      }
       if (!s.lastTime) s.lastTime = now;
       const dt = Math.min((now - s.lastTime) / 1000, 0.05);
       s.lastTime = now;

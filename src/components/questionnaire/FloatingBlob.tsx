@@ -18,6 +18,7 @@ export function FloatingBlob() {
     formData,
     scanResult,
     scanId,
+    updateState,
   } = usePersistedQuestionnaireState()
   
   const [mounted, setMounted] = useState(false)
@@ -92,7 +93,7 @@ export function FloatingBlob() {
               strokeLinecap="round"
               strokeDasharray={circumference}
               animate={{ strokeDashoffset: offset }}
-              transition={{ duration: 0.5, ease: 'easeOut' }}
+              transition={{ duration: 0.5, ease: 'easeOut' as const }}
             />
           </svg>
           <span className="absolute text-[9px] font-bold">{scanProgress}%</span>

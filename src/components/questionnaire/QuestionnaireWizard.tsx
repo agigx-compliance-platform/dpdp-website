@@ -77,6 +77,10 @@ export function QuestionnaireWizard() {
     }
   }
 
+  const routeToResults = useCallback(() => {
+    updateState({ currentStep: 8, direction: 1 })
+  }, [updateState])
+
   // Resume animation
   useEffect(() => {
     if (currentStep > 0) {
@@ -91,11 +95,7 @@ export function QuestionnaireWizard() {
     if (isFinalizing && (scanDone || !wantsScan)) {
       routeToResults()
     }
-  }, [isFinalizing, scanDone, wantsScan])
-
-  const routeToResults = useCallback(() => {
-    updateState({ currentStep: 8, direction: 1 })
-  }, [updateState])
+  }, [isFinalizing, scanDone, wantsScan, routeToResults])
 
   const validateCurrentStep = useCallback((): boolean => {
     setErrors({})
@@ -321,7 +321,7 @@ export function QuestionnaireWizard() {
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: '100%' }}
-              transition={{ duration: 0.4, ease: 'linear' }}
+              transition={{ duration: 0.4, ease: 'linear' as const }}
               className="h-full bg-primary"
             />
           </div>
@@ -336,7 +336,7 @@ export function QuestionnaireWizard() {
               initial="enter"
               animate="center"
               exit="exit"
-              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              transition={{ duration: 0.3, ease: 'easeInOut' as const }}
               className="flex-1"
             >
               {renderStep()}
