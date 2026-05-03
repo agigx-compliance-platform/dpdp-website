@@ -13,7 +13,8 @@ export const productScreenshots = {
   },
   'dsar-platform': {
     src: `${AGIGX_UI_SCREENSHOT_DIR}/cmp-dsar-requests.png`,
-    caption: 'DSAR request queues, SLA visibility, and case handling in AGIGx.',
+    caption:
+      'DSAR and grievance analytics: daily request trends, SLA compliance, unique users, and resolution metrics in AGIGx.',
   },
   'infra-scanner': {
     src: `${AGIGX_UI_SCREENSHOT_DIR}/cmp-analytics.png`,
@@ -45,7 +46,7 @@ export const servicesPlatformStrip = [
   {
     src: `${AGIGX_UI_SCREENSHOT_DIR}/cmp-dsar-requests.png`,
     title: 'Rights & DSAR',
-    caption: 'Operationalise access, correction, erasure and grievance workflows.',
+    caption: 'Submission trends, SLA compliance, and grievance vs DSAR volume at a glance.',
   },
 ] as const
 
@@ -75,5 +76,5 @@ export const platformSnapshots = [
 export const productPreviewThumbs = [
   { src: `${AGIGX_UI_SCREENSHOT_DIR}/cmp-consent-banner.png`, alt: 'AGIGx consent banner configuration' },
   { src: `${AGIGX_UI_SCREENSHOT_DIR}/cmp-dashboard.png`, alt: 'AGIGx consent management dashboard' },
-  { src: `${AGIGX_UI_SCREENSHOT_DIR}/cmp-dsar-requests.png`, alt: 'AGIGx DSAR requests' },
+  { src: `${AGIGX_UI_SCREENSHOT_DIR}/cmp-dsar-requests.png`, alt: 'AGIGx DSAR and grievance analytics dashboard' },
 ] as const

@@ -53,7 +53,7 @@ try {
 
 const BASE = process.env.AGIGX_UI_URL || 'http://127.0.0.1:3000'
 
-/** @type {{ route: string, file: string }[]} */
+/** @type {{ route: string, file: string, prep?: (page: import('playwright-core').Page) => Promise<void> }[]} */
 const SHOTS = [
   { route: '/consent-management', file: 'cmp-dashboard.png' },
   { route: '/consent-management/consent-banner', file: 'cmp-consent-banner.png' },
@@ -62,7 +62,17 @@ const SHOTS = [
   { route: '/consent-management/compliance-health', file: 'cmp-compliance-health.png' },
   { route: '/consent-management/consent-logs', file: 'cmp-consent-logs.png' },
   { route: '/consent-management/cookie-policy', file: 'cmp-cookie-policy.png' },
-  { route: '/consent-management/dsar/requests', file: 'cmp-dsar-requests.png' },
+  {
+    route: '/consent-management/analytics',
+    file: 'cmp-dsar-requests.png',
+    prep: async (page) => {
+      const tab = page.getByRole('button', { name: 'DSAR & Grievance' })
+      await tab.waitFor({ state: 'visible', timeout: 20000 }).catch(() => {})
+      await tab.click()
+      await page.getByText('Request Trend', { exact: false }).waitFor({ state: 'visible', timeout: 25000 }).catch(() => {})
+      await new Promise((r) => setTimeout(r, 1200))
+    },
+  },
 ]
 
 async function waitForAppShell(page) {
@@ -173,12 +183,16 @@ async function main() {
   const page = await context.newPage()
   await loginIfConfigured(page)
 
-  for (const { route, file } of SHOTS) {
+  for (const shot of SHOTS) {
+    const { route, file, prep } = shot
     const url = `${BASE.replace(/\/$/, '')}${route}`
     process.stdout.write(`→ ${route} … `)
     try {
       await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 60000 })
       await page.waitForLoadState('networkidle').catch(() => {})
+      if (typeof prep === 'function') {
+        await prep(page)
+      }
       await waitForAppShell(page)
       const fp = path.join(OUT, file)
       await page.screenshot({

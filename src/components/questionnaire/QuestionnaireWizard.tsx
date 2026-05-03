@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowLeft, ArrowRight, Loader2 } from 'lucide-react'
@@ -33,34 +33,17 @@ import type {
   ScanStatusResponse,
 } from '@/lib/types'
 
-type ApiEnvelope<T> = { data?: T }
-
 /**
- * Axios `response.data` is consent-management `ApiResponse<T>` with `.data` = payload T.
+ * Backend returns `{ data: T, message?: string }`.
+ * Axios wraps that in `response.data`, so the payload lives at `response.data.data`.
+ * This helper digs into the envelope safely regardless of nesting.
  */
-function unwrapConsentApiInner<T>(
-  axiosData: ApiEnvelope<T> | (T & Record<string, unknown>) | undefined
-): T | undefined {
-  if (!axiosData || typeof axiosData !== 'object') return undefined
-  if ('data' in axiosData && (axiosData as ApiEnvelope<T>).data !== undefined) {
-    return (axiosData as ApiEnvelope<T>).data as T
+function unwrap<T>(axiosResponse: { data: unknown }): T {
+  const body = axiosResponse.data
+  if (body && typeof body === 'object' && 'data' in body) {
+    return (body as Record<string, unknown>).data as T
   }
-  return axiosData as T
-}
-
-/** Extract inner payload from an axios wrapper: `unwrapAxiosConsentBody((await api).data)` */
-function unwrapScanStatus(inner: ScanStatusResponse | undefined): ScanStatusResponse {
-  if (!inner || typeof inner.progress !== 'number') {
-    throw new Error('Invalid scan status payload')
-  }
-  return inner
-}
-
-function unwrapScanReport(inner: ScanReportResponse | undefined): ScanReportResponse {
-  if (!inner || typeof inner.score !== 'number') {
-    throw new Error('Invalid scan report payload')
-  }
-  return inner
+  return body as T
 }
 
 function computePenaltyExposure(score: number): string {
@@ -88,73 +71,12 @@ const slideVariants = {
 
 const POLL_INTERVAL_MS = 1600
 
-function ScanRunningPanel({ scanProgress }: { scanProgress: number }) {
-  const pct = Math.min(100, Math.max(0, scanProgress))
-  const radius = 42
-  const circumference = 2 * Math.PI * radius
-  const offset = circumference - (pct / 100) * circumference
-
-  const statusLabel = useMemo(() => {
-    if (pct < 22) return 'Connecting to scanner'
-    if (pct < 55) return 'Crawling pages and detecting trackers'
-    if (pct < 88) return 'Evaluating compliance checks'
-    return 'Finalizing report'
-  }, [pct])
-
-  return (
-    <div className="flex flex-col items-center justify-center gap-8 py-8">
-      <div className="relative flex h-36 w-36 items-center justify-center">
-        <svg className="absolute h-36 w-36 -rotate-90 text-muted/30" viewBox="0 0 100 100" aria-hidden>
-          <circle
-            cx="50"
-            cy="50"
-            r={radius}
-            fill="none"
-            strokeWidth="7"
-            className="stroke-current"
-          />
-          <motion.circle
-            cx="50"
-            cy="50"
-            r={radius}
-            fill="none"
-            strokeWidth="7"
-            strokeLinecap="round"
-            stroke="currentColor"
-            className="text-primary"
-            strokeDasharray={circumference}
-            initial={{ strokeDashoffset: circumference }}
-            animate={{ strokeDashoffset: offset }}
-            transition={{ duration: 0.45, ease: 'easeOut' }}
-          />
-        </svg>
-        <Loader2 className="relative h-10 w-10 shrink-0 animate-spin text-primary" aria-hidden />
-      </div>
-      <div className="mx-auto max-w-md text-center space-y-2">
-        <h3 className="text-xl font-semibold text-foreground">Scanning in progress</h3>
-        <p className="text-sm text-muted-foreground">{statusLabel}</p>
-        <div className="pt-4">
-          <div className="mx-auto h-2.5 max-w-xs overflow-hidden rounded-full bg-muted/60">
-            <motion.div
-              className="h-full rounded-full bg-gradient-to-r from-primary to-emerald-500"
-              animate={{ width: `${pct}%` }}
-              transition={{ duration: 0.35, ease: 'easeOut' }}
-            />
-          </div>
-          <p className="mt-3 text-xs font-semibold tabular-nums text-primary">{Math.round(pct)}%</p>
-        </div>
-      </div>
-    </div>
-  )
-}
-
 export function QuestionnaireWizard() {
   const router = useRouter()
   const [currentStep, setCurrentStep] = useState(1)
   const [direction, setDirection] = useState(1)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [scanProgress, setScanProgress] = useState(0)
   const [isScanning, setIsScanning] = useState(false)
 
   const [formData, setFormData] = useState<QuestionnaireResponses>({
@@ -245,6 +167,7 @@ export function QuestionnaireWizard() {
 
   const handleSubmitWithScan = useCallback(async () => {
     if (!validateCurrentStep()) return
+    if (isSubmitting || isScanning) return
     setIsSubmitting(true)
     setIsScanning(true)
 
@@ -258,7 +181,6 @@ export function QuestionnaireWizard() {
       })
 
       const scanId = scanResponse.data.scanId
-      setScanProgress(15)
 
       let report: ScanReportResponse | null = null
       let polled = false
@@ -268,28 +190,10 @@ export function QuestionnaireWizard() {
         }
         polled = true
 
-        const statusResp = await getScanStatus(scanId)
-        const status = unwrapScanStatus(
-          unwrapConsentApiInner<ScanStatusResponse>(
-            statusResp.data as ApiEnvelope<ScanStatusResponse>
-          )
-        )
-
-        const nextPct =
-          status.status === 'completed'
-            ? 100
-            : typeof status.progress === 'number'
-              ? Math.min(98, Math.max(6, status.progress))
-              : 38
-        setScanProgress(nextPct)
+        const status = unwrap<ScanStatusResponse>(await getScanStatus(scanId))
 
         if (status.status === 'completed') {
-          const reportResp = await getScanReport(scanId)
-          report = unwrapScanReport(
-            unwrapConsentApiInner<ScanReportResponse>(
-              reportResp.data as ApiEnvelope<ScanReportResponse>
-            )
-          )
+          report = unwrap<ScanReportResponse>(await getScanReport(scanId))
         } else if (status.status === 'failed') {
           throw new Error('Scan failed')
         }
@@ -322,6 +226,7 @@ export function QuestionnaireWizard() {
     } finally {
       setIsSubmitting(false)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [validateCurrentStep, formData, router])
 
   const goNext = useCallback(() => {
@@ -357,7 +262,17 @@ export function QuestionnaireWizard() {
       <div className="mx-auto max-w-2xl space-y-6">
         <StepProgress currentStep={currentStep} totalSteps={totalSteps} />
         <div className="glass-card overflow-hidden rounded-xl p-6 sm:p-10">
-          <ScanRunningPanel scanProgress={scanProgress} />
+          <div className="flex flex-col items-center justify-center gap-6 py-12">
+            <Loader2 className="h-14 w-14 animate-spin text-primary" />
+            <div className="text-center space-y-2">
+              <h3 className="text-xl font-semibold text-foreground">Scanning in progress</h3>
+              <p className="text-sm text-muted-foreground">
+                Analyzing your website for privacy compliance.
+                <br />
+                This may take a minute or two.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     )

@@ -47,16 +47,23 @@ export async function initiateScan(data: {
 }) {
   return apiClient.post<{ data: { scanId: string; sessionId: string } }>(
     '/api/v1/sdk/website/scan/initiate',
-    data
+    data,
+    { timeout: 60000 }
   )
 }
 
 export async function getScanStatus(scanId: string) {
-  return apiClient.get<{ data: ScanStatusResponse }>(`/api/v1/sdk/website/scan/status/${scanId}`)
+  return apiClient.get<{ data: ScanStatusResponse }>(
+    `/api/v1/sdk/website/scan/status/${scanId}`,
+    { timeout: 15000 }
+  )
 }
 
 export async function getScanReport(scanId: string) {
-  return apiClient.get<{ data: ScanReportResponse }>(`/api/v1/sdk/website/scan/report/${scanId}`)
+  return apiClient.get<{ data: ScanReportResponse }>(
+    `/api/v1/sdk/website/scan/report/${scanId}`,
+    { timeout: 60000 }
+  )
 }
 
 export function downloadReportPdfUrl(scanId: string): string {
