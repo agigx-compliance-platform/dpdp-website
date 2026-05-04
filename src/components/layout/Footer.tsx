@@ -47,12 +47,6 @@ export function Footer() {
   return (
     <footer className="bg-background-secondary border-t border-border">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
-        <div className="mb-12">
-          <Link href="/" className="text-xl font-bold gradient-text">
-            AGIGx
-          </Link>
-        </div>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
           {footerSections.map((section) => (
             <div key={section.title}>
@@ -78,9 +72,12 @@ export function Footer() {
 
       <div className="border-t border-border">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-muted-foreground">
-            © 2026 AGIGx. All rights reserved.
-          </p>
+          <div className="flex flex-col gap-0.5 text-center sm:text-left">
+            <p className="text-sm text-muted-foreground">
+              Copyright © 2026 dpdpconsultancy, india.
+            </p>
+            <p className="text-sm text-muted-foreground">All rights reserved.</p>
+          </div>
           <div className="flex items-center gap-4">
             <a
               href="#"

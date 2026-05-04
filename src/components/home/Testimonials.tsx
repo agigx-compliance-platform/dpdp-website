@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils'
 const testimonials = [
   {
     quote:
-      'AGIGx transformed our compliance posture from a spreadsheet nightmare into a live, auditable system. We went from zero visibility to full control in 8 weeks.',
+      'Consent Cockpit transformed our compliance posture from a spreadsheet nightmare into a live, auditable system. We went from zero visibility to full control in 8 weeks.',
     author: 'Priya Sharma',
     role: 'Chief Privacy Officer',
     company: 'FinServ Global',

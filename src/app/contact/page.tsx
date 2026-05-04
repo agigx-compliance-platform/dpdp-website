@@ -39,10 +39,10 @@ const FAQ_ITEMS = [
   {
     question: "Do we need a Data Protection Officer?",
     answer:
-      "Under DPDP 2023, DPO appointment is mandatory for Significant Data Fiduciaries (Section 10(2)(b)). Even if not classified as SDF, having a designated privacy lead is strongly recommended. AGIGx offers Virtual DPO services for organizations that need expert coverage without full-time hiring.",
+      "Under DPDP 2023, DPO appointment is mandatory for Significant Data Fiduciaries (Section 10(2)(b)). Even if not classified as SDF, having a designated privacy lead is strongly recommended. Consent Cockpit offers Virtual DPO services for organizations that need expert coverage without full-time hiring.",
   },
   {
-    question: "Can AGIGx help with both DPDP and GDPR compliance?",
+    question: "Can Consent Cockpit help with both DPDP and GDPR compliance?",
     answer:
       "Yes. Our Adaptive Compliance Engine supports multi-framework compliance including DPDP, GDPR, CCPA, and LGPD. Many Indian enterprises have dual obligations under DPDP and GDPR. We provide cross-mapped controls and unified compliance dashboards.",
   },
@@ -299,10 +299,10 @@ export default function ContactPage() {
                     Email
                   </h3>
                   <p className="text-sm text-muted-foreground">
-                    contact@agigx.com
+                    contact@dpdpconsultancy.com
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    privacy@agigx.com
+                    privacy@dpdpconsultancy.com
                   </p>
                 </div>
               </CardContent>
@@ -337,7 +337,7 @@ export default function ContactPage() {
                     Office
                   </h3>
                   <p className="text-sm text-muted-foreground">
-                    AGIGx Technologies Pvt Ltd
+                    DPDP Consultancy
                   </p>
                   <p className="text-sm text-muted-foreground">
                     Bengaluru, Karnataka, India

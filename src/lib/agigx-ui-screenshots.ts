@@ -1,10 +1,10 @@
-/** Captured from AGIGx UI consent management (run `node scripts/capture-agigx-ui-screenshots.cjs` with dev server). */
+/** Captured from Consent Cockpit / CMP UI (run `node scripts/capture-agigx-ui-screenshots.cjs` with dev server). */
 export const AGIGX_UI_SCREENSHOT_DIR = '/images/products/agigx-ui'
 
 export const productScreenshots = {
   'consent-platform': {
     src: `${AGIGX_UI_SCREENSHOT_DIR}/cmp-consent-banner.png`,
-    caption: 'Consent banner designer, banner preview, and manage-cookies flow in AGIGx CMP.',
+    caption: 'Consent banner designer, banner preview, and manage-cookies flow in Consent Cockpit.',
   },
   trustscope: {
     src: `${AGIGX_UI_SCREENSHOT_DIR}/cmp-dashboard.png`,
@@ -14,7 +14,7 @@ export const productScreenshots = {
   'dsar-platform': {
     src: `${AGIGX_UI_SCREENSHOT_DIR}/cmp-dsar-requests.png`,
     caption:
-      'DSAR and grievance analytics: daily request trends, SLA compliance, unique users, and resolution metrics in AGIGx.',
+      'DSAR and grievance analytics: daily request trends, SLA compliance, unique users, and resolution metrics in Consent Cockpit.',
   },
   'infra-scanner': {
     src: `${AGIGX_UI_SCREENSHOT_DIR}/cmp-analytics.png`,
@@ -74,7 +74,7 @@ export const platformSnapshots = [
 ] as const
 
 export const productPreviewThumbs = [
-  { src: `${AGIGX_UI_SCREENSHOT_DIR}/cmp-consent-banner.png`, alt: 'AGIGx consent banner configuration' },
-  { src: `${AGIGX_UI_SCREENSHOT_DIR}/cmp-dashboard.png`, alt: 'AGIGx consent management dashboard' },
-  { src: `${AGIGX_UI_SCREENSHOT_DIR}/cmp-dsar-requests.png`, alt: 'AGIGx DSAR and grievance analytics dashboard' },
+  { src: `${AGIGX_UI_SCREENSHOT_DIR}/cmp-consent-banner.png`, alt: 'Consent Cockpit consent banner configuration' },
+  { src: `${AGIGX_UI_SCREENSHOT_DIR}/cmp-dashboard.png`, alt: 'Consent Cockpit consent management dashboard' },
+  { src: `${AGIGX_UI_SCREENSHOT_DIR}/cmp-dsar-requests.png`, alt: 'Consent Cockpit DSAR and grievance analytics dashboard' },
 ] as const

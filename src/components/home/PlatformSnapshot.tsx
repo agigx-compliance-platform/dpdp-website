@@ -49,7 +49,7 @@ export function PlatformSnapshot() {
           See the Platform <span className="gradient-text">in Action</span>
         </motion.h2>
         <p className="mt-3 text-sm text-muted-foreground max-w-2xl mx-auto">
-          Real screens from the AGIGx consent-management experience (CMP home,
+          Real screens from the Consent Cockpit consent-management experience (CMP home,
           analytics, health, and policy tools).
         </p>
       </div>

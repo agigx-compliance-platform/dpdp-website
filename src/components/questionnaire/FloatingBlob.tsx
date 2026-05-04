@@ -66,9 +66,12 @@ export function FloatingBlob() {
   else if (wantsScan && scanId && !scanDone) state = 'A'
   else if (wantsScan && scanDone) state = 'B'
 
-  const issuesFound = state === 'A' 
-    ? Math.floor(scanProgress / 14) 
-    : scanResult ? scanResult.checks.filter(c => !c.passed).length : 0
+  const issuesFound =
+    state === 'A'
+      ? Math.floor(scanProgress / 14)
+      : scanResult
+        ? (scanResult.complianceFlags ?? []).filter((c) => !c.passed).length
+        : 0
 
   const circumference = 2 * Math.PI * 16 // reduced radius for small mode (was 20)
   const offset = circumference - (scanProgress / 100) * circumference

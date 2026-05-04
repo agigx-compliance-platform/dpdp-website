@@ -81,7 +81,7 @@ export default function AboutPage() {
           className="text-center max-w-4xl mx-auto"
         >
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-            <span className="gradient-text">About AGIGx</span>
+            <span className="gradient-text">About Consent Cockpit</span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
             We&apos;re building the compliance infrastructure India needs where
@@ -106,7 +106,7 @@ export default function AboutPage() {
           </p>
           <p className="text-muted-foreground mt-6 leading-relaxed max-w-3xl mx-auto">
             DPDP 2023 represents a fundamental shift in how Indian organisations
-            must treat personal data. AGIGx exists to make that transition
+            must treat personal data. Consent Cockpit exists to make that transition
             achievable through technology that automates controls, services
             that build capability, and products that provide continuous assurance.
           </p>
@@ -223,7 +223,7 @@ export default function AboutPage() {
         >
           <h3 className="text-xl font-bold text-foreground mb-3">Advisory Board</h3>
           <p className="text-muted-foreground leading-relaxed">
-            AGIGx is guided by an advisory board comprising former regulators,
+            Consent Cockpit is guided by an advisory board comprising former regulators,
             senior privacy practitioners, and technology leaders with decades
             of combined experience across Indian and international data protection
             frameworks.

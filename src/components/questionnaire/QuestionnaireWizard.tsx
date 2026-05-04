@@ -28,33 +28,13 @@ import {
   step9Schema,
 } from '@/lib/questionnaire-schema'
 import { submitQuestionnaire, initiateScan, getScanStatus, getScanReport } from '@/lib/api'
+import { unwrapConsentApiEnvelope, mapScanReportToResult } from '@/lib/website-scan'
 import type {
   QuestionnaireResponses,
   ScanReportResponse,
   ScanResult,
   ScanStatusResponse,
 } from '@/lib/types'
-
-/**
- * Backend returns `{ data: T, message?: string }`.
- * Axios wraps that in `response.data`, so the payload lives at `response.data.data`.
- * This helper digs into the envelope safely regardless of nesting.
- */
-function unwrap<T>(axiosResponse: { data: unknown }): T {
-  const body = axiosResponse.data
-  if (body && typeof body === 'object' && 'data' in body) {
-    return (body as Record<string, unknown>).data as T
-  }
-  return body as T
-}
-
-function computePenaltyExposure(score: number): string {
-  if (score >= 90) return '₹0, low risk'
-  if (score >= 75) return 'Up to ₹50 Crore'
-  if (score >= 60) return 'Up to ₹150 Crore'
-  if (score >= 40) return 'Up to ₹250 Crore'
-  return 'Up to ₹750 Crore (cumulative)'
-}
 const slideVariants = {
   enter: (direction: number) => ({
     x: direction > 0 ? 300 : -300,
@@ -213,28 +193,16 @@ export function QuestionnaireWizard() {
         }
         polled = true
 
-        const status = unwrap<ScanStatusResponse>(await getScanStatus(scanId))
+        const status = unwrapConsentApiEnvelope<ScanStatusResponse>(await getScanStatus(scanId))
 
         if (status.status === 'completed') {
-          report = unwrap<ScanReportResponse>(await getScanReport(scanId))
+          report = unwrapConsentApiEnvelope<ScanReportResponse>(await getScanReport(scanId))
         } else if (status.status === 'failed') {
           throw new Error('Scan failed')
         }
       }
 
-      const scanResult: ScanResult = {
-        scanId,
-        scannedUrl: report.scannedUrl,
-        overallScore: report.score,
-        grade: report.grade,
-        summary: report.summary,
-        complianceFlags: report.complianceFlags,
-        totalCookies: report.totalCookies,
-        totalTrackers: report.totalTrackers,
-        consentBannerPresent: report.consentBannerPresent,
-        consentRejectOption: report.consentRejectOption,
-        penaltyExposure: computePenaltyExposure(report.score),
-      }
+      const scanResult: ScanResult = mapScanReportToResult(report, scanId)
 
       const params = new URLSearchParams()
       params.set('data', btoa(JSON.stringify(formData)))
@@ -252,7 +220,7 @@ export function QuestionnaireWizard() {
     }
   }
 
-  const handleStartScan = () => {
+  const handleStartScan = async () => {
     updateState({ wantsScan: true, direction: 1, currentStep: 1 })
   }
 

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Sun, Moon, Menu, X } from 'lucide-react'
 import { useTheme } from '@/hooks/useTheme'
 import { cn } from '@/lib/utils'
+import { BrandMark } from '@/components/brand/BrandMark'
 import { useQuestionnaireStore } from '@/store/questionnaireStore'
 
 const navLinks = [
@@ -41,9 +42,7 @@ export function Navbar() {
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
-            <Link href="/" className="text-xl font-bold gradient-text">
-              AGIGx
-            </Link>
+            <BrandMark priority size="default" />
 
             <div className="hidden md:flex items-center gap-1">
               {navLinks.map((link) => (
@@ -89,7 +88,7 @@ export function Navbar() {
           />
           <div className="absolute top-0 right-0 h-full w-72 bg-background border-l border-border p-6 flex flex-col animate-slide-in-right">
             <div className="flex items-center justify-between mb-8">
-              <span className="text-lg font-bold gradient-text">AGIGx</span>
+              <BrandMark size="compact" />
               <button
                 onClick={() => setMobileOpen(false)}
                 className="p-2 rounded-lg text-muted-foreground hover:text-foreground"

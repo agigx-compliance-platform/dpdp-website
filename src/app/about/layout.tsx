@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'About AGIGx',
+  title: 'About Consent Cockpit',
   description:
-    'AGIGx builds compliance intelligence engines that transform regulatory frameworks into enforceable technical controls for enterprises.',
+    'Consent Cockpit builds compliance intelligence that transforms regulatory frameworks into enforceable technical controls for enterprises.',
 }
 
 export default function AboutLayout({ children }: { children: React.ReactNode }) {

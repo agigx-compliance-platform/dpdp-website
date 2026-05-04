@@ -36,7 +36,7 @@ ScrollTrigger.config({
 const PRODUCTS = [
   {
     id: "consent-platform",
-    name: "AGIGx Consent Management Platform",
+    name: "Consent Cockpit Platform",
     tagline:
       "Consent that satisfies Section 6 — from capture to withdrawal to proof",
     description:

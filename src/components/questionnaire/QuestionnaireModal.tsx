@@ -6,6 +6,8 @@ import { useQuestionnaireStore } from '@/store/questionnaireStore'
 import { usePersistedQuestionnaireState } from '@/hooks/usePersistedQuestionnaireState'
 import { QuestionnaireWizard } from './QuestionnaireWizard'
 import { getScanStatus, getScanReport } from '@/lib/api'
+import { unwrapConsentApiEnvelope, mapScanReportToResult } from '@/lib/website-scan'
+import type { ScanReportResponse, ScanStatusResponse } from '@/lib/types'
 import { cn } from '@/lib/utils'
 import { X } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
@@ -25,12 +27,12 @@ export function QuestionnaireModal() {
     if (!scanId || scanDone) return
     const interval = setInterval(async () => {
       try {
-        const { data: status } = await getScanStatus(scanId)
+        const status = unwrapConsentApiEnvelope<ScanStatusResponse>(await getScanStatus(scanId))
         updateState({ scanProgress: status.progress })
-        
+
         if (status.status === 'completed') {
-          const { data: report } = await getScanReport(scanId)
-          updateState({ scanResult: report, scanDone: true })
+          const report = unwrapConsentApiEnvelope<ScanReportResponse>(await getScanReport(scanId))
+          updateState({ scanResult: mapScanReportToResult(report, scanId), scanDone: true })
           clearInterval(interval)
         } else if (status.status === 'failed') {
           updateState({ scanDone: true }) // Stop polling on fail

@@ -11,22 +11,22 @@ import {
 import { Check } from "lucide-react";
 
 const rows = [
-  { traditional: "Static checklists", agigx: "Adaptive rules engine" },
-  { traditional: "Annual audits", agigx: "Continuous monitoring" },
-  { traditional: "Generic templates", agigx: "Tailored to your stack" },
-  { traditional: "Siloed tools", agigx: "Unified compliance view" },
-  { traditional: "Manual evidence", agigx: "Automated proof generation" },
-  { traditional: "One regulation", agigx: "Multi-framework coverage" },
+  { traditional: "Static checklists", modern: "Adaptive rules engine" },
+  { traditional: "Annual audits", modern: "Continuous monitoring" },
+  { traditional: "Generic templates", modern: "Tailored to your stack" },
+  { traditional: "Siloed tools", modern: "Unified compliance view" },
+  { traditional: "Manual evidence", modern: "Automated proof generation" },
+  { traditional: "One regulation", modern: "Multi-framework coverage" },
 ];
 
 function StrikethroughRow({
   text,
-  agigxText,
+  modernText,
   index,
   progress,
 }: {
   text: string;
-  agigxText: string;
+  modernText: string;
   index: number;
   progress: MotionValue<number>;
 }) {
@@ -53,11 +53,11 @@ function StrikethroughRow({
     ["0%", "100%"],
   );
 
-  // PHASE 3: AGIGx Engine completely replaces them (Progress 0.65 to 0.9)
-  const agigxStart = 0.65 + index * 0.04;
-  const agigxEnd = 0.85 + index * 0.04;
-  const agigxOpacity = useTransform(progress, [agigxStart, agigxEnd], [0, 1]);
-  const agigxX = useTransform(progress, [agigxStart, agigxEnd], [24, 0]);
+  // PHASE 3: Consent Cockpit replaces them (Progress 0.65 to 0.9)
+  const modernStart = 0.65 + index * 0.04;
+  const modernEnd = 0.85 + index * 0.04;
+  const modernOpacity = useTransform(progress, [modernStart, modernEnd], [0, 1]);
+  const modernX = useTransform(progress, [modernStart, modernEnd], [24, 0]);
 
   return (
     <div className="grid grid-cols-2 gap-4 sm:gap-6 mb-3">
@@ -87,13 +87,13 @@ function StrikethroughRow({
         </span>
       </motion.div>
 
-      {/* AGIGx Side */}
+      {/* Consent Cockpit */}
       <motion.div
-        style={{ opacity: agigxOpacity, x: agigxX }}
+        style={{ opacity: modernOpacity, x: modernX }}
         className="glass-card p-4 flex items-center gap-3 gradient-border"
       >
         <Check className="w-4 h-4 text-primary shrink-0" />
-        <span className="text-sm font-medium">{agigxText}</span>
+        <span className="text-sm font-medium">{modernText}</span>
       </motion.div>
     </div>
   );
@@ -128,7 +128,7 @@ export function Differentiator() {
         <div className="max-w-4xl mx-auto w-full">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold">
-              Why AGIGx Is <span className="gradient-text">Different</span>
+              Why Consent Cockpit Is <span className="gradient-text">Different</span>
             </h2>
             {/* Optional UX touch: Helps users know they need to keep scrolling */}
             <p className="text-sm text-muted-foreground mt-4 animate-pulse">
@@ -141,7 +141,7 @@ export function Differentiator() {
               Traditional Tools
             </div>
             <div className="text-center gradient-text font-medium text-sm uppercase tracking-wider">
-              AGIGx Engine
+              Consent Cockpit
             </div>
           </div>
 
@@ -151,7 +151,7 @@ export function Differentiator() {
                 key={i}
                 index={i}
                 text={row.traditional}
-                agigxText={row.agigx}
+                modernText={row.modern}
                 progress={smoothProgress}
               />
             ))}
