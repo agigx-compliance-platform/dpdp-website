@@ -5,14 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Loader2 } from 'lucide-react'
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
+import type { QuestionnaireResponses } from '@/lib/types'
 import { z } from 'zod'
 
-const scanLaunchSchema = z.object({
-  websiteUrl: z.string().url('Please enter a valid URL including http:// or https://'),
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  company: z.string().min(2, 'Company name must be at least 2 characters'),
-  email: z.string().email('Please enter a valid email address'),
-})
+type ScanLaunchField = keyof Pick<QuestionnaireResponses, 'websiteUrl' | 'name' | 'company' | 'email'>
 
 interface ScanLaunchStepProps {
   values: {
@@ -21,12 +17,19 @@ interface ScanLaunchStepProps {
     company: string
     email: string
   }
-  onChange: (field: string, value: string) => void
+  onChange: (field: ScanLaunchField, value: string) => void
   onStartScan: () => Promise<void>
   onSkipScan: () => void
   isSubmitting: boolean
   scanError?: string
 }
+
+const scanLaunchSchema = z.object({
+  websiteUrl: z.string().url('Please enter a valid URL including http:// or https://'),
+  name: z.string().min(2, 'Name must be at least 2 characters'),
+  company: z.string().min(2, 'Company name must be at least 2 characters'),
+  email: z.string().email('Please enter a valid email address'),
+})
 
 const STATS = [
   "E-commerce platforms face avg ₹82 Crore exposure under DPDP",
@@ -73,7 +76,7 @@ export function ScanLaunchStep({
       <div className="text-center">
         <h2 className="text-3xl font-bold text-foreground">Scan your website for free</h2>
         <p className="mt-3 text-base text-muted-foreground">
-          We'll check for consent banners, cookie compliance, DSAR mechanisms, and privacy policy gaps — takes 90 seconds.
+          We&apos;ll check for consent banners, cookie compliance, DSAR mechanisms, and privacy policy gaps — takes 90 seconds.
         </p>
       </div>
 

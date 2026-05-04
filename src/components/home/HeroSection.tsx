@@ -16,13 +16,17 @@ import { getHeroVideoDisclaimer } from "@/lib/hero-config";
 const fadeUp = (delay = 0, y = 24) => ({
   initial: { opacity: 0, y },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.9, delay, ease: [0.25, 0.1, 0.25, 1] },
+  transition: {
+    duration: 0.9,
+    delay,
+    ease: [0.25, 0.1, 0.25, 1] as const,
+  },
 });
 
 const fadeIn = (delay = 0, duration = 0.8) => ({
   initial: { opacity: 0 },
   animate: { opacity: 1 },
-  transition: { duration, delay, ease: "easeOut" },
+  transition: { duration, delay, ease: "easeOut" as const },
 });
 
 // ─── component ────────────────────────────────────────────────────────────────
@@ -89,7 +93,7 @@ export function HeroSection() {
             )}
             initial={{ opacity: 0 }}
             animate={{ opacity: videoReady ? 1 : 0 }}
-            transition={{ duration: 1.4, ease: "easeInOut" }}
+            transition={{ duration: 1.4, ease: "easeInOut" as const }}
             onPlaying={() => setVideoReady(true)}
             onError={() => setVideoReady(false)}
           >
@@ -110,7 +114,7 @@ export function HeroSection() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         // Overlay comes in fastest — before anything else
-        transition={{ duration: 0.35, ease: "easeOut" }}
+        transition={{ duration: 0.35, ease: "easeOut" as const }}
       />
 
       {/* Bottom fade vignette */}
@@ -122,7 +126,7 @@ export function HeroSection() {
         aria-hidden
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: d(0.1), ease: "easeOut" }}
+        transition={{ duration: 0.5, delay: d(0.1), ease: "easeOut" as const }}
       />
 
       {/* ── Content ───────────────────────────────────────────────── */}
@@ -221,7 +225,7 @@ export function HeroSection() {
       >
         <motion.div
           animate={prefersReduced ? {} : { y: [0, 8, 0] }}
-          transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+          transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" as const }}
         >
           <ChevronDown
             className={cn(

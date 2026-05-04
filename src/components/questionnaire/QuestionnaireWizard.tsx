@@ -106,6 +106,10 @@ export function QuestionnaireWizard() {
     }
   }
 
+  const routeToResults = useCallback(() => {
+    updateState({ currentStep: 8, direction: 1 })
+  }, [updateState])
+
   // Resume animation
   useEffect(() => {
     if (currentStep > 0) {
@@ -115,7 +119,13 @@ export function QuestionnaireWizard() {
     }
   }, []) // run once on mount
 
-  // Note: Using router.push instead of local routeToResults
+
+  // Check if finalizing is done
+  useEffect(() => {
+    if (isFinalizing && (scanDone || !wantsScan)) {
+      routeToResults()
+    }
+  }, [isFinalizing, scanDone, wantsScan, routeToResults])
 
 
   const validateCurrentStep = useCallback((): boolean => {
@@ -305,7 +315,7 @@ export function QuestionnaireWizard() {
             onSkipScan={handleSkipScan}
             isSubmitting={isSubmitting}
             scanError={errors.scan}
-          />
+          />  
         )
       case 1:
         return <RoleStep value={formData.role} onChange={(v) => updateFormData('role', v)} error={errors.role} />
@@ -381,7 +391,7 @@ export function QuestionnaireWizard() {
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: '100%' }}
-              transition={{ duration: 0.4, ease: 'linear' }}
+              transition={{ duration: 0.4, ease: 'linear' as const }}
               className="h-full bg-primary"
             />
           </div>
@@ -396,7 +406,7 @@ export function QuestionnaireWizard() {
               initial="enter"
               animate="center"
               exit="exit"
-              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              transition={{ duration: 0.3, ease: 'easeInOut' as const }}
               className="flex-1"
             >
               {renderStep()}
