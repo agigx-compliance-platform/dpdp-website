@@ -1,0 +1,141 @@
+:root {
+    --background: 225 15% 6%;
+    --background-secondary: 225 14% 8%;
+    --background-tertiary: 225 13% 11%;
+    --foreground: 210 20% 98%;
+
+    --card: 225 14% 9%;
+    --card-hover: 225 14% 11%;
+    --card-foreground: 210 20% 98%;
+
+    --popover: 225 14% 9%;
+    --popover-foreground: 210 20% 98%;
+
+    --primary: 142 71% 45%;
+    --primary-hover: 142 71% 38%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 225 14% 14%;
+    --secondary-hover: 225 14% 18%;
+    --secondary-foreground: 210 20% 85%;
+
+    --muted: 225 14% 14%;
+    --muted-foreground: 215 15% 55%;
+
+    --accent: 142 71% 45%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+
+    --info: 217 91% 60%;
+    --info-foreground: 0 0% 100%;
+
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --border: 225 14% 16%;
+    --border-subtle: 225 14% 12%;
+    --input: 225 14% 14%;
+    --ring: 142 71% 45%;
+
+    --severity-critical: 330 81% 60%;
+    --severity-high: 0 72% 51%;
+    --severity-medium: 25 95% 53%;
+    --severity-low: 45 93% 47%;
+    --severity-info: 217 91% 60%;
+
+    --gradient-start: 142 71% 45%;
+    --gradient-end: 185 70% 45%;
+
+    --glass-bg: rgba(15, 18, 30, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.06);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --glass-hover-bg: rgba(20, 24, 40, 0.7);
+    --glass-hover-border: rgba(255, 255, 255, 0.1);
+    --glass-hover-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    --mesh-gradient:
+      radial-gradient(
+        ellipse 85% 55% at 50% 32%,
+        hsl(142 71% 45% / 0.14) 0px,
+        transparent 52%
+      ),
+      radial-gradient(at 80% 0%, hsl(185 70% 45% / 0.08) 0px, transparent 48%),
+      radial-gradient(at 0% 50%, hsl(217 91% 60% / 0.06) 0px, transparent 50%);
+
+    --shadow-glow-primary: 0 0 28px hsl(var(--primary) / 0.4);
+  }
+
+  [data-theme="light"] {
+    --background: 0 0% 98%;
+    --background-secondary: 210 20% 96%;
+    --background-tertiary: 210 17% 93%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-hover: 210 20% 97%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    --primary: 142 71% 40%;
+    --primary-hover: 142 71% 34%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 20% 93%;
+    --secondary-hover: 210 20% 88%;
+    --secondary-foreground: 222 47% 20%;
+
+    --muted: 210 20% 93%;
+    --muted-foreground: 215 16% 47%;
+
+    --accent: 142 71% 40%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+
+    --info: 217 91% 60%;
+    --info-foreground: 0 0% 100%;
+
+    --success: 142 71% 40%;
+    --success-foreground: 0 0% 100%;
+
+    --border: 214 20% 84%;
+    --border-subtle: 214 20% 90%;
+    --input: 214 20% 93%;
+    --ring: 142 71% 40%;
+
+    --severity-critical: 330 81% 55%;
+    --severity-high: 0 72% 50%;
+    --severity-medium: 25 95% 50%;
+    --severity-low: 45 93% 42%;
+    --severity-info: 217 91% 55%;
+
+    --gradient-start: 142 71% 40%;
+    --gradient-end: 185 70% 40%;
+
+    --glass-bg: rgba(255, 255, 255, 0.8);
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+    --glass-hover-bg: rgba(255, 255, 255, 0.95);
+    --glass-hover-border: rgba(0, 0, 0, 0.12);
+    --glass-hover-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+    --mesh-gradient:
+      radial-gradient(
+        ellipse 85% 55% at 50% 32%,
+        hsl(142 71% 40% / 0.11) 0px,
+        transparent 52%
+      ),
+      radial-gradient(at 80% 0%, hsl(185 70% 40% / 0.07) 0px, transparent 48%),
+      radial-gradient(at 0% 50%, hsl(217 91% 55% / 0.05) 0px, transparent 50%);
+
+    --shadow-glow-primary: 0 0 24px hsl(var(--primary) / 0.28);
+  }
