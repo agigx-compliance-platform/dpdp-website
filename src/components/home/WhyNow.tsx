@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { SectionWrapper } from '@/components/ui/SectionWrapper'
 import { CountdownTimer } from '@/components/ui/CountdownTimer'
 import { Button } from '@/components/ui/Button'
+import { useQuestionnaireStore } from '@/store/questionnaireStore'
 
 const stats = [
   { value: '₹250 Crore', label: 'Maximum penalty per violation' },
@@ -72,11 +73,9 @@ export function WhyNow() {
         transition={{ duration: 0.5, delay: 0.5 }}
         className="text-center"
       >
-        <Link href="/questionnaire">
-          <Button variant="primary" size="lg">
-            Start Your Compliance Journey
-          </Button>
-        </Link>
+        <Button variant="primary" size="lg" onClick={() => useQuestionnaireStore.getState().openModal()}>
+          Start Your Compliance Journey
+        </Button>
       </motion.div>
     </SectionWrapper>
   )

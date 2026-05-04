@@ -12,11 +12,9 @@ import {
   Award,
   Zap,
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
 import { SectionWrapper } from '@/components/ui/SectionWrapper'
-import { Badge } from '@/components/ui/Badge'
 import { Button } from '@/components/ui/Button'
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card'
+import { TorchGrid, TorchCard } from '@/components/ui/TorchGrid'
 import Link from 'next/link'
 
 const PARTNERSHIP_MODELS = [
@@ -96,6 +94,8 @@ const BENEFITS = [
 export default function PartnershipPage() {
   return (
     <div className="min-h-screen bg-background">
+
+      {/* ── Hero ── */}
       <SectionWrapper className="pt-32 md:pt-40 pb-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -114,8 +114,9 @@ export default function PartnershipPage() {
         </motion.div>
       </SectionWrapper>
 
+      {/* ── Partnership Models ── */}
       <SectionWrapper className="py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <TorchGrid cols="lg:grid-cols-3" gap="gap-8">
           {PARTNERSHIP_MODELS.map((model, idx) => {
             const Icon = model.icon
             return (
@@ -127,40 +128,47 @@ export default function PartnershipPage() {
                 transition={{ duration: 0.5, delay: idx * 0.15 }}
                 className="h-full"
               >
-                <Card className="h-full flex flex-col">
-                  <CardHeader>
-                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
-                      <Icon className="w-6 h-6 text-primary" />
-                    </div>
-                    <CardTitle className="text-xl">{model.title}</CardTitle>
-                    <CardDescription className="leading-relaxed">
-                      {model.description}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="flex-1">
-                    <h4 className="text-sm font-semibold text-foreground mb-3">
-                      What&apos;s Included
-                    </h4>
-                    <ul className="space-y-2.5 mb-6">
-                      {model.included.map((item) => (
-                        <li key={item} className="flex items-start gap-2 text-sm text-muted-foreground">
-                          <CheckCircle2 className="w-4 h-4 text-success mt-0.5 shrink-0" />
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-                    <div className="glass-card p-3 rounded-lg">
-                      <p className="text-xs font-medium text-foreground mb-1">Ideal For</p>
-                      <p className="text-xs text-muted-foreground">{model.idealFor}</p>
-                    </div>
-                  </CardContent>
-                </Card>
+                <TorchCard className="p-6 flex flex-col h-full">
+                  {/* Icon */}
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 shrink-0">
+                    <Icon className="w-6 h-6 text-primary" />
+                  </div>
+
+                  {/* Header */}
+                  <h3 className="text-xl font-semibold mb-2">{model.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed mb-6">
+                    {model.description}
+                  </p>
+
+                  {/* Included list */}
+                  <h4 className="text-sm font-semibold text-foreground mb-3">
+                    What&apos;s Included
+                  </h4>
+                  <ul className="space-y-2.5 mb-6 flex-1">
+                    {model.included.map((item) => (
+                      <li
+                        key={item}
+                        className="flex items-start gap-2 text-sm text-muted-foreground"
+                      >
+                        <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* Ideal for */}
+                  <div className="rounded-lg bg-white/5 border border-white/8 p-3 mt-auto">
+                    <p className="text-xs font-medium text-foreground mb-1">Ideal For</p>
+                    <p className="text-xs text-muted-foreground">{model.idealFor}</p>
+                  </div>
+                </TorchCard>
               </motion.div>
             )
           })}
-        </div>
+        </TorchGrid>
       </SectionWrapper>
 
+      {/* ── Benefits ── */}
       <SectionWrapper className="py-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -178,7 +186,7 @@ export default function PartnershipPage() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <TorchGrid cols="sm:grid-cols-2 lg:grid-cols-4" gap="gap-6">
           {BENEFITS.map((benefit, idx) => {
             const Icon = benefit.icon
             return (
@@ -188,50 +196,52 @@ export default function PartnershipPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: idx * 0.1 }}
+                className="h-full"
               >
-                <Card className="text-center h-full">
-                  <CardContent className="p-6">
-                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                      <Icon className="w-6 h-6 text-primary" />
-                    </div>
-                    <h3 className="text-base font-semibold text-foreground mb-2">
-                      {benefit.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      {benefit.description}
-                    </p>
-                  </CardContent>
-                </Card>
+                <TorchCard className="p-6 flex flex-col items-center text-center">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 shrink-0">
+                    <Icon className="w-6 h-6 text-primary" />
+                  </div>
+                  <h3 className="text-base font-semibold text-foreground mb-2">
+                    {benefit.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {benefit.description}
+                  </p>
+                </TorchCard>
               </motion.div>
             )
           })}
-        </div>
+        </TorchGrid>
       </SectionWrapper>
 
+      {/* ── CTA ── */}
       <SectionWrapper className="py-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="glass-card p-8 md:p-12 text-center"
         >
-          <h2 className="text-3xl font-bold mb-4">
-            <span className="gradient-text">Become a Partner</span>
-          </h2>
-          <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Ready to explore how AGIGx can power your DPDP compliance
-            practice? Let&apos;s discuss the right partnership model for your
-            organization.
-          </p>
-          <Link href="/contact">
-            <Button variant="primary" size="lg">
-              Contact Our Partnership Team
-              <ArrowRight className="w-5 h-5" />
-            </Button>
-          </Link>
+          <TorchCard className="p-8 md:p-12 flex flex-col items-center text-center">
+            <h2 className="text-3xl font-bold mb-4">
+              <span className="gradient-text">Become a Partner</span>
+            </h2>
+            <p className="text-muted-foreground mb-8 max-w-2xl">
+              Ready to explore how AGIGx can power your DPDP compliance
+              practice? Let&apos;s discuss the right partnership model for your
+              organization.
+            </p>
+            <Link href="/contact">
+              <Button variant="primary" size="lg">
+                Contact Our Partnership Team
+                <ArrowRight className="w-5 h-5" />
+              </Button>
+            </Link>
+          </TorchCard>
         </motion.div>
       </SectionWrapper>
+
     </div>
   )
 }

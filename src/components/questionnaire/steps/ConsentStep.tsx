@@ -1,24 +1,20 @@
 'use client'
 
 import { Checkbox } from '@/components/ui/Checkbox'
-import { Button } from '@/components/ui/Button'
-import { ShieldCheck } from 'lucide-react'
 
 interface ConsentStepProps {
   value: boolean
   onChange: (value: boolean) => void
-  onSubmit: () => void
-  isSubmitting: boolean
   error?: string
 }
 
-export function ConsentStep({ value, onChange, onSubmit, isSubmitting, error }: ConsentStepProps) {
+export function ConsentStep({ value, onChange, error }: ConsentStepProps) {
   return (
     <div className="space-y-6">
       <div>
         <h2 className="text-2xl font-bold text-foreground">One last step</h2>
         <p className="mt-2 text-muted-foreground">
-          Please review and consent before we begin scanning.
+          Please review and consent before we finish.
         </p>
       </div>
 
@@ -39,18 +35,6 @@ export function ConsentStep({ value, onChange, onSubmit, isSubmitting, error }: 
       </div>
 
       {error && <p className="text-sm text-destructive">{error}</p>}
-
-      <Button
-        type="button"
-        variant="primary"
-        size="lg"
-        className="w-full"
-        disabled={!value || isSubmitting}
-        onClick={onSubmit}
-      >
-        <ShieldCheck className="h-5 w-5" />
-        {isSubmitting ? 'Starting Scan...' : 'Start Scan & View Results'}
-      </Button>
     </div>
   )
 }

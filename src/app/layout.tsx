@@ -1,8 +1,11 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
+import { SmoothScrollProvider } from '@/providers/SmoothScrollProvider'
 import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
+import { QuestionnaireModal } from '@/components/questionnaire/QuestionnaireModal'
+import { FloatingBlob } from '@/components/questionnaire/FloatingBlob'
 
 export const metadata: Metadata = {
   metadataBase:
@@ -75,9 +78,13 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
       <body className="antialiased font-sans">
         <ThemeProvider>
-          <Navbar />
-          <main className="min-h-screen">{children}</main>
-          <Footer />
+          <SmoothScrollProvider>
+            <Navbar />
+            <main className="min-h-screen">{children}</main>
+            <Footer />
+            <QuestionnaireModal />
+            <FloatingBlob />
+          </SmoothScrollProvider>
         </ThemeProvider>
       </body>
     </html>

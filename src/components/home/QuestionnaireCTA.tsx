@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { ClipboardList, Globe, FileBarChart } from 'lucide-react'
 import { SectionWrapper } from '@/components/ui/SectionWrapper'
 import { Button } from '@/components/ui/Button'
+import { useQuestionnaireStore } from '@/store/questionnaireStore'
 
 const features = [
   { icon: ClipboardList, label: '10 Tailored Questions' },
@@ -46,11 +47,9 @@ export function QuestionnaireCTA() {
           transition={{ duration: 0.5, delay: 0.3 }}
           className="mt-8"
         >
-          <Link href="/questionnaire">
-            <Button variant="primary" size="lg">
-              Start Free Assessment
-            </Button>
-          </Link>
+          <Button variant="primary" size="lg" onClick={() => useQuestionnaireStore.getState().openModal()}>
+            Start Free Assessment
+          </Button>
         </motion.div>
 
         <motion.div

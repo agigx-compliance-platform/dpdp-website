@@ -34,9 +34,9 @@ function ResultsContent() {
   let scanResult: ScanResult | undefined
 
   try {
-    responses = JSON.parse(atob(dataParam))
+    responses = JSON.parse(decodeURIComponent(atob(dataParam)))
     if (scanParam) {
-      scanResult = JSON.parse(atob(scanParam))
+      scanResult = JSON.parse(decodeURIComponent(atob(scanParam)))
     }
   } catch {
     return (

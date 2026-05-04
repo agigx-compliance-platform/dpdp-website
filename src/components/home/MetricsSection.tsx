@@ -1,15 +1,20 @@
-'use client'
+"use client";
 
-import { motion } from 'framer-motion'
-import { SectionWrapper } from '@/components/ui/SectionWrapper'
-import { AnimatedCounter } from '@/components/ui/AnimatedCounter'
+import { motion } from "framer-motion";
+import { SectionWrapper } from "@/components/ui/SectionWrapper";
+import { CounterRollup } from "@/components/animations/CounterRollup";
 
 const metrics = [
-  { end: 50, suffix: '+', label: 'Consulting engagements' },
-  { end: 500, suffix: '+', label: 'Compliance checks automated' },
-  { end: 6, suffix: '', label: 'Regulatory frameworks' },
-  { end: 99.9, suffix: '%', label: 'Uptime SLA' },
-]
+  { value: 50, suffix: "+", decimals: 0, label: "Consulting engagements" },
+  {
+    value: 500,
+    suffix: "+",
+    decimals: 0,
+    label: "Compliance checks automated",
+  },
+  { value: 6, suffix: "", decimals: 0, label: "Regulatory frameworks" },
+  { value: 99.9, suffix: "%", decimals: 1, label: "Uptime SLA" },
+];
 
 export function MetricsSection() {
   return (
@@ -22,15 +27,20 @@ export function MetricsSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: i * 0.1 }}
-            className="glass-card p-6 text-center"
+            className="glass-card p-6"
           >
-            <div className="text-3xl sm:text-4xl font-bold gradient-text">
-              <AnimatedCounter end={m.end} suffix={m.suffix} duration={2} />
-            </div>
-            <p className="text-sm text-muted-foreground mt-2">{m.label}</p>
+            <CounterRollup
+              value={m.value}
+              suffix={m.suffix}
+              decimals={m.decimals}
+              label={m.label}
+              duration={2.2}
+              valueClassName="gradient-text"
+              labelClassName="text-muted-foreground"
+            />
           </motion.div>
         ))}
       </div>
     </SectionWrapper>
-  )
+  );
 }

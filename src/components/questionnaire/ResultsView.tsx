@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useMemo } from 'react'
 import { motion } from 'framer-motion'
@@ -12,21 +12,22 @@ import { downloadReportPdfUrl } from '@/lib/api'
 import type { QuestionnaireResponses, ScanResult, Recommendation } from '@/lib/types'
 
 interface ResultsViewProps {
-  responses: QuestionnaireResponses
-  scanResult?: ScanResult
+  responses: QuestionnaireResponses;
+  scanResult?: ScanResult;
 }
 
 function ScoreRing({ score, grade }: { score: number; grade: string }) {
-  const circumference = 2 * Math.PI * 54
-  const offset = circumference - (score / 100) * circumference
+  const circumference = 2 * Math.PI * 54;
+  const offset = circumference - (score / 100) * circumference;
 
-  const gradeColor = {
-    A: 'text-green-500',
-    B: 'text-emerald-500',
-    C: 'text-yellow-500',
-    D: 'text-orange-500',
-    F: 'text-red-500',
-  }[grade] || 'text-muted-foreground'
+  const gradeColor =
+    {
+      A: "text-green-500",
+      B: "text-emerald-500",
+      C: "text-yellow-500",
+      D: "text-orange-500",
+      F: "text-red-500",
+    }[grade] || "text-muted-foreground";
 
   return (
     <div className="relative flex h-40 w-40 items-center justify-center">
@@ -50,34 +51,43 @@ function ScoreRing({ score, grade }: { score: number; grade: string }) {
           strokeDasharray={circumference}
           initial={{ strokeDashoffset: circumference }}
           animate={{ strokeDashoffset: offset }}
-          transition={{ duration: 1.5, ease: 'easeOut' }}
+          transition={{ duration: 1.5, ease: "easeOut" }}
         />
       </svg>
       <div className="absolute flex flex-col items-center">
         <span className="text-3xl font-bold text-foreground">{score}</span>
-        <span className={cn('text-lg font-bold', gradeColor)}>{grade}</span>
+        <span className={cn("text-lg font-bold", gradeColor)}>{grade}</span>
       </div>
     </div>
-  )
+  );
 }
 
 
-function RecommendationCard({ rec }: { rec: Recommendation }) {
-  const typeIcon = rec.type === 'product' ? Star : rec.type === 'service' ? Wrench : Package
 
-  const TypeIcon = typeIcon
+function RecommendationCard({ rec }: { rec: Recommendation }) {
+  const typeIcon =
+    rec.type === "product" ? Star : rec.type === "service" ? Wrench : Package;
+  const TypeIcon = typeIcon;
 
   return (
     <Card className="h-full">
       <CardHeader>
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 shrink-0">
               <TypeIcon className="h-4 w-4 text-primary" />
             </div>
             <CardTitle className="text-base">{rec.title}</CardTitle>
           </div>
-          <Badge variant={rec.relevanceScore >= 8 ? 'success' : rec.relevanceScore >= 5 ? 'warning' : 'default'}>
+          <Badge
+            variant={
+              rec.relevanceScore >= 8
+                ? "success"
+                : rec.relevanceScore >= 5
+                  ? "warning"
+                  : "default"
+            }
+          >
             Score: {rec.relevanceScore}
           </Badge>
         </div>
@@ -89,8 +99,9 @@ function RecommendationCard({ rec }: { rec: Recommendation }) {
           <div className="flex items-start gap-2">
             <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-warning" />
             <p className="text-xs text-muted-foreground">
-              Addresses {rec.gapsAddressed.length} gap{rec.gapsAddressed.length > 1 ? 's' : ''}:{' '}
-              {rec.gapsAddressed.join(', ')}
+              Addresses {rec.gapsAddressed.length} gap
+              {rec.gapsAddressed.length > 1 ? "s" : ""}:{" "}
+              {rec.gapsAddressed.join(", ")}
             </p>
           </div>
         )}
@@ -110,7 +121,7 @@ function RecommendationCard({ rec }: { rec: Recommendation }) {
         </Button>
       </CardContent>
     </Card>
-  )
+  );
 }
 
 const SEVERITY_META = {
@@ -209,39 +220,59 @@ function generateSummary(responses: QuestionnaireResponses, scanResult?: ScanRes
 
   if (scanResult) {
     if (scanResult.overallScore < 40) {
-      parts.push(`Your website scored ${scanResult.overallScore}/100 (Grade ${scanResult.grade}), indicating critical privacy compliance gaps that require immediate attention.`)
+      parts.push(
+        `Your website scored ${scanResult.overallScore}/100 (Grade ${scanResult.grade}), indicating critical privacy compliance gaps that require immediate attention.`,
+      );
     } else if (scanResult.overallScore < 60) {
-      parts.push(`Your website scored ${scanResult.overallScore}/100 (Grade ${scanResult.grade}), showing moderate compliance but with important gaps to address.`)
+      parts.push(
+        `Your website scored ${scanResult.overallScore}/100 (Grade ${scanResult.grade}), showing moderate compliance but with important gaps to address.`,
+      );
     } else if (scanResult.overallScore < 80) {
-      parts.push(`Your website scored ${scanResult.overallScore}/100 (Grade ${scanResult.grade}), demonstrating good compliance with specific areas for improvement.`)
+      parts.push(
+        `Your website scored ${scanResult.overallScore}/100 (Grade ${scanResult.grade}), demonstrating good compliance with specific areas for improvement.`,
+      );
     } else {
-      parts.push(`Your website scored ${scanResult.overallScore}/100 (Grade ${scanResult.grade}), showing strong compliance posture with minor refinements needed.`)
+      parts.push(
+        `Your website scored ${scanResult.overallScore}/100 (Grade ${scanResult.grade}), showing strong compliance posture with minor refinements needed.`,
+      );
     }
   }
 
   const stageLabels: Record<string, string> = {
-    'just-starting': 'beginning your compliance journey',
-    'have-policies': 'validating existing policies',
-    'know-gaps': 'addressing identified gaps',
-    'need-validation': 'seeking independent validation',
-    'ongoing-support': 'maintaining continuous compliance',
-  }
+    "just-starting": "beginning your compliance journey",
+    "have-policies": "validating existing policies",
+    "know-gaps": "addressing identified gaps",
+    "need-validation": "seeking independent validation",
+    "ongoing-support": "maintaining continuous compliance",
+  };
 
-  parts.push(`As a ${responses.orgType} organization ${stageLabels[responses.journeyStage] || 'on your compliance journey'}, we\'ve tailored these recommendations to your specific needs and priorities.`)
+  parts.push(
+    `As a ${responses.orgType} organization ${stageLabels[responses.journeyStage] || "on your compliance journey"}, we've tailored these recommendations to your specific needs and priorities.`,
+  );
 
-  return parts.join(' ')
+  return parts.join(" ");
 }
 
 export function ResultsView({ responses, scanResult }: ResultsViewProps) {
   const recommendations = useMemo(
     () => generateRecommendations(responses, scanResult),
-    [responses, scanResult]
-  )
+    [responses, scanResult],
+  );
 
-  const products = recommendations.filter((r) => r.type === 'product')
-  const services = recommendations.filter((r) => r.type === 'service')
-  const packages = recommendations.filter((r) => r.type === 'package')
-  const summary = useMemo(() => generateSummary(responses, scanResult), [responses, scanResult])
+  const products = recommendations.filter((r) => r.type === "product");
+  const services = recommendations.filter((r) => r.type === "service");
+  const packages = recommendations.filter((r) => r.type === "package");
+  const summary = useMemo(
+    () => generateSummary(responses, scanResult),
+    [responses, scanResult],
+  );
+
+  const hasScan = !!scanResult;
+
+  // Base delays adjusted based on presence of scanResult
+  const p2Delay = hasScan ? 1.5 : 0;
+  const p3Delay = hasScan ? 2.5 : 0.5;
+  const p4Delay = hasScan ? 3.5 : 1.0;
 
   const failedFlags = useMemo(
     () => (scanResult?.complianceFlags ? scanResult.complianceFlags.filter((f) => !f.passed) : []),
@@ -249,13 +280,13 @@ export function ResultsView({ responses, scanResult }: ResultsViewProps) {
   )
 
   return (
-    <div className="mx-auto max-w-4xl space-y-8">
-      {scanResult && (
+    <div className="mx-auto max-w-5xl space-y-12">
+      {hasScan && (
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="glass-card rounded-xl p-6 sm:p-8"
+          className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-background p-8 rounded-2xl min-h-[40vh]"
         >
           <h2 className="mb-6 text-2xl font-bold text-foreground">Scan Results</h2>
           <div className="flex flex-col items-center gap-8 sm:flex-row sm:items-start">
@@ -342,66 +373,88 @@ export function ResultsView({ responses, scanResult }: ResultsViewProps) {
         </motion.div>
       )}
 
+      {/* Phase 2: Context Slide */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 100 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-        className="glass-card rounded-xl p-6"
+        transition={{
+          duration: 0.8,
+          delay: p2Delay,
+          type: "spring",
+          damping: 20,
+        }}
+        className="glass-card rounded-xl p-6 sm:p-8 border-l-4 border-l-primary"
       >
-        <h3 className="text-lg font-semibold text-foreground">Personalized Risk Summary</h3>
-        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{summary}</p>
+        <h3 className="text-xl font-bold text-foreground">
+          Personalized Risk Summary
+        </h3>
+        <p className="mt-3 text-base leading-relaxed text-muted-foreground">
+          {summary}
+        </p>
+
+
       </motion.div>
 
-      {products.length > 0 && (
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-        >
-          <h2 className="mb-4 text-xl font-bold text-foreground">Recommended Products</h2>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {products.map((rec) => (
-              <RecommendationCard key={rec.id} rec={rec} />
-            ))}
-          </div>
-        </motion.section>
-      )}
+      {/* Phase 3: Recommendations */}
+      <div className="space-y-12">
+        {products.length > 0 && (
+          <motion.section
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: p3Delay }}
+          >
+            <h2 className="mb-6 text-2xl font-bold text-foreground flex items-center gap-2">
+              <Star className="h-6 w-6 text-primary" /> Recommended Products
+            </h2>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {products.map((rec) => (
+                <RecommendationCard key={rec.id} rec={rec} />
+              ))}
+            </div>
+          </motion.section>
+        )}
 
-      {services.length > 0 && (
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-        >
-          <h2 className="mb-4 text-xl font-bold text-foreground">Recommended Services</h2>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {services.map((rec) => (
-              <RecommendationCard key={rec.id} rec={rec} />
-            ))}
-          </div>
-        </motion.section>
-      )}
+        {services.length > 0 && (
+          <motion.section
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: p3Delay + 0.15 }}
+          >
+            <h2 className="mb-6 text-2xl font-bold text-foreground flex items-center gap-2">
+              <Wrench className="h-6 w-6 text-primary" /> Recommended Services
+            </h2>
+            <div className="grid gap-6 sm:grid-cols-2">
+              {services.map((rec) => (
+                <RecommendationCard key={rec.id} rec={rec} />
+              ))}
+            </div>
+          </motion.section>
+        )}
 
-      {packages.length > 0 && (
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-        >
-          <h2 className="mb-4 text-xl font-bold text-foreground">Package Offers</h2>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {packages.map((rec) => (
-              <RecommendationCard key={rec.id} rec={rec} />
-            ))}
-          </div>
-        </motion.section>
-      )}
+        {packages.length > 0 && (
+          <motion.section
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: p3Delay + 0.3 }}
+          >
+            <h2 className="mb-6 text-2xl font-bold text-foreground flex items-center gap-2">
+              <Package className="h-6 w-6 text-primary" /> Package Offers
+            </h2>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {packages.map((rec) => (
+                <RecommendationCard key={rec.id} rec={rec} />
+              ))}
+            </div>
+          </motion.section>
+        )}
+      </div>
 
+      {/* Phase 4: Action Row */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.6 }}
-        className="flex flex-col gap-3 sm:flex-row"
+        transition={{ duration: 0.5, delay: p4Delay }}
+        className="flex flex-col gap-4 sm:flex-row pt-8 border-t border-border"
       >
         <Button
           variant="primary"
@@ -414,14 +467,14 @@ export function ResultsView({ responses, scanResult }: ResultsViewProps) {
           }}
           disabled={!scanResult?.scanId}
         >
-          <Download className="h-5 w-5" />
+          <Download className="h-5 w-5 mr-2" />
           Download Report
         </Button>
-        <Button variant="outline" size="lg" className="flex-1">
-          <Calendar className="h-5 w-5" />
+        <Button variant="outline" size="lg" className="flex-1 text-lg py-6">
+          <Calendar className="h-6 w-6 mr-2" />
           Book a Consultation
         </Button>
       </motion.div>
     </div>
-  )
+  );
 }

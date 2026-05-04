@@ -1,19 +1,40 @@
-'use client'
+"use client";
 
-import { motion } from 'framer-motion'
-import { SectionWrapper } from '@/components/ui/SectionWrapper'
-import { LogoMarquee } from '@/components/ui/LogoMarquee'
+import { motion } from "framer-motion";
+import { SectionWrapper } from "@/components/ui/SectionWrapper";
+import { Marquee } from "@/components/animations/Marquee";
 
 const logos = [
-  { name: 'TechCorp', placeholder: true },
-  { name: 'FinServ Global', placeholder: true },
-  { name: 'HealthBridge', placeholder: true },
-  { name: 'EduVista', placeholder: true },
-  { name: 'RetailNxt', placeholder: true },
-  { name: 'CloudPeak', placeholder: true },
-  { name: 'DataSync', placeholder: true },
-  { name: 'SecureNet', placeholder: true },
-]
+  "TechCorp",
+  "FinServ Global",
+  "HealthBridge",
+  "EduVista",
+  "RetailNxt",
+  "CloudPeak",
+  "DataSync",
+  "SecureNet",
+];
+
+const logoItems = logos.map((name) => (
+  <div
+    key={name}
+    style={{
+      padding: "0.625rem 1.5rem",
+      borderRadius: "0.5rem",
+      border: "1px solid hsl(var(--foreground) / 0.08)",
+      background: "hsl(var(--foreground) / 0.03)",
+      backdropFilter: "blur(8px)",
+      color: "hsl(var(--foreground) / 0.4)",
+      fontSize: "0.875rem",
+      fontWeight: 600,
+      letterSpacing: "0.04em",
+      whiteSpace: "nowrap",
+      userSelect: "none",
+    }}
+  >
+    {name}
+  </div>
+));
 
 export function CustomerLogos() {
   return (
@@ -29,7 +50,8 @@ export function CustomerLogos() {
           Trusted By Leading Enterprises
         </p>
       </motion.div>
-      <LogoMarquee logos={logos} />
+
+      <Marquee items={logoItems} speed={55} />
     </SectionWrapper>
-  )
+  );
 }
