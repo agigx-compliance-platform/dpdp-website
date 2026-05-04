@@ -34,11 +34,14 @@ export function Marquee({ items, speed = 60 }: MarqueeProps) {
       // Always move left only — scroll has zero effect on direction
       s.x -= s.speed * dt;
 
+      if (!trackRef.current) return;
+      const currentTrack = trackRef.current;
+
       // Seamless wrap: track is 3× the original item set
-      const unit = track.scrollWidth / 3;
+      const unit = currentTrack.scrollWidth / 3;
       if (s.x <= -unit) s.x += unit;
 
-      track.style.transform = `translate3d(${s.x}px, 0, 0)`;
+      currentTrack.style.transform = `translate3d(${s.x}px, 0, 0)`;
       s.raf = requestAnimationFrame(tick);
     }
 

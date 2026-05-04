@@ -26,8 +26,8 @@ Open [http://localhost:8000](http://localhost:8000).
 
 ### Hero video & poster (`public/`)
 
-- `images/hero-poster.png` — full-bleed hero background (shown on all breakpoints; dominant on mobile)
-- `videos/hero.mp4` — muted loop from `md` breakpoint up
+- `images/hero-poster.png`: full-bleed hero background (shown on all breakpoints; dominant on mobile)
+- `videos/hero.mp4`: muted loop from `md` breakpoint up
 
 In **light theme**, the hero uses a **dark scrim** over the video so it stays readable. **`NEXT_PUBLIC_HERO_VIDEO_DISCLAIMER`** in `.env.local` can correct on-page copy if the clip still shows draft text.
 
@@ -41,7 +41,7 @@ Real UI captures from **AGIGx** (`consent-management`). Mapped in [`src/lib/agig
 2. One-time Chromium: `cd ../agigx-ui && npx playwright install chromium`
 3. From this folder: `npm run capture:agigx-ui`
 
-**Authenticated (full CMP after login)** — set `AGIGX_UI_LOGIN_EMAIL` and `AGIGX_UI_LOGIN_PASSWORD` in `.env.local` (gitignored), or export them in your shell, or use a local-only `.env.capture.local`. The script loads `/login`, submits the form, then captures routes with your session cookies.
+**Authenticated (full CMP after login)**. Set `AGIGX_UI_LOGIN_EMAIL` and `AGIGX_UI_LOGIN_PASSWORD` in `.env.local` (gitignored), or export them in your shell, or use a local-only `.env.capture.local`. The script loads `/login`, submits the form, then captures routes with your session cookies.
 
 Never commit passwords. Rotate any credential that was pasted into git history or chat.
 
@@ -86,9 +86,9 @@ Dark mode (default) and light mode via `data-theme` attribute toggle. Design tok
 
 All API calls use placeholder URLs configured via `NEXT_PUBLIC_CONSENT_API_URL`. Endpoints:
 
-- `POST /api/enquiry` — Contact form submission
-- `POST /api/questionnaire` — Questionnaire response submission
-- `POST /api/scan/initiate` — Trigger website privacy scan
-- `GET /api/scan/status/:id` — Poll scan progress
-- `GET /api/scan/report/:id` — Get scan results
-- `POST /api/contact` — Contact form submission
+- `POST /api/enquiry`: Contact form submission
+- `POST /api/questionnaire`: Questionnaire response submission
+- `POST /api/scan/initiate`: Trigger website privacy scan
+- `GET /api/scan/status/:id`: Poll scan progress
+- `GET /api/scan/report/:id`: Get scan results
+- `POST /api/contact`: Contact form submission

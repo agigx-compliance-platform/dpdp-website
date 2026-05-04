@@ -55,7 +55,7 @@ const PARTNERSHIP_MODELS = [
     title: 'Managed Services Partnership',
     icon: Headphones,
     description:
-      'For organisations wanting to offer ongoing managed privacy operations — DPO services, compliance monitoring, and incident response — backed by AGIGx infrastructure.',
+      'For organisations wanting to offer ongoing managed privacy operations including DPO services, compliance monitoring, and incident response, backed by AGIGx infrastructure.',
     included: [
       'Managed operations playbook and SLA templates',
       'Continuous compliance monitoring dashboard',
@@ -108,7 +108,7 @@ export default function PartnershipPage() {
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
             Join our partner ecosystem to deliver DPDP compliance services at
-            scale. Whether you advise, implement, or operate — we have a model
+            scale. Whether you advise, implement, or operate, we have a model
             that amplifies your capabilities.
           </p>
         </motion.div>

@@ -77,8 +77,7 @@ const SERVICE_CATEGORIES = [
           "Build live inventory of personal data — where it lives, who accesses it (Section 8(5)). Data flow mapping and lineage traceability across systems, databases, and third-party integrations.",
         dpdpSections: ["8(5)"],
         penalties: ["₹250 Crore"],
-        whoIsThisFor:
-          "Organizations lacking visibility into their data landscape",
+        whoIsThisFor: "Organizations lacking visibility into their data landscape",
       },
       {
         title: "Consent, Rights and Grievance Operations",

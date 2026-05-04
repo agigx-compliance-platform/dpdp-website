@@ -1,25 +1,15 @@
 "use client";
 
-import { useMemo, useEffect, useState } from "react";
-import { motion, useAnimation } from "framer-motion";
-import {
-  Download,
-  Calendar,
-  Star,
-  Package,
-  Wrench,
-  AlertTriangle,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/Button";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
-import { generateRecommendations } from "@/lib/recommendation-logic";
-import type {
-  QuestionnaireResponses,
-  ScanResult,
-  Recommendation,
-} from "@/lib/types";
+import { useMemo } from 'react'
+import { motion } from 'framer-motion'
+import { Download, Calendar, Star, Package, Wrench, AlertTriangle, BarChart3 } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/Button'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
+import { Badge } from '@/components/ui/Badge'
+import { generateRecommendations } from '@/lib/recommendation-logic'
+import { downloadReportPdfUrl } from '@/lib/api'
+import type { QuestionnaireResponses, ScanResult, Recommendation } from '@/lib/types'
 
 interface ResultsViewProps {
   responses: QuestionnaireResponses;
@@ -72,43 +62,7 @@ function ScoreRing({ score, grade }: { score: number; grade: string }) {
   );
 }
 
-function CategoryBar({
-  name,
-  score,
-  maxScore,
-}: {
-  name: string;
-  score: number;
-  maxScore: number;
-}) {
-  const pct = (score / maxScore) * 100;
 
-  return (
-    <div className="space-y-1">
-      <div className="flex items-center justify-between text-sm">
-        <span className="text-foreground">{name}</span>
-        <span className="text-muted-foreground">
-          {score}/{maxScore}
-        </span>
-      </div>
-      <div className="h-2 w-full overflow-hidden rounded-full bg-secondary">
-        <motion.div
-          className={cn(
-            "h-full rounded-full",
-            pct >= 75
-              ? "bg-green-500"
-              : pct >= 50
-                ? "bg-yellow-500"
-                : "bg-red-500",
-          )}
-          initial={{ width: 0 }}
-          animate={{ width: `${pct}%` }}
-          transition={{ duration: 1, delay: 0.3 }}
-        />
-      </div>
-    </div>
-  );
-}
 
 function RecommendationCard({ rec }: { rec: Recommendation }) {
   const typeIcon =
@@ -170,56 +124,99 @@ function RecommendationCard({ rec }: { rec: Recommendation }) {
   );
 }
 
-function Counter({ valueString }: { valueString: string }) {
-  const [display, setDisplay] = useState(0);
+const SEVERITY_META = {
+  critical: { label: 'Critical', color: 'bg-red-500', text: 'text-red-400' },
+  high: { label: 'High', color: 'bg-amber-500', text: 'text-amber-400' },
+  medium: { label: 'Medium', color: 'bg-sky-500', text: 'text-sky-400' },
+  low: { label: 'Low', color: 'bg-slate-500', text: 'text-slate-400' },
+} as const
 
-  useEffect(() => {
-    // Extract number from string like "₹82 Crore" -> 82
-    const num = parseInt(valueString.replace(/\D/g, ""), 10) || 0;
-    if (num === 0) {
-      setDisplay(0);
-      return;
-    }
+function IssueMixStackedBar({ summary }: { summary: ScanResult['summary'] }) {
+  const { criticalIssues, highIssues, warnings, passed } = summary
+  const total = criticalIssues + highIssues + warnings + passed || 1
 
-    let start = 0;
-    const end = num;
-    const duration = 1500;
-    const startTime = performance.now();
-
-    const animate = (currentTime: number) => {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      // easeOutQuart
-      const ease = 1 - Math.pow(1 - progress, 4);
-
-      setDisplay(Math.round(start + (end - start) * ease));
-
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      } else {
-        setDisplay(end);
-      }
-    };
-    requestAnimationFrame(animate);
-  }, [valueString]);
-
-  const prefix = valueString.replace(/[0-9].*/, "") || "";
-  const suffix = valueString.replace(/.*?[0-9]+/, "") || "";
+  const segments = [
+    { key: 'crit', pct: (criticalIssues / total) * 100, color: 'bg-red-500', label: 'Critical' },
+    { key: 'high', pct: (highIssues / total) * 100, color: 'bg-amber-500', label: 'High' },
+    { key: 'warn', pct: (warnings / total) * 100, color: 'bg-blue-500', label: 'Warnings' },
+    { key: 'pass', pct: (passed / total) * 100, color: 'bg-emerald-500', label: 'Passed' },
+  ].filter((s) => s.pct > 0)
 
   return (
-    <span>
-      {prefix}
-      {display}
-      {suffix}
-    </span>
-  );
+    <div className="space-y-2">
+      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Issue mix</p>
+      <div className="flex h-4 w-full overflow-hidden rounded-full bg-muted/40">
+        {segments.map((s, i) => (
+          <motion.div
+            key={s.key}
+            className={`${s.color} min-w-[3px]`}
+            initial={{ width: 0 }}
+            animate={{ width: `${s.pct}%` }}
+            transition={{ duration: 0.8, delay: i * 0.06, ease: 'easeOut' }}
+            title={`${s.label}: ${Math.round(s.pct)}%`}
+          />
+        ))}
+      </div>
+      <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-muted-foreground">
+        <span className="flex items-center gap-1">
+          <span className="inline-block h-2 w-2 rounded-sm bg-red-500" /> Critical {criticalIssues}
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="inline-block h-2 w-2 rounded-sm bg-amber-500" /> High {highIssues}
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="inline-block h-2 w-2 rounded-sm bg-blue-500" /> Warnings {warnings}
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="inline-block h-2 w-2 rounded-sm bg-emerald-500" /> Passed {passed}
+        </span>
+      </div>
+    </div>
+  )
 }
 
-function generateSummary(
-  responses: QuestionnaireResponses,
-  scanResult?: ScanResult,
-): string {
-  const parts: string[] = [];
+function FailedChecksBySeverity({ scanResult }: { scanResult: ScanResult }) {
+  const counts = useMemo(() => {
+    const c = { critical: 0, high: 0, medium: 0, low: 0 }
+    for (const f of scanResult.complianceFlags ?? []) {
+      if (f.passed) continue
+      if (f.severity in c) c[f.severity as keyof typeof c] += 1
+    }
+    return c
+  }, [scanResult])
+
+  const max = Math.max(1, ...Object.values(counts))
+
+  return (
+    <div className="space-y-3">
+      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Failed checks by severity</p>
+      <div className="space-y-2">
+        {(Object.keys(SEVERITY_META) as Array<keyof typeof SEVERITY_META>).map((sev) => {
+          const n = counts[sev]
+          const pct = (n / max) * 100
+          const meta = SEVERITY_META[sev]
+          return (
+            <div key={sev} className="flex items-center gap-3">
+              <span className={`w-16 shrink-0 text-[11px] ${meta.text}`}>{meta.label}</span>
+              <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-muted/40">
+                <motion.div
+                  className={`h-full rounded-full ${meta.color}`}
+                  initial={{ width: 0 }}
+                  animate={{ width: `${pct}%` }}
+                  transition={{ duration: 0.7, ease: 'easeOut' }}
+                />
+              </div>
+              <span className="w-6 shrink-0 text-right text-xs tabular-nums text-muted-foreground">{n}</span>
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
+function generateSummary(responses: QuestionnaireResponses, scanResult?: ScanResult): string {
+  const parts: string[] = []
 
   if (scanResult) {
     if (scanResult.overallScore < 40) {
@@ -277,6 +274,11 @@ export function ResultsView({ responses, scanResult }: ResultsViewProps) {
   const p3Delay = hasScan ? 2.5 : 0.5;
   const p4Delay = hasScan ? 3.5 : 1.0;
 
+  const failedFlags = useMemo(
+    () => (scanResult?.complianceFlags ? scanResult.complianceFlags.filter((f) => !f.passed) : []),
+    [scanResult]
+  )
+
   return (
     <div className="mx-auto max-w-5xl space-y-12">
       {hasScan && (
@@ -286,30 +288,87 @@ export function ResultsView({ responses, scanResult }: ResultsViewProps) {
           transition={{ duration: 0.5 }}
           className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-background p-8 rounded-2xl min-h-[40vh]"
         >
-          {/* Phase 1: LEFT HALF */}
-          <div className="flex flex-col items-center justify-center h-full border-b md:border-b-0 md:border-r border-border pb-8 md:pb-0">
-            <ScoreRing
-              score={scanResult!.overallScore}
-              grade={scanResult!.grade}
-            />
-            <div className="mt-6 text-center space-y-1">
-              <h3 className="text-xl font-bold text-foreground">
-                {scanResult!.domain}
-              </h3>
-              <p className="text-sm font-medium text-muted-foreground">
-                Grade {scanResult!.grade}
+          <h2 className="mb-6 text-2xl font-bold text-foreground">Scan Results</h2>
+          <div className="flex flex-col items-center gap-8 sm:flex-row sm:items-start">
+            <ScoreRing score={scanResult.overallScore} grade={scanResult.grade} />
+            <div className="flex-1 space-y-4">
+              <h3 className="font-semibold text-foreground">{scanResult.scannedUrl}</h3>
+              <p className="text-sm text-muted-foreground">
+                Penalty Exposure: <span className="font-medium text-destructive">{scanResult.penaltyExposure}</span>
               </p>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                <div className="rounded-lg bg-red-500/10 p-3 text-center">
+                  <div className="text-xl font-bold text-red-400">{scanResult.summary.criticalIssues}</div>
+                  <div className="text-[10px] uppercase text-red-400/80">Critical</div>
+                </div>
+                <div className="rounded-lg bg-yellow-500/10 p-3 text-center">
+                  <div className="text-xl font-bold text-yellow-400">{scanResult.summary.highIssues}</div>
+                  <div className="text-[10px] uppercase text-yellow-400/80">High</div>
+                </div>
+                <div className="rounded-lg bg-blue-500/10 p-3 text-center">
+                  <div className="text-xl font-bold text-blue-400">{scanResult.summary.warnings}</div>
+                  <div className="text-[10px] uppercase text-blue-400/80">Warnings</div>
+                </div>
+                <div className="rounded-lg bg-green-500/10 p-3 text-center">
+                  <div className="text-xl font-bold text-green-400">{scanResult.summary.passed}</div>
+                  <div className="text-[10px] uppercase text-green-400/80">Passed</div>
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+                <span>{scanResult.totalCookies} cookies</span>
+                <span>·</span>
+                <span>{scanResult.totalTrackers} trackers</span>
+                <span>·</span>
+                <span>Banner: {scanResult.consentBannerPresent ? '✓' : '✗'}</span>
+                <span>·</span>
+                <span>Reject: {scanResult.consentRejectOption ? '✓' : '✗'}</span>
+              </div>
             </div>
           </div>
 
-          {/* Phase 1: RIGHT HALF */}
-          <div className="flex flex-col items-center justify-center h-full pt-8 md:pt-0">
-            <div className="text-5xl sm:text-6xl font-extrabold text-destructive tracking-tight">
-              <Counter valueString={scanResult!.penaltyExposure} />
+          <div className="mt-8 border-t border-border/40 pt-8">
+            <div className="mb-4 flex items-center gap-2">
+              <BarChart3 className="h-5 w-5 text-primary" />
+              <h3 className="text-lg font-semibold text-foreground">Visual report</h3>
             </div>
-            <div className="mt-4 text-sm font-medium text-muted-foreground uppercase tracking-wider">
-              Estimated penalty exposure
+            <div className="grid gap-8 lg:grid-cols-2">
+              <IssueMixStackedBar summary={scanResult.summary} />
+              <FailedChecksBySeverity scanResult={scanResult} />
             </div>
+            {failedFlags.length > 0 && (
+              <div className="mt-6">
+                <p className="mb-3 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  Top findings ({failedFlags.length})
+                </p>
+                <ul className="grid gap-2 sm:grid-cols-2">
+                  {failedFlags.slice(0, 8).map((f) => (
+                    <li
+                      key={f.id}
+                      className="rounded-lg border border-border/50 bg-muted/20 px-3 py-2 text-sm"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <span className="font-medium leading-snug text-foreground">{f.title}</span>
+                        <Badge
+                          variant={
+                            f.severity === 'critical'
+                              ? 'destructive'
+                              : f.severity === 'high'
+                                ? 'warning'
+                                : 'outline'
+                          }
+                          className="shrink-0 text-[10px] uppercase"
+                        >
+                          {f.severity}
+                        </Badge>
+                      </div>
+                      {f.description && (
+                        <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{f.description}</p>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </motion.div>
       )}
@@ -333,23 +392,7 @@ export function ResultsView({ responses, scanResult }: ResultsViewProps) {
           {summary}
         </p>
 
-        {hasScan && (
-          <div className="mt-6 space-y-4">
-            <h4 className="text-sm font-semibold text-foreground uppercase tracking-wider">
-              Category Breakdown
-            </h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {scanResult!.categories.map((cat) => (
-                <CategoryBar
-                  key={cat.name}
-                  name={cat.name}
-                  score={cat.score}
-                  maxScore={cat.maxScore}
-                />
-              ))}
-            </div>
-          </div>
-        )}
+
       </motion.div>
 
       {/* Phase 3: Recommendations */}
@@ -413,9 +456,19 @@ export function ResultsView({ responses, scanResult }: ResultsViewProps) {
         transition={{ duration: 0.5, delay: p4Delay }}
         className="flex flex-col gap-4 sm:flex-row pt-8 border-t border-border"
       >
-        <Button variant="primary" size="lg" className="flex-1 text-lg py-6">
-          <Download className="h-6 w-6 mr-2" />
-          Download Full Report
+        <Button
+          variant="primary"
+          size="lg"
+          className="flex-1"
+          onClick={() => {
+            if (scanResult?.scanId) {
+              window.open(downloadReportPdfUrl(scanResult.scanId), '_blank')
+            }
+          }}
+          disabled={!scanResult?.scanId}
+        >
+          <Download className="h-5 w-5 mr-2" />
+          Download Report
         </Button>
         <Button variant="outline" size="lg" className="flex-1 text-lg py-6">
           <Calendar className="h-6 w-6 mr-2" />

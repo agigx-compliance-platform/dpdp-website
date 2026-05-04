@@ -12,7 +12,7 @@ const models = [
     icon: MessageSquare,
     title: 'Advisory Engagement',
     description:
-      'Expert-led assessments, gap analysis, and compliance strategy — ideal for organizations starting their journey.',
+      'Expert-led assessments, gap analysis, and compliance strategy ideal for organizations starting their journey.',
   },
   {
     icon: Cog,
@@ -24,14 +24,14 @@ const models = [
     icon: HeadphonesIcon,
     title: 'Managed Services',
     description:
-      'Ongoing compliance operations — monitoring, evidence collection, audit support, and continuous optimization.',
+      'Ongoing compliance operations: monitoring, evidence collection, audit support, and continuous optimization.',
   },
 ]
 
 export function PartnershipCTA() {
   return (
     <SectionWrapper id="partnership-preview">
-      <div className="text-center mb-16">
+      <div className="text-center mb-10">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

@@ -8,6 +8,7 @@ import { SectionWrapper } from "@/components/ui/SectionWrapper";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card, CardContent } from "@/components/ui/Card";
+import { submitEnquiry } from "@/lib/api";
 
 const ROLES = [
   "DPO / Privacy Officer",
@@ -76,6 +77,7 @@ export default function ContactPage() {
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // State to track the currently open FAQ item
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -97,11 +99,25 @@ export default function ContactPage() {
     return Object.keys(newErrors).length === 0;
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!validate()) return;
-    console.log("Contact form submission:", form);
-    setSubmitted(true);
+    setIsSubmitting(true);
+    try {
+      await submitEnquiry({
+        name: form.name,
+        email: form.email,
+        company: form.company,
+        role: form.role,
+        subject: form.subject,
+        message: form.message,
+      });
+      setSubmitted(true);
+    } catch {
+      setErrors({ message: "Something went wrong. Please try again." });
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   function handleChange(
@@ -258,8 +274,9 @@ export default function ContactPage() {
                   variant="primary"
                   size="lg"
                   className="w-full sm:w-auto"
+                  disabled={isSubmitting}
                 >
-                  Send Message
+                  {isSubmitting ? "Sending..." : "Send Message"}
                   <ArrowRight className="w-5 h-5" />
                 </Button>
               </form>
@@ -402,7 +419,6 @@ export default function ContactPage() {
                               : "translate-y-2 opacity-0",
                           )}
                         >
-                          {/* Spacer to align the text with the header's text (accounting for the icon width) */}
                           <span className="w-5 shrink-0" />
                           <p className="text-muted-foreground leading-relaxed m-0 flex-1">
                             {faq.answer}

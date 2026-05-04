@@ -27,8 +27,34 @@ import {
   step6Schema,
   step9Schema,
 } from '@/lib/questionnaire-schema'
-import { submitQuestionnaire, initiateScan } from '@/lib/api'
+import { submitQuestionnaire, initiateScan, getScanStatus, getScanReport } from '@/lib/api'
+import type {
+  QuestionnaireResponses,
+  ScanReportResponse,
+  ScanResult,
+  ScanStatusResponse,
+} from '@/lib/types'
 
+/**
+ * Backend returns `{ data: T, message?: string }`.
+ * Axios wraps that in `response.data`, so the payload lives at `response.data.data`.
+ * This helper digs into the envelope safely regardless of nesting.
+ */
+function unwrap<T>(axiosResponse: { data: unknown }): T {
+  const body = axiosResponse.data
+  if (body && typeof body === 'object' && 'data' in body) {
+    return (body as Record<string, unknown>).data as T
+  }
+  return body as T
+}
+
+function computePenaltyExposure(score: number): string {
+  if (score >= 90) return '₹0, low risk'
+  if (score >= 75) return 'Up to ₹50 Crore'
+  if (score >= 60) return 'Up to ₹150 Crore'
+  if (score >= 40) return 'Up to ₹250 Crore'
+  return 'Up to ₹750 Crore (cumulative)'
+}
 const slideVariants = {
   enter: (direction: number) => ({
     x: direction > 0 ? 300 : -300,
@@ -43,6 +69,8 @@ const slideVariants = {
     opacity: 0,
   }),
 }
+
+const POLL_INTERVAL_MS = 1600
 
 export function QuestionnaireWizard() {
   const router = useRouter()
@@ -66,6 +94,7 @@ export function QuestionnaireWizard() {
   const [isResuming, setIsResuming] = useState(false)
   const [isFinalizing, setIsFinalizing] = useState(false)
   const [scrollProgress, setScrollProgress] = useState(0)
+  const [isScanning, setIsScanning] = useState(false)
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const target = e.currentTarget
@@ -86,16 +115,8 @@ export function QuestionnaireWizard() {
     }
   }, []) // run once on mount
 
-  // Check if finalizing is done
-  useEffect(() => {
-    if (isFinalizing && (scanDone || !wantsScan)) {
-      routeToResults()
-    }
-  }, [isFinalizing, scanDone, wantsScan])
+  // Note: Using router.push instead of local routeToResults
 
-  const routeToResults = useCallback(() => {
-    updateState({ currentStep: 8, direction: 1 })
-  }, [updateState])
 
   const validateCurrentStep = useCallback((): boolean => {
     setErrors({})
@@ -140,64 +161,103 @@ export function QuestionnaireWizard() {
     }
   }, [currentStep, formData, wantsScan])
 
-  const handleStartScan = async () => {
+  const handleSubmitWithoutScan = async () => {
     setIsSubmitting(true)
     try {
-      const { data } = await initiateScan({
+      await submitQuestionnaire(formData).catch(() => undefined)
+    } finally {
+      try {
+        const params = new URLSearchParams()
+        params.set('data', btoa(JSON.stringify(formData)))
+        router.push(`/questionnaire/results?${params.toString()}`)
+      } catch {
+        setErrors({ general: 'Could not open results. Please try again.' })
+      }
+      setIsSubmitting(false)
+    }
+  }
+
+  const handleSubmitWithScan = async () => {
+    if (!validateCurrentStep()) return
+    if (isSubmitting || isScanning) return
+    setIsSubmitting(true)
+    setIsScanning(true)
+    setIsFinalizing(true)
+
+    try {
+      const { data: scanResponse } = await initiateScan({
         url: formData.websiteUrl!,
         email: formData.email!,
         name: formData.name!,
         company: formData.company!,
         consent: formData.consentGiven,
       })
-      updateState({
-        wantsScan: true,
-        scanId: data.scanId,
-        scanDone: false,
-        scanProgress: 0,
-        scanResult: null,
-        direction: 1,
-        currentStep: 1,
-      })
-    } catch (e: any) {
-      setErrors({ scan: e.message || 'Failed to start scan. Please try again.' })
+
+      const scanId = scanResponse.data.scanId
+
+      let report: ScanReportResponse | null = null
+      let polled = false
+      while (!report) {
+        if (polled) {
+          await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL_MS))
+        }
+        polled = true
+
+        const status = unwrap<ScanStatusResponse>(await getScanStatus(scanId))
+
+        if (status.status === 'completed') {
+          report = unwrap<ScanReportResponse>(await getScanReport(scanId))
+        } else if (status.status === 'failed') {
+          throw new Error('Scan failed')
+        }
+      }
+
+      const scanResult: ScanResult = {
+        scanId,
+        scannedUrl: report.scannedUrl,
+        overallScore: report.score,
+        grade: report.grade,
+        summary: report.summary,
+        complianceFlags: report.complianceFlags,
+        totalCookies: report.totalCookies,
+        totalTrackers: report.totalTrackers,
+        consentBannerPresent: report.consentBannerPresent,
+        consentRejectOption: report.consentRejectOption,
+        penaltyExposure: computePenaltyExposure(report.score),
+      }
+
+      const params = new URLSearchParams()
+      params.set('data', btoa(JSON.stringify(formData)))
+      params.set('scan', btoa(JSON.stringify(scanResult)))
+      router.push(`/questionnaire/results?${params.toString()}`)
+    } catch {
+      setErrors({ general: 'Scan failed. Showing recommendations based on your answers.' })
+      const params = new URLSearchParams()
+      params.set('data', btoa(JSON.stringify(formData)))
+      router.push(`/questionnaire/results?${params.toString()}`)
     } finally {
+      setIsScanning(false)
       setIsSubmitting(false)
+      setIsFinalizing(false)
     }
+  }
+
+  const handleStartScan = () => {
+    updateState({ wantsScan: true, direction: 1, currentStep: 1 })
   }
 
   const handleSkipScan = () => {
-    updateState({
-      wantsScan: false,
-      scanId: null,
-      scanDone: false,
-      scanProgress: 0,
-      scanResult: null,
-      direction: 1,
-      currentStep: 1,
-    })
-  }
-
-  const handleFinalSubmit = async () => {
-    setIsSubmitting(true)
-    try {
-      await submitQuestionnaire(formData)
-      if (wantsScan && !scanDone) {
-        setIsFinalizing(true)
-      } else {
-        routeToResults()
-      }
-    } catch {
-      setErrors({ general: 'Something went wrong. Please try again.' })
-    } finally {
-      setIsSubmitting(false)
-    }
+    updateState({ wantsScan: false, direction: 1, currentStep: 1 })
   }
 
   const goNext = () => {
     if (!validateCurrentStep()) return
     if (currentStep === 7) {
-      handleFinalSubmit()
+      if (formData.wantsScan) {
+        void handleSubmitWithScan()
+      } else {
+        void handleSubmitWithoutScan()
+      }
       return
     }
     updateState({ direction: 1, currentStep: currentStep + 1 })
@@ -208,24 +268,23 @@ export function QuestionnaireWizard() {
     updateState({ direction: -1, currentStep: Math.max(currentStep - 1, 1) })
   }
 
-  if (isFinalizing) {
+  if (isFinalizing || isScanning) {
     return (
-      <div className="flex min-h-[400px] flex-col items-center justify-center p-8 text-center bg-background rounded-2xl">
-        <Loader2 className="h-10 w-10 text-primary animate-spin mb-4" />
-        <h3 className="text-xl font-semibold text-foreground">Finalizing your scan results...</h3>
-        <p className="mt-2 text-muted-foreground">Almost done!</p>
-        {scanProgress > 0 && (
-          <div className="mt-6 w-full max-w-sm">
-            <div className="h-2 w-full overflow-hidden rounded-full bg-secondary">
-              <motion.div
-                className="h-full rounded-full bg-gradient-to-r from-primary to-[hsl(var(--gradient-end))]"
-                animate={{ width: `${scanProgress}%` }}
-                transition={{ duration: 0.5 }}
-              />
+      <div className="mx-auto max-w-2xl space-y-6 p-4 sm:p-8">
+        <StepProgress currentStep={currentStep} totalSteps={8} />
+        <div className="glass-card overflow-hidden rounded-xl p-6 sm:p-10">
+          <div className="flex flex-col items-center justify-center gap-6 py-12">
+            <Loader2 className="h-14 w-14 animate-spin text-primary" />
+            <div className="text-center space-y-2">
+              <h3 className="text-xl font-semibold text-foreground">Scanning in progress</h3>
+              <p className="text-sm text-muted-foreground">
+                Analyzing your website for privacy compliance.
+                <br />
+                This may take a minute or two.
+              </p>
             </div>
-            <p className="mt-2 text-sm font-medium text-primary text-right">{scanProgress}%</p>
           </div>
-        )}
+        </div>
       </div>
     )
   }
@@ -275,6 +334,7 @@ export function QuestionnaireWizard() {
     }
   }
 
+  const showNextButton = currentStep !== 9
   return (
     <div 
       onScroll={handleScroll}

@@ -193,25 +193,54 @@ function applySupportTypeSignals(map: ScoreMap, supportTypes: string[]) {
 }
 
 function applyScanSignals(map: ScoreMap, scanResult: ScanResult) {
-  for (const check of scanResult.checks) {
-    if (check.passed) continue
+  for (const flag of scanResult.complianceFlags) {
+    if (flag.passed) continue
 
-    switch (check.id) {
-      case 'consent_banner_present':
+    switch (flag.id) {
+      case 'NO_CONSENT_BANNER':
         addScore(map, 'consent-platform', 5, 'Your website lacks a consent banner', 'Missing consent banner', ['Section 6'])
         break
-      case 'consent_blocks_before_accept':
-        addScore(map, 'consent-platform', 3, 'Your site loads trackers before consent is given', 'Pre-consent tracker loading', ['Section 6', 'Section 7'])
+      case 'PRE_CONSENT_TRACKING':
+        addScore(map, 'consent-platform', 4, 'Non-essential cookies set before consent', 'Pre-consent tracker loading', ['Section 6', 'Section 7'])
         break
-      case 'privacy_policy_exists':
-        addScore(map, 'advisory', 4, 'Your website lacks a privacy policy', 'Missing privacy policy', ['Section 5', 'Section 6'])
+      case 'MISSING_REJECT_OPTION':
+        addScore(map, 'consent-platform', 3, 'No reject option in consent banner', 'Missing reject option', ['Section 6'])
         break
-      case 'dsar_mechanism_exists':
-        addScore(map, 'dsar-platform', 5, 'No data subject request mechanism was found', 'Missing DSAR mechanism', ['Section 11', 'Section 12', 'Section 13'])
+      case 'COOKIES_AFTER_REJECT':
+        addScore(map, 'consent-platform', 4, 'Cookies still set after user rejected consent', 'Consent not honoured', ['Section 6'])
+        addScore(map, 'technical-implementation', 2, 'Technical enforcement of consent decisions needed')
         break
-      case 'trackers_disclosed':
-        addScore(map, 'consent-platform', 3, 'Undisclosed trackers detected on your website', 'Undisclosed trackers', ['Section 6', 'Section 7'])
-        addScore(map, 'cyber-privacy', 2, 'Tracker management needs security oversight')
+      case 'NO_PRIVACY_POLICY':
+        addScore(map, 'advisory', 4, 'Your website lacks a privacy policy', 'Missing privacy policy', ['Section 5', 'Section 7'])
+        break
+      case 'NO_COOKIE_POLICY':
+        addScore(map, 'consent-platform', 3, 'No cookie policy found', 'Missing cookie policy', ['Section 5'])
+        break
+      case 'NO_DSAR_MECHANISM':
+        addScore(map, 'dsar-platform', 5, 'No data subject request mechanism found', 'Missing DSAR mechanism', ['Section 11', 'Section 12', 'Section 13'])
+        break
+      case 'FINGERPRINTING_DETECTED':
+        addScore(map, 'cyber-privacy', 4, 'Browser fingerprinting detected', 'Fingerprinting without consent', ['Section 6'])
+        break
+      case 'HIGH_RISK_SCRIPTS':
+        addScore(map, 'consent-platform', 3, 'High-risk data-collection scripts detected', 'Undisclosed high-risk scripts', ['Section 6', 'Section 7'])
+        addScore(map, 'cyber-privacy', 2, 'High-risk script management needs security oversight')
+        break
+      case 'CROSS_BORDER_TRANSFER':
+        addScore(map, 'data-sovereignty', 3, 'Cross-border data transfers detected', 'Cross-border transfer governance', ['Section 16'])
+        break
+      case 'NO_GRIEVANCE_REDRESSAL':
+        addScore(map, 'advisory', 3, 'No grievance redressal mechanism found', 'Missing grievance mechanism', ['Section 13'])
+        addScore(map, 'dsar-platform', 2, 'Grievance officer setup required')
+        break
+      case 'NO_DATA_RETENTION_MENTION':
+        addScore(map, 'advisory', 2, 'Data retention period not disclosed', 'Retention disclosure gap', ['Section 8(7)'])
+        break
+      case 'MISSING_DPO_CONTACT':
+        addScore(map, 'managed-operations', 2, 'No privacy/DPO contact found', 'Missing DPO contact', ['Section 10'])
+        break
+      case 'NO_GRANULAR_CONSENT':
+        addScore(map, 'consent-platform', 3, 'No granular consent choices available', 'Granular consent gap', ['Section 6(2)'])
         break
     }
   }

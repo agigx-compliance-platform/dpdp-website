@@ -1,82 +1,78 @@
-import type { EnquiryFormData, QuestionnaireResponses, ScanResult } from './types'
+import axios from 'axios'
+import type { EnquiryFormData, QuestionnaireResponses, ScanStatusResponse, ScanReportResponse } from './types'
 
-// Mock state to track scans
-const mockScans: Record<string, { progress: number; status: 'pending' | 'in_progress' | 'completed' | 'failed'; domain: string }> = {}
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8084'
+
+const apiClient = axios.create({
+  baseURL: API_BASE,
+  headers: { 'Content-Type': 'application/json' },
+  timeout: 30000,
+})
 
 export async function submitEnquiry(data: EnquiryFormData) {
-  await new Promise((resolve) => setTimeout(resolve, 1000))
-  return { data: { success: true } }
+  return apiClient.post('/api/v1/sdk/website/enquiry', {
+    name: data.name,
+    email: data.email,
+    company: data.company,
+    role: data.role,
+    subject: data.subject,
+    message: data.message,
+    sourcePage: 'contact',
+  })
 }
 
 export async function submitQuestionnaire(data: QuestionnaireResponses) {
-  await new Promise((resolve) => setTimeout(resolve, 800))
-  return { data: { success: true } }
+  return apiClient.post<{ data: { sessionId: string; message: string } }>('/api/v1/sdk/website/questionnaire', {
+    role: data.role,
+    orgType: data.orgType,
+    journeyStage: data.journeyStage,
+    dataTypes: data.dataTypes,
+    priorities: data.priorities,
+    supportType: data.supportType,
+    wantsScan: data.wantsScan,
+    websiteUrl: data.websiteUrl,
+    email: data.email,
+    name: data.name,
+    company: data.company,
+    consentGiven: data.consentGiven,
+  })
 }
 
-export async function initiateScan(data: { url: string; email: string; name: string; company: string; consent: boolean }) {
-  await new Promise((resolve) => setTimeout(resolve, 1500))
-  const scanId = 'scan_' + Date.now()
-  let domain = 'yoursite.com'
-  try {
-    domain = new URL(data.url).hostname
-  } catch (e) {
-    // ignore
-  }
-  
-  mockScans[scanId] = { progress: 0, status: 'in_progress', domain }
-  return { data: { scanId } }
+export async function initiateScan(data: {
+  url: string
+  email: string
+  name: string
+  company: string
+  consent: boolean
+}) {
+  return apiClient.post<{ data: { scanId: string; sessionId: string } }>(
+    '/api/v1/sdk/website/scan/initiate',
+    data,
+    { timeout: 60000 }
+  )
 }
 
 export async function getScanStatus(scanId: string) {
-  await new Promise((resolve) => setTimeout(resolve, 400))
-  let scan = mockScans[scanId]
-  if (!scan) {
-    scan = { progress: 100, status: 'completed', domain: 'example.com' }
-    mockScans[scanId] = scan
-  }
-  
-  if (scan.progress < 100) {
-    // Increase progress by 10-18% each time (takes ~12-16 seconds total with 2s polling)
-    scan.progress += Math.floor(Math.random() * 9) + 10
-    if (scan.progress >= 100) {
-      scan.progress = 100
-      scan.status = 'completed'
-    }
-  }
-  
-  return { data: { status: scan.status, progress: scan.progress } }
+  return apiClient.get<{ data: ScanStatusResponse }>(
+    `/api/v1/sdk/website/scan/status/${scanId}`,
+    { timeout: 15000 }
+  )
 }
 
 export async function getScanReport(scanId: string) {
-  await new Promise((resolve) => setTimeout(resolve, 800))
-  const scan = mockScans[scanId]
-  const domain = scan ? scan.domain : 'example.com'
-  
-  const mockScanResult: ScanResult = {
-    id: scanId,
-    domain: domain,
-    overallScore: 58,
-    grade: 'D',
-    penaltyExposure: '₹42 Crore',
-    categories: [
-      { name: 'Consent Mechanisms', score: 10, maxScore: 25, weight: 1 },
-      { name: 'Cookie Compliance', score: 15, maxScore: 25, weight: 1 },
-      { name: 'DSAR Readiness', score: 12, maxScore: 25, weight: 1 },
-      { name: 'Privacy Policy', score: 21, maxScore: 25, weight: 1 }
-    ],
-    checks: [
-      { id: 'c1', name: 'Valid Consent Banner', category: 'Consent', passed: false, points: 0, maxPoints: 10, description: 'Consent banner not found or non-compliant.' },
-      { id: 'c2', name: 'Opt-in for Analytics', category: 'Cookies', passed: false, points: 0, maxPoints: 10, description: 'Analytics cookies loaded before user consent.' },
-      { id: 'c3', name: 'Accessible Privacy Policy', category: 'Policy', passed: true, points: 10, maxPoints: 10, description: 'Privacy policy link found in footer.' },
-      { id: 'c4', name: 'DSAR Request Form', category: 'DSAR', passed: false, points: 0, maxPoints: 10, description: 'No mechanism found for users to request data deletion.' },
-      { id: 'c5', name: 'Local Data Storage', category: 'Cookies', passed: false, points: 0, maxPoints: 10, description: 'Uncategorized local storage usage detected.' }
-    ]
-  }
-  
-  return { data: mockScanResult }
+  return apiClient.get<{ data: ScanReportResponse }>(
+    `/api/v1/sdk/website/scan/report/${scanId}`,
+    { timeout: 60000 }
+  )
+}
+
+export function downloadReportPdfUrl(scanId: string): string {
+  return `${API_BASE}/api/v1/sdk/website/scan/report/${scanId}/pdf`
 }
 
 export async function submitContactForm(data: EnquiryFormData) {
-  await new Promise((resolve) => setTimeout(resolve, 1000))
-  return { data: { success: true } }
+  return apiClient.post('/api/v1/sdk/website/enquiry', {
+    ...data,
+    sourcePage: 'contact',
+  })
 }

@@ -28,7 +28,7 @@ gsap.config({ force3D: true });
 gsap.defaults({ ease: "power2.out", duration: 0.4 });
 ScrollTrigger.config({
   ignoreMobileResize: true,
-  limitCallbacks: true, // ← only fires onUpdate when progress actually changes
+  limitCallbacks: true,
 });
 
 // ─── Data ────────────────────────────────────────────────────────────────────
@@ -253,20 +253,12 @@ const iconMap: Record<string, React.ElementType> = {
 };
 
 // ─── Scroll Storytelling — SNAP TO STEP ──────────────────────────────────────
-// HOW IT WORKS (slot-machine snap):
-// • The section is pinned for N * 100vh of scroll space.
-// • snap: 1/(N-1) inside ScrollTrigger snaps scroll to exact step boundaries.
-//   Each wheel tick clicks to the next product and locks there — no scrubbing.
-// • onUpdate detects which step we should be on and calls goToStep().
-// • goToStep() runs two GSAP tweens: OUT on the current step, IN on the next.
-// • All animations are opacity + transform only → pure GPU, zero layout cost.
 
 const N = PRODUCTS.length;
 
 function ProductsScrollStory() {
   const sectionRef = useRef<HTMLElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
-  // Pre-fill with nulls so index access never triggers "map on null"
   const dotRefs = useRef<(HTMLSpanElement | null)[]>(Array(N).fill(null));
   const stepLabelRefs = useRef<(HTMLDivElement | null)[]>(Array(N).fill(null));
   const textPanelRefs = useRef<(HTMLDivElement | null)[]>(Array(N).fill(null));
@@ -277,7 +269,6 @@ function ProductsScrollStory() {
   );
   const currentStepRef = useRef(0);
 
-  // ── Slot-machine transition: OUT current → IN next ─────────────────────
   const goToStep = (next: number) => {
     const prev = currentStepRef.current;
     if (prev === next) return;
@@ -285,7 +276,6 @@ function ProductsScrollStory() {
 
     const dir = next > prev ? 1 : -1;
 
-    // Safely resolve elements — skip if ref not mounted yet
     const prevLabel = stepLabelRefs.current[prev];
     const prevText = textPanelRefs.current[prev];
     const prevFeature = featureGroupRefs.current[prev];
@@ -295,7 +285,6 @@ function ProductsScrollStory() {
     const nextFeature = featureGroupRefs.current[next];
     const nextImage = imagePanelRefs.current[next];
 
-    // Kill in-flight tweens to prevent stacking
     const allEls = [
       prevLabel,
       prevText,
@@ -308,7 +297,6 @@ function ProductsScrollStory() {
     ].filter(Boolean);
     if (allEls.length) gsap.killTweensOf(allEls);
 
-    // ── OUT ───────────────────────────────────────────────────────────
     const outEls = [prevLabel, prevText, prevFeature].filter(Boolean);
     if (outEls.length) {
       gsap.to(outEls, {
@@ -330,7 +318,6 @@ function ProductsScrollStory() {
       });
     }
 
-    // ── IN ────────────────────────────────────────────────────────────
     const inEls = [nextLabel, nextText, nextFeature].filter(Boolean);
     if (inEls.length) {
       gsap.set(inEls, { opacity: 0, y: dir * 36, force3D: true });
@@ -360,7 +347,6 @@ function ProductsScrollStory() {
       });
     }
 
-    // ── Progress bar ─────────────────────────────────────────────────
     if (progressBarRef.current) {
       gsap.to(progressBarRef.current, {
         height: `${(next / (N - 1)) * 100}%`,
@@ -369,10 +355,8 @@ function ProductsScrollStory() {
       });
     }
 
-    // ── Dots ─────────────────────────────────────────────────────────
     dotRefs.current.forEach((dot, i) => {
       if (!dot) return;
-      // Use data attributes + CSS for color (GSAP can't parse CSS vars in colors)
       dot.dataset.active = i <= next ? "true" : "false";
       dot.dataset.current = i === next ? "true" : "false";
       gsap.to(dot, {
@@ -385,7 +369,6 @@ function ProductsScrollStory() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // ── Set initial states — step 0 visible, rest hidden below ────────
       for (let i = 1; i < N; i++) {
         const els = [
           stepLabelRefs.current[i],
@@ -401,7 +384,6 @@ function ProductsScrollStory() {
           });
       }
 
-      // Step 0 dot active
       if (dotRefs.current[0]) {
         dotRefs.current[0].dataset.active = "true";
         dotRefs.current[0].dataset.current = "true";
@@ -415,7 +397,7 @@ function ProductsScrollStory() {
         anticipatePin: 1,
         snap: {
           snapTo: 1 / (N - 1),
-          duration: { min: 0.6, max: 0.9 }, // ← slower snap = can't race through
+          duration: { min: 0.6, max: 0.9 },
           delay: 0.1,
           ease: "power2.inOut",
           inertia: false,
@@ -442,7 +424,6 @@ function ProductsScrollStory() {
       style={{ willChange: "transform" }}
       aria-label="Product scroll story"
     >
-      {/* ── Layout shell ────────────────────────────────────────────────── */}
       <div
         className="relative flex h-full w-full max-w-screen-xl mx-auto px-6 lg:px-12 gap-6 lg:gap-12 items-center"
         style={{ transform: "translateZ(0)" }}
@@ -453,7 +434,6 @@ function ProductsScrollStory() {
           aria-hidden="true"
         >
           <div className="relative w-px bg-border" style={{ height: 280 }}>
-            {/* Animated fill */}
             <div
               ref={progressBarRef}
               className="absolute top-0 left-0 w-full bg-primary rounded-full"
@@ -463,7 +443,6 @@ function ProductsScrollStory() {
                 transition: "height 0.05s linear",
               }}
             />
-            {/* Step dots */}
             {PRODUCTS.map((_, i) => (
               <span
                 key={i}
@@ -500,7 +479,6 @@ function ProductsScrollStory() {
                   width: "100%",
                 }}
               >
-                {/* Step label */}
                 <div
                   ref={(el) => {
                     stepLabelRefs.current[i] = el;
@@ -517,7 +495,6 @@ function ProductsScrollStory() {
                   </span>
                 </div>
 
-                {/* Heading + description */}
                 <div
                   ref={(el) => {
                     textPanelRefs.current[i] = el;
@@ -534,7 +511,6 @@ function ProductsScrollStory() {
                     {product.description}
                   </p>
 
-                  {/* DPDP / domain badges */}
                   <div className="flex flex-wrap gap-2 mb-6">
                     {product.dpdpSections.map((section) => (
                       <Badge key={section} variant="info">
@@ -551,7 +527,6 @@ function ProductsScrollStory() {
                   </div>
                 </div>
 
-                {/* Feature cards */}
                 <div
                   ref={(el) => {
                     featureGroupRefs.current[i] = el;
@@ -628,14 +603,12 @@ function ProductsScrollStory() {
                 ) : (
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-background-secondary to-primary/5">
                     <div className="absolute inset-4 rounded-xl border border-border/30 bg-[var(--glass-bg)] backdrop-blur-sm p-6 flex flex-col justify-between">
-                      {/* Mock browser chrome */}
                       <div className="flex items-center gap-3">
                         <div className="w-3 h-3 rounded-full bg-destructive/60" />
                         <div className="w-3 h-3 rounded-full bg-warning/60" />
                         <div className="w-3 h-3 rounded-full bg-success/60" />
                         <div className="flex-1 h-6 rounded bg-secondary/50 ml-4" />
                       </div>
-                      {/* Mock UI skeleton */}
                       <div className="space-y-3 mt-6 flex-1">
                         <div className="h-4 rounded bg-secondary/40 w-3/4" />
                         <div className="h-4 rounded bg-secondary/30 w-1/2" />
@@ -648,7 +621,6 @@ function ProductsScrollStory() {
                         <div className="h-4 rounded bg-secondary/20 w-2/3 mt-2" />
                         <div className="h-4 rounded bg-secondary/20 w-1/2" />
                       </div>
-                      {/* Product label */}
                       <div className="flex items-center gap-2 mt-4 pt-4 border-t border-border/20">
                         <Icon className="w-4 h-4 text-primary" />
                         <span className="text-xs text-muted-foreground font-medium">
@@ -663,7 +635,7 @@ function ProductsScrollStory() {
           })}
         </div>
 
-        {/* ── Mobile: stacked image (visible only < lg) ────────────────── */}
+        {/* ── Mobile: stacked image ────────────────────────────────────── */}
         <div className="lg:hidden absolute bottom-6 left-6 right-6 h-40 rounded-xl overflow-hidden border border-border/50 bg-card">
           {PRODUCTS.map((product, i) => {
             const Icon = iconMap[product.icon];
@@ -672,7 +644,6 @@ function ProductsScrollStory() {
               <div
                 key={product.id}
                 ref={(el) => {
-                  // Share the same ref array — on mobile we still animate these
                   if (!imagePanelRefs.current[i])
                     imagePanelRefs.current[i] = el;
                 }}
@@ -705,7 +676,7 @@ function ProductsScrollStory() {
         </div>
       </div>
 
-      {/* ── Mobile step dots (bottom centre) ──────────────────────────── */}
+      {/* ── Mobile step dots ──────────────────────────────────────────── */}
       <div
         className="lg:hidden absolute bottom-52 left-1/2 -translate-x-1/2 flex gap-2"
         aria-hidden="true"
@@ -757,7 +728,7 @@ export default function ProductsPage() {
         </motion.div>
       </SectionWrapper>
 
-      {/* ── Scroll Storytelling (replaces the old PRODUCTS.map) ── */}
+      {/* ── Scroll Storytelling ── */}
       <ProductsScrollStory />
 
       {/* ── CTA ── */}
@@ -778,7 +749,11 @@ export default function ProductsPage() {
             Take our guided questionnaire and receive personalised product
             recommendations based on your compliance gaps and priorities.
           </p>
-          <Button variant="primary" size="lg" onClick={() => useQuestionnaireStore.getState().openModal()}>
+          <Button
+            variant="primary"
+            size="lg"
+            onClick={() => useQuestionnaireStore.getState().openModal()}
+          >
             Get Recommendations
             <ArrowRight className="w-5 h-5" />
           </Button>
