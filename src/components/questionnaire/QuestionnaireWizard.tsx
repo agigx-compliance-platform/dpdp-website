@@ -327,7 +327,7 @@ export function QuestionnaireWizard() {
         />
       </div>
 
-      {/* Scan status bar — visible when scan is running */}
+      {/* Scan status bar */}
       {wantsScan && scanId && currentStep > 0 && (
         <div className="w-full bg-secondary/30 px-6 py-2 border-b border-border flex items-center justify-between text-xs sm:text-sm">
           <div className="flex items-center gap-2">

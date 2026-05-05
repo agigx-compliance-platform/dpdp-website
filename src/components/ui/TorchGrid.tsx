@@ -23,7 +23,7 @@ interface TorchCardProps {
 // ─── Global styles (injected once into <head>) ────────────────────────────────
 
 const STYLES = `
-  /* Outer shell — holds the sweeping border glow */
+  /* Outer shell: holds the sweeping border glow */
   .tg-shell {
     position: relative;
     border-radius: 12px;
@@ -51,7 +51,7 @@ const STYLES = `
     opacity: 1;
   }
 
-  /* Inner surface — 1px inside so shell border glow peeks through */
+  /* Inner surface: 1px inside so shell border glow peeks through */
   .tg-inner {
     position: relative;
     margin: 1px;
@@ -63,7 +63,7 @@ const STYLES = `
     z-index: 1;
   }
 
-  /* Tight spotlight — only on the specific hovered card */
+  /* Tight spotlight: only on the specific hovered card */
   .tg-inner::before {
     content: '';
     position: absolute;

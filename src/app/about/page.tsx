@@ -10,7 +10,6 @@ import {
   Linkedin,
   Twitter,
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
 import { SectionWrapper } from '@/components/ui/SectionWrapper'
 import { Button } from '@/components/ui/Button'
 import { Card, CardContent } from '@/components/ui/Card'
@@ -43,31 +42,26 @@ const VALUES = [
   },
 ]
 
-const TEAM = [
+const LEADERSHIP = [
   {
-    name: 'Dinesh Venkatesan',
-    role: 'Founder & CEO',
-    bio: 'Privacy technologist with deep expertise in regulatory compliance architecture and AI governance.',
-    avatar: 'DV',
+    name: 'Arruthra Venugopaal',
+    role: 'CEO and Founder',
+    bio: 'Leads strategy and delivery for DPDP continuous compliance, products, and client outcomes at dpdpconsultancy.',
+    avatar: 'AV',
   },
   {
-    name: 'Priya Sharma',
-    role: 'Head of Privacy Engineering',
-    bio: 'Former Big 4 privacy consultant turned engineer. Builds the technical controls that satisfy regulators.',
-    avatar: 'PS',
+    name: 'Arun Karthik Dharmalingam',
+    role: 'CTO & Product Architect',
+    bio: 'Owns technical architecture, platform roadmap, and product design for consent and continuous compliance tooling.',
+    avatar: 'AD',
   },
-  {
-    name: 'Arjun Mehta',
-    role: 'Chief Compliance Officer',
-    bio: 'Regulatory affairs specialist with experience across DPDP, GDPR, and sector-specific Indian regulations.',
-    avatar: 'AM',
-  },
-  {
-    name: 'Kavitha Rajan',
-    role: 'VP of Product',
-    bio: 'Product leader focused on making complex compliance workflows accessible through intelligent automation.',
-    avatar: 'KR',
-  },
+]
+
+const ENGINEERING = [
+  { name: 'Dinesh', avatar: 'DV' },
+  { name: 'Naveen', avatar: 'NV' },
+  { name: 'Lingaraj', avatar: 'LI' },
+  { name: 'Karthik', avatar: 'KT' },
 ]
 
 export default function AboutPage() {
@@ -81,7 +75,7 @@ export default function AboutPage() {
           className="text-center max-w-4xl mx-auto"
         >
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-            <span className="gradient-text">About Consent Cockpit</span>
+            <span className="gradient-text">About dpdpconsultancy</span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
             We&apos;re building the compliance infrastructure India needs where
@@ -106,7 +100,7 @@ export default function AboutPage() {
           </p>
           <p className="text-muted-foreground mt-6 leading-relaxed max-w-3xl mx-auto">
             DPDP 2023 represents a fundamental shift in how Indian organisations
-            must treat personal data. Consent Cockpit exists to make that transition
+            must treat personal data. dpdpconsultancy exists to make that transition
             achievable through technology that automates controls, services
             that build capability, and products that provide continuous assurance.
           </p>
@@ -172,13 +166,12 @@ export default function AboutPage() {
             <span className="gradient-text">Leadership Team</span>
           </h2>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Privacy engineers, regulatory specialists, and product leaders
-            united by a shared mission.
+            Executive leadership for strategy, technology, and product at dpdpconsultancy.
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {TEAM.map((member, idx) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
+          {LEADERSHIP.map((member, idx) => (
             <motion.div
               key={member.name}
               initial={{ opacity: 0, y: 20 }}
@@ -213,6 +206,45 @@ export default function AboutPage() {
         </div>
       </SectionWrapper>
 
+      <SectionWrapper className="py-16 border-t border-border/60">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-3xl font-bold mb-4">
+            <span className="gradient-text">Engineering Team</span>
+          </h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            Engineers shipping consent management, scanners, and compliance automation.
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 max-w-4xl mx-auto">
+          {ENGINEERING.map((member, idx) => (
+            <motion.div
+              key={member.name}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: idx * 0.08 }}
+            >
+              <Card className="text-center h-full">
+                <CardContent className="p-5">
+                  <div className="w-14 h-14 rounded-full bg-secondary flex items-center justify-center mx-auto mb-3 ring-2 ring-primary/20">
+                    <span className="text-sm font-bold text-primary">{member.avatar}</span>
+                  </div>
+                  <h3 className="text-sm font-semibold text-foreground">{member.name}</h3>
+                  <p className="text-xs text-muted-foreground mt-1">Engineering</p>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))}
+        </div>
+      </SectionWrapper>
+
       <SectionWrapper className="py-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -223,7 +255,7 @@ export default function AboutPage() {
         >
           <h3 className="text-xl font-bold text-foreground mb-3">Advisory Board</h3>
           <p className="text-muted-foreground leading-relaxed">
-            Consent Cockpit is guided by an advisory board comprising former regulators,
+            dpdpconsultancy is guided by an advisory board comprising former regulators,
             senior privacy practitioners, and technology leaders with decades
             of combined experience across Indian and international data protection
             frameworks.

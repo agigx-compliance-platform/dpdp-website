@@ -18,7 +18,7 @@ const services = [
     icon: ShieldCheck,
     title: 'Privacy Ops',
     description:
-      'End-to-end privacy operations — consent management, DSAR workflows, breach response, and vendor risk.',
+      'End-to-end privacy operations: consent management, DSAR workflows, breach response, and vendor risk.',
   },
   {
     icon: Brain,

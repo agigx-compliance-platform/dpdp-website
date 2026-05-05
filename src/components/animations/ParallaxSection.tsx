@@ -3,9 +3,9 @@ import { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 
 interface ParallaxSectionProps {
-  background?: React.ReactNode // slowest layer — 30% speed
-  midground?: React.ReactNode // mid layer  — 60% speed
-  foreground: React.ReactNode // front layer — 100% speed (normal)
+  background?: React.ReactNode // slowest layer (30% speed)
+  midground?: React.ReactNode // mid layer (60% speed)
+  foreground: React.ReactNode // front layer (100% speed, normal)
   height?: string
   className?: string
 }

@@ -1,7 +1,10 @@
 import axios from 'axios'
 import type { EnquiryFormData, QuestionnaireResponses, ScanStatusResponse, ScanReportResponse } from './types'
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8084'
+const API_BASE =
+  process.env.NEXT_PUBLIC_CONSENT_API_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  'http://localhost:8084'
 
 const apiClient = axios.create({
   baseURL: API_BASE,

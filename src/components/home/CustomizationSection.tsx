@@ -17,13 +17,13 @@ const dimensions = [
     icon: Building2,
     title: "Industry Vertical",
     description:
-      "Healthcare, fintech, e-commerce, edtech — compliance rules vary by sector.",
+      "Healthcare, fintech, e-commerce, edtech. Compliance rules vary by sector.",
   },
   {
     icon: Layers,
     title: "Tech Stack",
     description:
-      "Cloud-native, legacy, hybrid — we integrate with your actual infrastructure.",
+      "Cloud-native, legacy, hybrid: we integrate with your actual infrastructure.",
   },
   {
     icon: Users,
@@ -35,13 +35,13 @@ const dimensions = [
     icon: Globe,
     title: "Regulatory Scope",
     description:
-      "DPDP, GDPR, CCPA, AI Act — map overlapping obligations automatically.",
+      "DPDP 2023, the 2025 Rules, and the IT Act. Map obligations across your programme automatically.",
   },
   {
     icon: Database,
     title: "Data Categories",
     description:
-      "Customer PII, employee data, health records, children's data — each has unique rules.",
+      "Customer PII, employee data, health records, children's data: each has unique rules.",
   },
   {
     icon: TrendingUp,
@@ -89,7 +89,7 @@ export function CustomizationSection() {
           }
         }
 
-        /* Outer card wrapper — holds the radial glow border */
+        /* Outer card wrapper: holds the radial glow border */
         .torch-card {
           position: relative;
           border-radius: 12px;
@@ -97,7 +97,7 @@ export function CustomizationSection() {
           cursor: pointer;
         }
 
-        /* Outer glow — sweeps across ALL cards on grid hover */
+        /* Outer glow: sweeps across ALL cards on grid hover */
         .torch-card::before {
           content: '';
           position: absolute;
@@ -131,7 +131,7 @@ export function CustomizationSection() {
           overflow: hidden;
         }
 
-        /* Inner spotlight glow — only on hovered card */
+        /* Inner spotlight glow: only on hovered card */
         .torch-card-inner::before {
           content: '';
           position: absolute;
@@ -177,7 +177,7 @@ export function CustomizationSection() {
           transition={{ duration: 0.6, delay: 0.15 }}
           className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto"
         >
-          Every compliance engine we deliver is bespoke — shaped by your
+          Every compliance engine we deliver is bespoke, shaped by your
           industry, stack, and regulatory landscape.
         </motion.p>
       </div>

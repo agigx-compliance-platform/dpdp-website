@@ -33,7 +33,7 @@ const scanLaunchSchema = z.object({
 
 const STATS = [
   "E-commerce platforms face avg ₹82 Crore exposure under DPDP",
-  "72-hour breach notification window — are you ready?",
+  "72-hour breach notification window. Are you ready?",
   "Section 6 violations alone carry ₹50 Crore penalty"
 ]
 
@@ -76,7 +76,7 @@ export function ScanLaunchStep({
       <div className="text-center">
         <h2 className="text-3xl font-bold text-foreground">Scan your website for free</h2>
         <p className="mt-3 text-base text-muted-foreground">
-          We&apos;ll check for consent banners, cookie compliance, DSAR mechanisms, and privacy policy gaps — takes 90 seconds.
+          We&apos;ll check for consent banners, cookie compliance, DSAR mechanisms, and privacy policy gaps (about 90 seconds).
         </p>
       </div>
 

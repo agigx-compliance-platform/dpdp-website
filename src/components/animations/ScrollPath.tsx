@@ -15,7 +15,7 @@ export function ScrollPath({ className }: ScrollPathProps) {
   useEffect(() => {
     if (!pathRef.current) return
 
-    // FREE version — strokeDashoffset technique (no DrawSVGPlugin needed)
+    // FREE version: strokeDashoffset technique (no DrawSVGPlugin needed)
     const length = pathRef.current.getTotalLength()
     gsap.set(pathRef.current, {
       strokeDasharray: length,

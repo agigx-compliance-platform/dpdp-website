@@ -26,11 +26,11 @@ export function BrandMark({
     <Link
       href="/"
       className={cn('inline-flex flex-col items-center gap-0.5 shrink-0 text-center', linkClassName)}
-      aria-label="Consent Cockpit home"
+      aria-label="dpdpconsultancy home"
     >
       <Image
         src={LOGO_SRC}
-        alt="Consent Cockpit"
+        alt="dpdpconsultancy"
         width={dimension}
         height={dimension}
         className={cn(
@@ -41,8 +41,8 @@ export function BrandMark({
         priority={priority}
       />
       {showTagline && (
-        <span className="block w-full text-center text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground sm:text-xs">
-          consent cockpit
+        <span className="block w-full text-center text-[10px] font-medium tracking-wide text-muted-foreground sm:text-xs">
+          dpdpconsultancy
         </span>
       )}
     </Link>

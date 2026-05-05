@@ -33,7 +33,7 @@ export function Marquee({ items, speed = 60 }: MarqueeProps) {
       // Smooth lerp toward target speed
       s.speed += (s.targetSpeed - s.speed) * (1 - Math.pow(0.005, dt * 6));
 
-      // Always move left only — scroll has zero effect on direction
+      // Always move left only; scroll has zero effect on direction
       s.x -= s.speed * dt;
 
       if (!trackRef.current) return;

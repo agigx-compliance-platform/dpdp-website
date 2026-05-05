@@ -38,7 +38,7 @@ const PRODUCTS = [
     id: "consent-platform",
     name: "Consent Cockpit Platform",
     tagline:
-      "Consent that satisfies Section 6 — from capture to withdrawal to proof",
+      "Consent that satisfies Section 6, from capture to withdrawal to proof",
     description:
       "A full-lifecycle consent management platform that handles banner deployment, preference collection, version tracking, and immutable audit trails. Built specifically for DPDP Section 6 compliance with purpose-based granular consent and one-click withdrawal.",
     icon: "Fingerprint",
@@ -98,7 +98,7 @@ const PRODUCTS = [
       {
         title: "Policy Analysis",
         description:
-          "Detects GDPR, DPDP, CCPA compliance signals with gap identification",
+          "Detects DPDP compliance signals with gap identification",
       },
       {
         title: "DSAR Discovery",
@@ -187,13 +187,13 @@ const PRODUCTS = [
     name: "AI Compliance Assistant",
     tagline: "Expert DPDP guidance in minutes, not days",
     description:
-      "An AI-powered advisory tool trained on the DPDP 2023 Act, November 2025 Rules, and global privacy frameworks. Provides instant guidance, runs 18-question compliance audits with penalty calculation, and delivers industry-specific recommendations.",
+      "An AI-powered advisory tool trained on the DPDP 2023 Act, November 2025 Rules, and the IT Act. Provides instant guidance, runs 18-question compliance audits with penalty calculation, and delivers industry-specific recommendations.",
     icon: "Bot",
     features: [
       {
         title: "AI-Powered Query",
         description:
-          "Trained on DPDP 2023 Act and global frameworks for instant expert guidance",
+          "Trained on DPDP 2023, the 2025 Rules, and the IT Act for contextual expert guidance",
       },
       {
         title: "DPDPA Compliance Audit",
@@ -214,7 +214,7 @@ const PRODUCTS = [
     name: "Adaptive Compliance Engine",
     tagline: "Compliance that evolves with the law",
     description:
-      "A self-learning compliance engine that monitors regulatory changes, adapts policies automatically, and maintains continuous compliance across DPDP, GDPR, CCPA, and LGPD frameworks with real-time scoring and trend analysis.",
+      "A self-learning compliance engine that monitors DPDP and related Indian regulatory changes, adapts policies automatically, and maintains continuous compliance with real-time scoring and trend analysis.",
     icon: "RefreshCw",
     features: [
       {
@@ -230,7 +230,7 @@ const PRODUCTS = [
       {
         title: "Multi-Framework Support",
         description:
-          "DPDP, GDPR, CCPA, LGPD unified compliance with cross-mapping",
+          "DPDP-led compliance with policy and control cross-mapping",
       },
       {
         title: "Continuous Monitoring",
@@ -252,7 +252,7 @@ const iconMap: Record<string, React.ElementType> = {
   RefreshCw,
 };
 
-// ─── Scroll Storytelling — SNAP TO STEP ──────────────────────────────────────
+// Scroll Storytelling: snap to step
 
 const N = PRODUCTS.length;
 
@@ -721,7 +721,7 @@ export default function ProductsPage() {
             </span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-            Purpose-built technology products that automate DPDP compliance —
+            Purpose-built technology products that automate DPDP compliance,
             from consent management and scanning to AI-assisted advisory and
             adaptive governance.
           </p>

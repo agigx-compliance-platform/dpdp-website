@@ -4,7 +4,7 @@ export function calculateRiskScore(formData: Partial<QuestionnaireResponses>): n
   // Returns 0–100
   let score = 0
 
-  // Journey stage — earlier = more risk
+  // Journey stage: earlier = more risk
   const journeyRisk: Record<string, number> = {
     'just-starting': 30,
     'have-policies': 18,
@@ -14,7 +14,7 @@ export function calculateRiskScore(formData: Partial<QuestionnaireResponses>): n
   }
   score += journeyRisk[formData.journeyStage ?? ''] ?? 0
 
-  // Data types — higher risk types add more
+  // Data types: higher risk types add more
   const dataRisk: Record<string, number> = {
     children: 15,
     health: 12,

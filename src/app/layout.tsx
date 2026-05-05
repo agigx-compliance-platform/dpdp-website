@@ -13,18 +13,17 @@ export const metadata: Metadata = {
       ? new URL(process.env.NEXT_PUBLIC_SITE_URL)
       : new URL('http://localhost:8000'),
   title: {
-    default: 'Consent Cockpit — DPDP Compliance Intelligence',
+    default: 'Consent Cockpit · DPDP Compliance Intelligence',
     template: '%s | Consent Cockpit',
   },
   description:
-    'Transform DPDP, GDPR, and AI governance into a living, enforceable compliance engine. Automated assessments, consent management, and AI-powered governance for Indian enterprises.',
+    'Transform DPDP and AI governance into a living, enforceable compliance engine. Automated assessments, consent management, and AI-powered governance for Indian enterprises.',
   keywords: [
     'DPDP compliance',
     'Digital Personal Data Protection',
     'DPDP 2023',
     'consent management',
     'privacy compliance India',
-    'GDPR compliance',
     'AI governance',
     'data protection',
     'compliance scanner',
@@ -35,23 +34,23 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_IN',
     siteName: 'Consent Cockpit',
-    title: 'Consent Cockpit — DPDP Compliance Intelligence',
+    title: 'Consent Cockpit · DPDP Compliance Intelligence',
     description:
-      'Transform DPDP, GDPR, and AI governance into a living, enforceable compliance engine.',
+      'Transform DPDP and AI governance into a living, enforceable compliance engine.',
     images: [
       {
         url: '/images/hero-poster.png',
         width: 1536,
         height: 1024,
-        alt: 'Consent Cockpit — DPDP compliance intelligence',
+        alt: 'Consent Cockpit · DPDP compliance intelligence',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Consent Cockpit — DPDP Compliance Intelligence',
+    title: 'Consent Cockpit · DPDP Compliance Intelligence',
     description:
-      'Transform DPDP, GDPR, and AI governance into a living, enforceable compliance engine.',
+      'Transform DPDP and AI governance into a living, enforceable compliance engine.',
     images: ['/images/hero-poster.png'],
   },
   robots: {

@@ -383,15 +383,15 @@ export const PRODUCTS: Product[] = [
     features: [
       {
         title: 'Consent Banner Management',
-        description: 'Customisable cookie consent banners with JSONB config-driven layout, content, styling, and categories. Region-aware consent modes supporting opt-in for GDPR/EU, opt-out for CCPA, and DPDP-compliant flows for India with script blocking before consent and multi-language support across DPDP Schedule languages.',
+        description: 'Customisable cookie consent banners with JSONB config-driven layout, content, styling, and categories. Configurable consent modes with DPDP-compliant flows for India (including script blocking before consent) and multi-language support across DPDP Schedule languages.',
       },
       {
         title: 'Cookie Discovery and Classification',
-        description: 'Playwright-powered headless browser scanning discovers all cookies including HTTP and JavaScript-set variants. Auto-classification against a 500+ known cookie database covering Google, Meta, Microsoft, HubSpot, and more with categorisation into analytics, marketing, functional, and preferences, flagging cookies set before consent as critical DPDP/GDPR violations.',
+        description: 'Playwright-powered headless browser scanning discovers all cookies including HTTP and JavaScript-set variants. Auto-classification against a 500+ known cookie database covering Google, Meta, Microsoft, HubSpot, and more with categorisation into analytics, marketing, functional, and preferences, flagging cookies set before consent as critical DPDP violations.',
       },
       {
         title: 'Immutable Consent Audit Trail',
-        description: 'Append-only consent logs that are never modified, providing the legally required proof of consent. Records visitor ID, user ID, action type, per-category choices, IP geolocation, page URL, GPC/DNT signals, regulation context, banner version, and policy version with 7-year retention for GDPR proof-of-consent compliance.',
+        description: 'Append-only consent logs that are never modified, providing the legally required proof of consent. Records visitor ID, user ID, action type, per-category choices, IP geolocation, page URL, GPC/DNT signals, regulation context, banner version, and policy version with retention aligned to your policy and DPDP proof-of-consent requirements.',
       },
       {
         title: 'Cookie Policy Lifecycle',
@@ -425,7 +425,7 @@ export const PRODUCTS: Product[] = [
       },
       {
         title: 'Policy Content Analysis',
-        description: 'Detects mentions of GDPR, DPDP, CCPA, data subject rights, DPO contact information, retention periods, international transfers, third-party sharing, children\'s data provisions, and cookie disclosures. Evaluates completeness against Section 5 notice requirements.',
+        description: 'Detects mentions of DPDP, data principal rights, Data Protection Officer contact information, retention periods, international transfers, third-party sharing, children\'s data provisions, and cookie disclosures. Evaluates completeness against Section 5 notice requirements.',
       },
       {
         title: 'DSAR Mechanism Discovery',
@@ -495,11 +495,11 @@ export const PRODUCTS: Product[] = [
     id: 'ai-assistant',
     name: 'AI Compliance Assistant',
     tagline: 'Expert DPDP guidance in minutes, not days',
-    description: 'AI-powered compliance advisory tool trained on DPDP 2023, the November 2025 Rules, GDPR, the IT Act, and global privacy frameworks. Provides instant contextual guidance, interactive compliance audits, and industry-specific recommendations.',
+    description: 'AI-powered compliance advisory tool trained on DPDP 2023, the November 2025 Rules, the IT Act, and Indian sector guidance. Provides instant contextual guidance, interactive compliance audits, and industry-specific recommendations.',
     features: [
       {
         title: 'AI-Powered Query Resolution',
-        description: 'Trained on the full text of DPDP 2023, November 2025 Rules, GDPR, IT Act, and 20+ global privacy frameworks. Delivers instant, contextual compliance guidance with multi-language support covering English, Hindi, and 10+ regional languages from the DPDP Schedule.',
+        description: 'Trained on the full text of DPDP 2023, the November 2025 Rules, and the IT Act. Delivers instant, contextual compliance guidance with multi-language support covering English, Hindi, and 10+ regional languages from the DPDP Schedule.',
       },
       {
         title: 'DPDPA Compliance Audit',
@@ -517,7 +517,7 @@ export const PRODUCTS: Product[] = [
     id: 'adaptive-engine',
     name: 'Adaptive Compliance Engine',
     tagline: 'Compliance that evolves with the law',
-    description: 'Self-learning compliance platform that monitors regulatory changes across DPDP, GDPR, CCPA/CPRA, LGPD, and 15+ global frameworks. Automatically adapts organisational policies, workflows, and controls to maintain continuous compliance as laws evolve.',
+    description: 'Self-learning compliance platform that monitors regulatory changes across DPDP, the 2025 Rules, the IT Act, and related Indian instruments. Automatically adapts organisational policies, workflows, and controls to maintain continuous compliance as requirements evolve.',
     features: [
       {
         title: 'Regulatory Change Detection',
@@ -529,7 +529,7 @@ export const PRODUCTS: Product[] = [
       },
       {
         title: 'Multi-Framework Support',
-        description: 'Unified compliance management across DPDP 2023, GDPR, CCPA/CPRA, LGPD, UAE PDPL, KSA PDPL, and more. Cross-framework gap analysis identifies overlapping requirements and harmonised controls to reduce duplication.',
+        description: 'Unified compliance management for DPDP 2023 and the 2025 Rules, with controls that extend to subsidiary obligations under the IT Act and sector rules where applicable. Cross-domain gap analysis identifies overlapping requirements and harmonised controls to reduce duplication.',
       },
       {
         title: 'Continuous Monitoring',

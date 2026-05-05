@@ -65,7 +65,7 @@ export function HeroSection() {
     <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-background">
       {/* ── Background layer ─────────────────────────────────────── */}
       <div className="absolute inset-0">
-        {/* Poster / fallback image — always mounted, always visible until video takes over */}
+        {/* Poster / fallback image: always mounted, always visible until video takes over */}
         {/* <Image
           src="/images/hero-poster.png"
           alt=""
@@ -75,7 +75,7 @@ export function HeroSection() {
           className="object-cover"
         /> */}
 
-        {/* Video — fades in only once it has started playing, hiding any stutter */}
+        {/* Video: fades in only once it has started playing, hiding any stutter */}
         {allowVideo && (
           <motion.video
             key="hero-video"
@@ -102,7 +102,7 @@ export function HeroSection() {
         )}
       </div>
 
-      {/* ── Dark overlay — fades in FIRST to mask any load flash ─── */}
+      {/* Dark overlay: fades in first to mask any load flash */}
       <motion.div
         className={cn(
           "pointer-events-none absolute inset-0 z-[2]",
@@ -113,7 +113,7 @@ export function HeroSection() {
         aria-hidden
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        // Overlay comes in fastest — before anything else
+        // Overlay comes in fastest, before anything else
         transition={{ duration: 0.35, ease: "easeOut" as const }}
       />
 
@@ -136,7 +136,7 @@ export function HeroSection() {
           isLight && "text-white drop-shadow-[0_2px_16px_rgba(0,0,0,0.9)]",
         )}
       >
-        {/* Eyebrow line — arrives first, sets context */}
+        {/* Eyebrow line */}
         <motion.p
           {...fadeIn(d(0.55), 0.7)}
           className={cn(
@@ -144,10 +144,10 @@ export function HeroSection() {
             isLight ? "text-white/50" : "text-muted-foreground/60",
           )}
         >
-          DPDP · GDPR · AI Governance
+          DPDP · AI Governance
         </motion.p>
 
-        {/* Subtitle — second, frames the headline */}
+        {/* Subtitle */}
         <motion.p
           {...fadeUp(d(0.75), 18)}
           className={cn(
@@ -155,11 +155,11 @@ export function HeroSection() {
             isLight ? "text-white/90" : "text-muted-foreground",
           )}
         >
-          Transform DPDP, GDPR, and AI governance into a living, enforceable
-          compliance engine — not a checklist.
+          Transform DPDP and AI governance into a living, enforceable
+          compliance engine, not a checklist.
         </motion.p>
 
-        {/* Headline — lands last, heaviest weight */}
+        {/* Headline */}
         <motion.h1
           {...fadeUp(d(1.0), 28)}
           className={cn(
@@ -167,14 +167,14 @@ export function HeroSection() {
             isLight ? "text-white" : "text-foreground",
           )}
         >
-          Compliance{" "}
+          DPDP Continuous{" "}
           <span
             className={cn(
               "gradient-text",
               isLight && "[filter:drop-shadow(0_2px_16px_rgba(0,0,0,0.85))]",
             )}
           >
-            Intelligence
+            Compliance Intelligence
           </span>
         </motion.h1>
 
@@ -218,7 +218,7 @@ export function HeroSection() {
         </motion.div>
       </div>
 
-      {/* ── Scroll indicator — very last ──────────────────────────── */}
+      {/* Scroll indicator */}
       <motion.div
         {...fadeIn(d(2.0), 0.8)}
         className="absolute bottom-8 left-1/2 z-[3] -translate-x-1/2"

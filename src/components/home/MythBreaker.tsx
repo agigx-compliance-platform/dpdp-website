@@ -10,7 +10,7 @@ const myths = [
   {
     myth: "A privacy policy is enough",
     reality:
-      "DPDP requires operational controls — not just documents. You need consent management, data mapping, breach response, and audit trails.",
+      "DPDP requires operational controls, not just documents. You need consent management, data mapping, breach response, and audit trails.",
   },
   {
     myth: "Consent banners solve everything",

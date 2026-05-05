@@ -11,10 +11,10 @@ import { platformSnapshots } from "@/lib/agigx-ui-screenshots";
  * On hover the card does four things simultaneously:
  *  1. The screenshot zooms in slightly (depth illusion).
  *  2. A bright horizontal scan-line sweeps top → bottom over the image,
- *     like a radar/sonar or document scanner — very techy, fits compliance theme.
+ *     like a radar/sonar or document scanner; fits compliance theme.
  *  3. Corner bracket accents animate in (top-left & bottom-right), framing the card.
  *  4. A frosted stat bar rises from the bottom revealing the caption in a
- *     pill/HUD style — NOT just a div sliding up, it's a glass morphism strip
+ *     pill/HUD style. Not just a div sliding up: a glass morphism strip
  *     with a pulsing green status dot.
  *
  * The card border glows green and the shadow blooms outward.
@@ -89,7 +89,7 @@ export function PlatformSnapshot() {
                 sizes="(max-width: 640px) 100vw, 50vw"
               />
 
-              {/* base dark veil — lifts on hover to "illuminate" the screen */}
+              {/* base dark veil: lifts on hover to illuminate the screen */}
               <div className="absolute inset-0 bg-black/25 group-hover:bg-black/5 transition-colors duration-600 z-10" />
 
               {/* ── Scan-line sweep ── */}
@@ -134,7 +134,7 @@ export function PlatformSnapshot() {
                 </svg>
               </span>
 
-              {/* ── HUD caption bar — rises from bottom ── */}
+              {/* HUD caption bar: rises from bottom */}
               <div
                 className="absolute inset-x-0 bottom-0 z-20
                            translate-y-full group-hover:translate-y-0

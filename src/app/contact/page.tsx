@@ -29,7 +29,7 @@ const FAQ_ITEMS = [
   {
     question: "What are the maximum penalties under DPDP?",
     answer:
-      "DPDP 2023 prescribes penalties up to ₹250 Crore for non-compliance with specific provisions. Different violations carry different penalty amounts — from ₹50 Crore for failure to implement security safeguards to ₹250 Crore for non-compliance with provisions relating to children's data or Data Protection Board orders.",
+      "DPDP 2023 prescribes penalties up to ₹250 Crore for non-compliance with specific provisions. Different violations carry different penalty amounts, from ₹50 Crore for failure to implement security safeguards to ₹250 Crore for non-compliance with provisions relating to children's data or Data Protection Board orders.",
   },
   {
     question: "How long does a typical DPDP compliance engagement take?",
@@ -42,9 +42,9 @@ const FAQ_ITEMS = [
       "Under DPDP 2023, DPO appointment is mandatory for Significant Data Fiduciaries (Section 10(2)(b)). Even if not classified as SDF, having a designated privacy lead is strongly recommended. Consent Cockpit offers Virtual DPO services for organizations that need expert coverage without full-time hiring.",
   },
   {
-    question: "Can Consent Cockpit help with both DPDP and GDPR compliance?",
+    question: 'Is Consent Cockpit focused on DPDP?',
     answer:
-      "Yes. Our Adaptive Compliance Engine supports multi-framework compliance including DPDP, GDPR, CCPA, and LGPD. Many Indian enterprises have dual obligations under DPDP and GDPR. We provide cross-mapped controls and unified compliance dashboards.",
+      'Yes. Our platform and methodologies are built around the Digital Personal Data Protection Act 2023 and the 2025 Rules, from consent capture and privacy notices to Data Principal rights, grievance handling, and regulator-ready evidence for Indian enterprises.',
   },
 ];
 
@@ -318,7 +318,7 @@ export default function ContactPage() {
                     Phone
                   </h3>
                   <p className="text-sm text-muted-foreground">
-                    +91 80 4567 8900
+                    +91 98841 51319
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
                     Mon-Fri, 9:00 AM - 6:00 PM IST
@@ -333,14 +333,9 @@ export default function ContactPage() {
                   <MapPin className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-foreground mb-1">
-                    Office
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    DPDP Consultancy
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    Bengaluru, Karnataka, India
+                  <p className="text-sm font-medium text-foreground">DPDP Consultancy</p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Chennai, Tamil Nadu, India
                   </p>
                 </div>
               </CardContent>

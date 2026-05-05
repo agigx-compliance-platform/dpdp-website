@@ -74,7 +74,7 @@ const SERVICE_CATEGORIES = [
       {
         title: "Data Inventory, Visibility and Flow Mapping",
         description:
-          "Build live inventory of personal data — where it lives, who accesses it (Section 8(5)). Data flow mapping and lineage traceability across systems, databases, and third-party integrations.",
+          "Build live inventory of personal data: where it lives, who accesses it (Section 8(5)). Data flow mapping and lineage traceability across systems, databases, and third-party integrations.",
         dpdpSections: ["8(5)"],
         penalties: ["₹250 Crore"],
         whoIsThisFor: "Organizations lacking visibility into their data landscape",
@@ -462,7 +462,7 @@ function HeroSection() {
         </h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
           DPDP 2023 enforcement brings penalties up to ₹250 Crore. Our 8
-          service pillars cover every compliance obligation — from initial
+          service pillars cover every compliance obligation, from initial
           readiness assessment to continuous managed operations.
         </p>
       </motion.div>
@@ -731,7 +731,7 @@ function TimelineNav({
           </h2>
         </div>
 
-        {/* Timeline — desktop */}
+        {/* Timeline: desktop */}
         <div className="hidden md:flex items-start relative">
           {/* Connecting line */}
           <div
@@ -777,7 +777,7 @@ function TimelineNav({
           ))}
         </div>
 
-        {/* Timeline — mobile */}
+        {/* Timeline: mobile */}
         <div className="md:hidden flex flex-col gap-3">
           {TIMELINE_PHASES.map((phase, i) => (
             <button

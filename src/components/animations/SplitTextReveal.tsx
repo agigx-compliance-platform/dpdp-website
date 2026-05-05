@@ -20,7 +20,7 @@ export function SplitTextReveal({
   useEffect(() => {
     if (!ref.current) return
 
-    // Manual split — no GSAP Club required
+    // Manual split (no GSAP Club required)
     const words = children.split(' ')
     ref.current.innerHTML = words
       .map(

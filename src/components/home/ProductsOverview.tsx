@@ -66,7 +66,7 @@ export function ProductsOverview() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.12 }}
-              // No overflow-hidden on the outer card — it clips the Explore link underline.
+              // No overflow-hidden on the outer card (it clips the Explore link underline).
               // Shimmer is isolated inside its own clipped span instead.
               className="group relative glass-card p-0 flex flex-col
                          transition-all duration-500 ease-out
@@ -74,7 +74,7 @@ export function ProductsOverview() {
                          hover:shadow-[0_0_40px_-4px_hsl(var(--primary) / 0.25)]
                          hover:border-primary/40"
             >
-              {/* Shimmer — self-contained with overflow-hidden so it can't bleed out */}
+              {/* Shimmer: self-contained with overflow-hidden so it can't bleed out */}
               <span
                 aria-hidden
                 className="pointer-events-none absolute inset-0 z-10 overflow-hidden rounded-[inherit]"
@@ -96,7 +96,7 @@ export function ProductsOverview() {
                            opacity-0 group-hover:opacity-100 transition-opacity duration-500"
               />
 
-              {/* Thumbnail — clipped independently, not the whole card */}
+              {/* Thumbnail: clipped independently, not the whole card */}
               <div
                 className="relative aspect-[16/10] w-full shrink-0 border-b border-border/40
                               overflow-hidden rounded-t-[inherit]"
@@ -114,7 +114,7 @@ export function ProductsOverview() {
                 <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/5 transition-colors duration-500" />
               </div>
 
-              {/* Card body — deliberately NOT overflow-hidden, so Explore is never clipped */}
+              {/* Card body: deliberately NOT overflow-hidden, so Explore is never clipped */}
               <div className="p-6 flex flex-col flex-1">
                 <div className="relative mb-4 w-fit">
                   <span
@@ -157,7 +157,7 @@ export function ProductsOverview() {
                   ))}
                 </ul>
 
-                {/* Explore — lives in the un-clipped body, fully visible */}
+                {/* Explore: lives in the un-clipped body, fully visible */}
                 <Link
                   href="/products"
                   className="mt-5 inline-flex items-center gap-1.5 text-sm text-primary font-medium w-fit relative"
