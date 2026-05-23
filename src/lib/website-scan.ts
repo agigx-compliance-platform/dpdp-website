@@ -1,4 +1,6 @@
-import type { ScanReportResponse, ScanResult } from './types'
+import { isAxiosError } from 'axios'
+import { getScanReport, getScanStatus } from './api'
+import type { ScanReportResponse, ScanResult, ScanStatusResponse } from './types'
 
 /** Backend `ApiResponse<T>` envelopes payload under `{ data }`; axios exposes it as `response.data`. */
 export function unwrapConsentApiEnvelope<T>(axiosResponse: { data: unknown }): T {
@@ -24,11 +26,50 @@ export function mapScanReportToResult(report: ScanReportResponse, scanId?: strin
     overallScore: report.score,
     grade: report.grade,
     summary: report.summary,
-    complianceFlags: report.complianceFlags,
+    complianceFlags: report.complianceFlags ?? [],
     totalCookies: report.totalCookies,
     totalTrackers: report.totalTrackers,
     consentBannerPresent: report.consentBannerPresent,
     consentRejectOption: report.consentRejectOption,
     penaltyExposure: penaltyExposureForScore(report.score),
   }
+}
+
+/** Poll scan status until the report is ready; retries when report lags behind status. */
+export async function pollUntilScanReport(
+  scanId: string,
+  options?: {
+    pollIntervalMs?: number
+    maxAttempts?: number
+    onProgress?: (progress: number) => void
+  }
+): Promise<ScanReportResponse> {
+  const pollIntervalMs = options?.pollIntervalMs ?? 1600
+  const maxAttempts = options?.maxAttempts ?? 120
+
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    if (attempt > 0) {
+      await new Promise((resolve) => setTimeout(resolve, pollIntervalMs))
+    }
+
+    const status = unwrapConsentApiEnvelope<ScanStatusResponse>(await getScanStatus(scanId))
+    options?.onProgress?.(status.progress)
+
+    if (status.status === 'failed') {
+      throw new Error('Scan failed')
+    }
+
+    if (status.status === 'completed') {
+      try {
+        return unwrapConsentApiEnvelope<ScanReportResponse>(await getScanReport(scanId))
+      } catch (err) {
+        if (isAxiosError(err) && err.response?.status === 409) {
+          continue
+        }
+        throw err
+      }
+    }
+  }
+
+  throw new Error('Scan timed out')
 }

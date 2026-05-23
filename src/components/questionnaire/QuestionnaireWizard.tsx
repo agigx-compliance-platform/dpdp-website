@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useEffect, useRef } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowLeft, ArrowRight, Loader2 } from 'lucide-react'
@@ -27,14 +27,13 @@ import {
   step6Schema,
   step9Schema,
 } from '@/lib/questionnaire-schema'
-import { submitQuestionnaire, initiateScan, getScanStatus, getScanReport } from '@/lib/api'
-import { unwrapConsentApiEnvelope, mapScanReportToResult } from '@/lib/website-scan'
-import type {
-  QuestionnaireResponses,
-  ScanReportResponse,
-  ScanResult,
-  ScanStatusResponse,
-} from '@/lib/types'
+import { submitQuestionnaire, initiateScan, getScanReport } from '@/lib/api'
+import {
+  unwrapConsentApiEnvelope,
+  mapScanReportToResult,
+  pollUntilScanReport,
+} from '@/lib/website-scan'
+import type { ScanReportResponse, ScanResult } from '@/lib/types'
 const slideVariants = {
   enter: (direction: number) => ({
     x: direction > 0 ? 300 : -300,
@@ -54,7 +53,7 @@ const POLL_INTERVAL_MS = 1600
 
 export function QuestionnaireWizard() {
   const router = useRouter()
-  const { closeModal } = useQuestionnaireStore()
+  const { isModalOpen } = useQuestionnaireStore()
   const {
     currentStep,
     direction,
@@ -86,9 +85,33 @@ export function QuestionnaireWizard() {
     }
   }
 
-  const routeToResults = useCallback(() => {
-    updateState({ currentStep: 8, direction: 1 })
-  }, [updateState])
+  const navigateToResults = useCallback(
+    (result?: ScanResult) => {
+      setErrors({})
+      if (isModalOpen) {
+        updateState({
+          currentStep: 8,
+          direction: 1,
+          ...(result
+            ? {
+                scanResult: result,
+                scanDone: true,
+                scanId: result.scanId ?? scanId,
+              }
+            : {}),
+        })
+        return
+      }
+
+      const params = new URLSearchParams()
+      params.set('data', btoa(JSON.stringify(formData)))
+      if (result) {
+        params.set('scan', btoa(JSON.stringify(result)))
+      }
+      router.push(`/questionnaire/results?${params.toString()}`)
+    },
+    [formData, isModalOpen, router, scanId, updateState]
+  )
 
   // Resume animation
   useEffect(() => {
@@ -98,14 +121,6 @@ export function QuestionnaireWizard() {
       return () => clearTimeout(t)
     }
   }, []) // run once on mount
-
-
-  // Check if finalizing is done
-  useEffect(() => {
-    if (isFinalizing && (scanDone || !wantsScan)) {
-      routeToResults()
-    }
-  }, [isFinalizing, scanDone, wantsScan, routeToResults])
 
 
   const validateCurrentStep = useCallback((): boolean => {
@@ -155,14 +170,10 @@ export function QuestionnaireWizard() {
     setIsSubmitting(true)
     try {
       await submitQuestionnaire(formData).catch(() => undefined)
+      navigateToResults()
+    } catch {
+      setErrors({ general: 'Could not open results. Please try again.' })
     } finally {
-      try {
-        const params = new URLSearchParams()
-        params.set('data', btoa(JSON.stringify(formData)))
-        router.push(`/questionnaire/results?${params.toString()}`)
-      } catch {
-        setErrors({ general: 'Could not open results. Please try again.' })
-      }
       setIsSubmitting(false)
     }
   }
@@ -170,49 +181,82 @@ export function QuestionnaireWizard() {
   const handleSubmitWithScan = async () => {
     if (!validateCurrentStep()) return
     if (isSubmitting || isScanning) return
+
+    if (scanDone && scanResult) {
+      navigateToResults(scanResult)
+      return
+    }
+
     setIsSubmitting(true)
     setIsScanning(true)
     setIsFinalizing(true)
+    setErrors({})
+
+    let activeScanId = scanId
+    let resolvedResult: ScanResult | null = scanDone && scanResult ? scanResult : null
 
     try {
-      const { data: scanResponse } = await initiateScan({
-        url: formData.websiteUrl!,
-        email: formData.email!,
-        name: formData.name!,
-        company: formData.company!,
-        consent: formData.consentGiven,
+      await submitQuestionnaire(formData).catch(() => undefined)
+
+      if (resolvedResult) {
+        navigateToResults(resolvedResult)
+        return
+      }
+
+      if (!activeScanId) {
+        const initiated = unwrapConsentApiEnvelope<{ scanId: string; sessionId: string }>(
+          await initiateScan({
+            url: formData.websiteUrl!,
+            email: formData.email!,
+            name: formData.name!,
+            company: formData.company!,
+            consent: formData.consentGiven,
+          })
+        )
+        activeScanId = initiated.scanId
+        updateState({
+          scanId: activeScanId,
+          scanProgress: 0,
+          scanDone: false,
+          scanResult: null,
+        })
+      }
+
+      const report = await pollUntilScanReport(activeScanId, {
+        pollIntervalMs: POLL_INTERVAL_MS,
+        onProgress: (progress) => updateState({ scanProgress: progress }),
       })
-
-      const scanId = scanResponse.data.scanId
-
-      let report: ScanReportResponse | null = null
-      let polled = false
-      while (!report) {
-        if (polled) {
-          await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL_MS))
-        }
-        polled = true
-
-        const status = unwrapConsentApiEnvelope<ScanStatusResponse>(await getScanStatus(scanId))
-
-        if (status.status === 'completed') {
-          report = unwrapConsentApiEnvelope<ScanReportResponse>(await getScanReport(scanId))
-        } else if (status.status === 'failed') {
-          throw new Error('Scan failed')
+      resolvedResult = mapScanReportToResult(report, activeScanId)
+      updateState({
+        scanResult: resolvedResult,
+        scanDone: true,
+        scanId: activeScanId,
+      })
+      navigateToResults(resolvedResult)
+    } catch {
+      if (!resolvedResult && activeScanId) {
+        try {
+          const report = unwrapConsentApiEnvelope<ScanReportResponse>(
+            await getScanReport(activeScanId)
+          )
+          resolvedResult = mapScanReportToResult(report, activeScanId)
+          updateState({
+            scanResult: resolvedResult,
+            scanDone: true,
+            scanId: activeScanId,
+          })
+        } catch {
+          // Scan genuinely unavailable
         }
       }
 
-      const scanResult: ScanResult = mapScanReportToResult(report, scanId)
+      if (resolvedResult) {
+        navigateToResults(resolvedResult)
+        return
+      }
 
-      const params = new URLSearchParams()
-      params.set('data', btoa(JSON.stringify(formData)))
-      params.set('scan', btoa(JSON.stringify(scanResult)))
-      router.push(`/questionnaire/results?${params.toString()}`)
-    } catch {
       setErrors({ general: 'Scan failed. Showing recommendations based on your answers.' })
-      const params = new URLSearchParams()
-      params.set('data', btoa(JSON.stringify(formData)))
-      router.push(`/questionnaire/results?${params.toString()}`)
+      navigateToResults()
     } finally {
       setIsScanning(false)
       setIsSubmitting(false)
@@ -231,7 +275,7 @@ export function QuestionnaireWizard() {
   const goNext = () => {
     if (!validateCurrentStep()) return
     if (currentStep === 7) {
-      if (formData.wantsScan) {
+      if (wantsScan) {
         void handleSubmitWithScan()
       } else {
         void handleSubmitWithoutScan()
@@ -402,7 +446,11 @@ export function QuestionnaireWizard() {
                 type="button"
                 variant="primary"
                 onClick={goNext}
-                disabled={isSubmitting || (currentStep === 7 && wantsScan && !formData.consentGiven)}
+                disabled={
+                  isSubmitting ||
+                  (currentStep === 7 && wantsScan && !formData.consentGiven) ||
+                  (currentStep === 7 && scanDone)
+                }
               >
                 {isSubmitting ? (
                   <Loader2 className="h-4 w-4 animate-spin mr-2" />
