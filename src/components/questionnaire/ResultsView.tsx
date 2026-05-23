@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo } from 'react'
+import { useMemo, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Download, Calendar, Star, Package, Wrench, AlertTriangle, BarChart3 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -8,7 +9,9 @@ import { Button } from '@/components/ui/Button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { generateRecommendations } from '@/lib/recommendation-logic'
+import { getConsultationHref, getRecommendationHref } from '@/lib/recommendation-links'
 import { downloadReportPdfUrl } from '@/lib/api'
+import { useQuestionnaireStore } from '@/store/questionnaireStore'
 import type { QuestionnaireResponses, ScanResult, Recommendation } from '@/lib/types'
 
 interface ResultsViewProps {
@@ -64,7 +67,13 @@ function ScoreRing({ score, grade }: { score: number; grade: string }) {
 
 
 
-function RecommendationCard({ rec }: { rec: Recommendation }) {
+function RecommendationCard({
+  rec,
+  onLearnMore,
+}: {
+  rec: Recommendation
+  onLearnMore: (rec: Recommendation) => void
+}) {
   const typeIcon =
     rec.type === "product" ? Star : rec.type === "service" ? Wrench : Package;
   const TypeIcon = typeIcon;
@@ -116,7 +125,12 @@ function RecommendationCard({ rec }: { rec: Recommendation }) {
           </div>
         )}
 
-        <Button variant="outline" size="sm" className="w-full">
+        <Button
+          variant="outline"
+          size="sm"
+          className="w-full"
+          onClick={() => onLearnMore(rec)}
+        >
           Learn More
         </Button>
       </CardContent>
@@ -254,6 +268,24 @@ function generateSummary(responses: QuestionnaireResponses, scanResult?: ScanRes
 }
 
 export function ResultsView({ responses, scanResult }: ResultsViewProps) {
+  const router = useRouter()
+  const { isModalOpen, closeModal } = useQuestionnaireStore()
+
+  const navigateTo = useCallback(
+    (href: string) => {
+      if (isModalOpen) closeModal()
+      router.push(href)
+    },
+    [closeModal, isModalOpen, router]
+  )
+
+  const handleLearnMore = useCallback(
+    (rec: Recommendation) => {
+      navigateTo(getRecommendationHref(rec))
+    },
+    [navigateTo]
+  )
+
   const recommendations = useMemo(
     () => generateRecommendations(responses, scanResult),
     [responses, scanResult],
@@ -408,7 +440,7 @@ export function ResultsView({ responses, scanResult }: ResultsViewProps) {
             </h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {products.map((rec) => (
-                <RecommendationCard key={rec.id} rec={rec} />
+                <RecommendationCard key={rec.id} rec={rec} onLearnMore={handleLearnMore} />
               ))}
             </div>
           </motion.section>
@@ -425,7 +457,7 @@ export function ResultsView({ responses, scanResult }: ResultsViewProps) {
             </h2>
             <div className="grid gap-6 sm:grid-cols-2">
               {services.map((rec) => (
-                <RecommendationCard key={rec.id} rec={rec} />
+                <RecommendationCard key={rec.id} rec={rec} onLearnMore={handleLearnMore} />
               ))}
             </div>
           </motion.section>
@@ -442,7 +474,7 @@ export function ResultsView({ responses, scanResult }: ResultsViewProps) {
             </h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {packages.map((rec) => (
-                <RecommendationCard key={rec.id} rec={rec} />
+                <RecommendationCard key={rec.id} rec={rec} onLearnMore={handleLearnMore} />
               ))}
             </div>
           </motion.section>
@@ -470,7 +502,12 @@ export function ResultsView({ responses, scanResult }: ResultsViewProps) {
           <Download className="h-5 w-5 mr-2" />
           Download Report
         </Button>
-        <Button variant="outline" size="lg" className="flex-1 text-lg py-6">
+        <Button
+          variant="outline"
+          size="lg"
+          className="flex-1 text-lg py-6"
+          onClick={() => navigateTo(getConsultationHref())}
+        >
           <Calendar className="h-6 w-6 mr-2" />
           Book a Consultation
         </Button>
