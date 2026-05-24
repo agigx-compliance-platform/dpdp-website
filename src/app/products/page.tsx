@@ -36,7 +36,7 @@ ScrollTrigger.config({
 const PRODUCTS = [
   {
     id: "consent-platform",
-    name: "Consent Cockpit Platform",
+    name: "DPDP Consultancy Platform",
     tagline:
       "Consent that satisfies Section 6, from capture to withdrawal to proof",
     description:

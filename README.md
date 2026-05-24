@@ -1,4 +1,4 @@
-# Consent Cockpit (DPDP website)
+# DPDP Consultancy (DPDP website)
 
 DPDP compliance intelligence platform website built with Next.js 14, Tailwind CSS, and Framer Motion. Aligned with the agigx-ui design system (HSL token-based dark/light themes, glass morphism, gradient accents).
 
@@ -33,7 +33,7 @@ In **light theme**, the hero uses a **dark scrim** over the video so it stays re
 
 ### CMP screenshots (products & services)
 
-Real UI captures from **Consent Cockpit / CMP** (`consent-management`). Mapped in [`src/lib/agigx-ui-screenshots.ts`](src/lib/agigx-ui-screenshots.ts).
+Real UI captures from **DPDP Consultancy / CMP** (`consent-management`). Mapped in [`src/lib/agigx-ui-screenshots.ts`](src/lib/agigx-ui-screenshots.ts).
 
 **Unauthenticated (public shell only):**
 

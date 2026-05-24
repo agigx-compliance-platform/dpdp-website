@@ -222,7 +222,7 @@ const SERVICE_CATEGORIES = [
       {
         title: "Privacy Workflow Implementation",
         description:
-          "Privacy-by-design implementation. Consent workflow via Consent Cockpit (banners, preference centers, SDK). Rights automation with configurable workflows.",
+          "Privacy-by-design implementation. Consent workflow via DPDP Consultancy (banners, preference centers, SDK). Rights automation with configurable workflows.",
         dpdpSections: ["6", "8"],
         penalties: ["₹200 Crore"],
         whoIsThisFor: "Engineering teams implementing privacy controls",
@@ -246,7 +246,7 @@ const SERVICE_CATEGORIES = [
       {
         title: "Platform Integration",
         description:
-          "Control orchestration across application, infrastructure, and data layers. Consent Cockpit integration with existing enterprise systems and workflows.",
+          "Control orchestration across application, infrastructure, and data layers. DPDP Consultancy integration with existing enterprise systems and workflows.",
         dpdpSections: ["8"],
         penalties: ["₹250 Crore"],
         whoIsThisFor:

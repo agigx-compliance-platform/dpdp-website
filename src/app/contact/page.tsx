@@ -39,10 +39,10 @@ const FAQ_ITEMS = [
   {
     question: "Do we need a Data Protection Officer?",
     answer:
-      "Under DPDP 2023, DPO appointment is mandatory for Significant Data Fiduciaries (Section 10(2)(b)). Even if not classified as SDF, having a designated privacy lead is strongly recommended. Consent Cockpit offers Virtual DPO services for organizations that need expert coverage without full-time hiring.",
+      "Under DPDP 2023, DPO appointment is mandatory for Significant Data Fiduciaries (Section 10(2)(b)). Even if not classified as SDF, having a designated privacy lead is strongly recommended. DPDP Consultancy offers Virtual DPO services for organizations that need expert coverage without full-time hiring.",
   },
   {
-    question: 'Is Consent Cockpit focused on DPDP?',
+    question: 'Is DPDP Consultancy focused on DPDP?',
     answer:
       'Yes. Our platform and methodologies are built around the Digital Personal Data Protection Act 2023 and the 2025 Rules, from consent capture and privacy notices to Data Principal rights, grievance handling, and regulator-ready evidence for Indian enterprises.',
   },

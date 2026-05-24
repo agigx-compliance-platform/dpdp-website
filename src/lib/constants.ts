@@ -208,7 +208,7 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
     subOfferings: [
       {
         title: 'Privacy and Rights Workflow Implementation',
-        description: 'Privacy-by-design implementation covering consent workflow deployment via Consent Cockpit (consent banners, preference centres, SDK integration). Rights and grievance workflow automation with configurable response timelines and multi-channel intake.',
+        description: 'Privacy-by-design implementation covering consent workflow deployment via DPDP Consultancy (consent banners, preference centres, SDK integration). Rights and grievance workflow automation with configurable response timelines and multi-channel intake.',
         dpdpSections: ['5', '6(1)', '6(2)', '6(4)', '11', '12', '13'],
         penalties: ['₹50 Crore', '₹200 Crore'],
         whoIsThisFor: 'Organisations ready to implement technical privacy controls and automated workflows',
@@ -229,7 +229,7 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
       },
       {
         title: 'Platform Integration and Control Orchestration',
-        description: 'Control orchestration across application, infrastructure, and data layers with integration into the Consent Cockpit ecosystem: consent management, DSAR workflows, code scanning, and infrastructure scanning. Unified compliance view across all organisational systems.',
+        description: 'Control orchestration across application, infrastructure, and data layers with integration into the DPDP Consultancy ecosystem: consent management, DSAR workflows, code scanning, and infrastructure scanning. Unified compliance view across all organisational systems.',
         dpdpSections: ['8(2)', '8(5)', '10'],
         penalties: ['₹250 Crore'],
         whoIsThisFor: 'Organisations seeking unified compliance control across diverse technology stacks',
@@ -377,7 +377,7 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
 export const PRODUCTS: Product[] = [
   {
     id: 'consent-platform',
-    name: 'Consent Cockpit Platform',
+    name: 'DPDP Consultancy Platform',
     tagline: 'Consent that satisfies Section 6 from capture to withdrawal to proof',
     description: 'Enterprise-grade consent management platform built specifically for DPDP 2023 compliance. Handles the full consent lifecycle from banner presentation through granular preference management to immutable audit trails, ensuring every consent interaction is legally defensible.',
     features: [
@@ -761,7 +761,7 @@ export const QUESTIONNAIRE_STEPS: QuestionnaireStep[] = [
     description: 'Review your selections and provide consent to proceed.',
     type: 'boolean',
     options: [
-      { id: 'consent-given', label: 'I consent to Consent Cockpit processing my data for compliance assessment purposes', description: 'Your data will be processed in accordance with our privacy policy and DPDP 2023' },
+      { id: 'consent-given', label: 'I consent to DPDP Consultancy processing my data for compliance assessment purposes', description: 'Your data will be processed in accordance with our privacy policy and DPDP 2023' },
     ],
   },
 ]

@@ -53,7 +53,7 @@ function StrikethroughRow({
     ["0%", "100%"],
   );
 
-  // PHASE 3: Consent Cockpit replaces them (Progress 0.65 to 0.9)
+  // PHASE 3: DPDP Consultancy replaces them (Progress 0.65 to 0.9)
   const modernStart = 0.65 + index * 0.04;
   const modernEnd = 0.85 + index * 0.04;
   const modernOpacity = useTransform(progress, [modernStart, modernEnd], [0, 1]);
@@ -87,7 +87,7 @@ function StrikethroughRow({
         </span>
       </motion.div>
 
-      {/* Consent Cockpit */}
+      {/* DPDP Consultancy */}
       <motion.div
         style={{ opacity: modernOpacity, x: modernX }}
         className="glass-card p-4 flex items-center gap-3 gradient-border"
@@ -128,7 +128,7 @@ export function Differentiator() {
         <div className="max-w-4xl mx-auto w-full">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold">
-              Why Consent Cockpit Is <span className="gradient-text">Different</span>
+              Why DPDP Consultancy Is <span className="gradient-text">Different</span>
             </h2>
             {/* Optional UX touch: Helps users know they need to keep scrolling */}
             <p className="text-sm text-muted-foreground mt-4 animate-pulse">
@@ -141,7 +141,7 @@ export function Differentiator() {
               Traditional Tools
             </div>
             <div className="text-center gradient-text font-medium text-sm uppercase tracking-wider">
-              Consent Cockpit
+              DPDP Consultancy
             </div>
           </div>
 

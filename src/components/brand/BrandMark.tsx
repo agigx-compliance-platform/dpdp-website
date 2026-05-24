@@ -4,7 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
-const LOGO_SRC = '/images/brand/consent-cockpit-logo.png'
+const LOGO_SRC = '/images/brand/dpdp-consultancy-logo.png'
 
 type BrandMarkProps = {
   className?: string
@@ -26,11 +26,11 @@ export function BrandMark({
     <Link
       href="/"
       className={cn('inline-flex flex-col items-center gap-0.5 shrink-0 text-center', linkClassName)}
-      aria-label="dpdpconsultancy home"
+      aria-label="DPDP Consultancy home"
     >
       <Image
         src={LOGO_SRC}
-        alt="dpdpconsultancy"
+        alt="DPDP Consultancy"
         width={dimension}
         height={dimension}
         className={cn(
