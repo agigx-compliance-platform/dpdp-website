@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { SectionWrapper } from "@/components/ui/SectionWrapper";
 import { ThemeScreenshot } from "@/components/ui/ThemeScreenshot";
 import { consentCockpitBestFeatures } from "@/lib/agigx-ui-screenshots";
-import { cn } from "@/lib/utils";
 
 export function ConsentCockpitHighlights() {
   return (
@@ -31,22 +30,17 @@ export function ConsentCockpitHighlights() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.45, delay: i * 0.06 }}
-            className="glass-card overflow-hidden p-0 group hover:border-primary/40 transition-colors"
+            className="overflow-hidden rounded-xl border border-border/60 bg-card shadow-sm transition-colors hover:border-primary/40"
           >
-            <div
-              className={cn(
-                "relative aspect-[16/10] w-full overflow-hidden border-b border-border/40",
-                "chatSurface" in item && item.chatSurface ? "bg-white" : "bg-muted/20",
-              )}
-            >
+            <div className="relative aspect-[16/10] w-full overflow-hidden border-b border-border/40 bg-card">
               <ThemeScreenshot
                 dark={item.dark}
                 light={item.light}
                 alt={item.title}
-                surface={"chatSurface" in item && item.chatSurface ? "white" : "default"}
+                surface={"chatSurface" in item && item.chatSurface ? "chat" : "default"}
                 darkClassName={"darkImageClassName" in item ? item.darkImageClassName : undefined}
                 lightClassName={"lightImageClassName" in item ? item.lightImageClassName : undefined}
-                sizes="(max-width: 640px) 100vw, 33vw"
+                priority={i === 0}
               />
             </div>
             <div className="p-4">

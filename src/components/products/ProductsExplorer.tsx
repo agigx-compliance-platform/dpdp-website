@@ -115,6 +115,7 @@ export function ProductsExplorer() {
                     light={shot.light}
                     alt={product.name}
                     className="object-contain object-top"
+                    priority
                     sizes="(max-width: 1024px) 100vw, 900px"
                   />
                 </div>

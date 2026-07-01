@@ -551,7 +551,7 @@ async function main() {
 
     const context = await browser.newContext({
       viewport: { width: 1480, height: 920 },
-      deviceScaleFactor: 1.25,
+      deviceScaleFactor: 2,
       colorScheme,
       reducedMotion: 'reduce',
       javaScriptEnabled: true,

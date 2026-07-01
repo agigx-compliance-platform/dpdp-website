@@ -4,8 +4,14 @@ export const AGIGX_UI_SCREENSHOT_DIR = '/images/products/agigx-ui'
 /** Admin CMP / platform UI — light theme (paired captures). */
 export const AGIGX_UI_LIGHT_SCREENSHOT_DIR = '/images/products/agigx-ui-light'
 
-/** Privacy Assistant widget screenshots (light UI — use chatShot for theme-aware display). */
-export const CONSENT_COCKPIT_CHAT_DIR = '/images/products/consent-cockpit-chat'
+/** Privacy Assistant widget — light UI. */
+export const CONSENT_COCKPIT_CHAT_LIGHT_DIR = '/images/products/consent-cockpit-chat'
+
+/** Privacy Assistant widget — dark UI (paired with light chat captures). */
+export const CONSENT_COCKPIT_CHAT_DARK_DIR = '/images/products/consent-cockpit-chat-dark'
+
+/** @deprecated use CONSENT_COCKPIT_CHAT_LIGHT_DIR */
+export const CONSENT_COCKPIT_CHAT_DIR = CONSENT_COCKPIT_CHAT_LIGHT_DIR
 
 export type ProductHighlight = {
   dark: string
@@ -25,7 +31,7 @@ export type ThemedFeatureCard = ThemedScreenshot & {
   imageClassName?: string
   darkImageClassName?: string
   lightImageClassName?: string
-  /** When true, chat widget screenshots use a white canvas in either site theme. */
+  /** When true, chat widget uses theme-matched canvas (white in light, dark in dark). */
   chatSurface?: boolean
 }
 
@@ -49,10 +55,15 @@ function adminHighlight(file: string, label: string): ProductHighlight {
   return { ...adminShot(file), label }
 }
 
-/** Privacy Assistant chat widget — same light UI in both site themes. */
-export function chatShot(file: string): Pick<ThemedScreenshot, 'dark' | 'light'> {
-  const src = `${CONSENT_COCKPIT_CHAT_DIR}/${file}`
-  return { dark: src, light: src }
+/** Privacy Assistant chat — dark widget in dark site theme, light widget in light theme. */
+export function chatShot(
+  lightFile: string,
+  darkFile: string = lightFile,
+): Pick<ThemedScreenshot, 'dark' | 'light'> {
+  return {
+    dark: `${CONSENT_COCKPIT_CHAT_DARK_DIR}/${darkFile}`,
+    light: `${CONSENT_COCKPIT_CHAT_LIGHT_DIR}/${lightFile}`,
+  }
 }
 
 
@@ -142,24 +153,30 @@ export const consentCockpitBestFeatures = [
     ...adminShot('cmp-dashboard.png'),
     title: 'Organization dashboard',
     caption: 'Privacy score, DPDP readiness, and domain health at a glance.',
+    darkImageClassName: 'object-contain object-top',
+    lightImageClassName: 'object-contain object-top',
   },
   {
     ...chatShot('cockpit-chat-welcome.png'),
     title: 'Privacy Assistant',
     caption: 'Multilingual chat for rights, grievances, and consent preferences.',
-    darkImageClassName: 'object-cover object-top',
-    lightImageClassName: 'object-cover object-top',
+    darkImageClassName: 'object-contain object-center p-1',
+    lightImageClassName: 'object-contain object-center p-1',
     chatSurface: true,
   },
   {
     ...adminShot('cmp-ai-setup.png'),
     title: 'AI configuration',
     caption: 'Guided setup for banners, policies, and DSAR workflows.',
+    darkImageClassName: 'object-contain object-top',
+    lightImageClassName: 'object-contain object-top',
   },
   {
     ...adminShot('cmp-domains.png'),
     title: 'Domain compliance scan',
     caption: 'Register properties and run instant compliance checks.',
+    darkImageClassName: 'object-contain object-top',
+    lightImageClassName: 'object-contain object-top',
   },
   {
     ...chatShot('cockpit-chat-vs-dashboard.png'),
@@ -173,6 +190,8 @@ export const consentCockpitBestFeatures = [
     ...adminShot('cmp-dsar-requests.png'),
     title: 'Rights analytics',
     caption: 'DSAR and grievance trends with SLA monitoring.',
+    darkImageClassName: 'object-contain object-top',
+    lightImageClassName: 'object-contain object-top',
   },
 ] as const satisfies readonly ThemedFeatureCard[]
 
@@ -232,24 +251,15 @@ export const productPreviewThumbs = [
   },
 ] as const
 
-/** Privacy Assistant gallery — chat flows in both site themes (white canvas on dark). */
+/** Privacy Assistant gallery — six chat mockups; dark/light paired via chatShot(). */
 export const privacyAssistantGallery = [
   {
     ...chatShot('cockpit-chat-welcome.png'),
-    title: 'Multilingual welcome',
+    title: 'Privacy Assistant welcome',
     caption:
-      'Language selection in English, Hindi, Tamil, Telugu, Bengali, and more before any action.',
-    darkImageClassName: 'object-cover object-[center_24%]',
-    lightImageClassName: 'object-cover object-[center_24%]',
-    chatSurface: true,
-  },
-  {
-    ...chatShot('cockpit-chat-welcome.png'),
-    title: 'Quick actions menu',
-    caption:
-      'Privacy rights, data requests, grievances, and request status — surfaced as one-tap options.',
-    darkImageClassName: 'object-cover object-[center_78%]',
-    lightImageClassName: 'object-cover object-[center_78%]',
+      'Multilingual greeting, language selection, and one-tap quick actions for rights, data, and grievances.',
+    darkImageClassName: 'object-contain object-center p-1',
+    lightImageClassName: 'object-contain object-center p-1',
     chatSurface: true,
   },
   {
@@ -266,8 +276,8 @@ export const privacyAssistantGallery = [
     title: 'Consent preferences',
     caption:
       'Review cookie categories and data-processing purposes, then withdraw or update permissions in chat.',
-    darkImageClassName: 'object-cover object-top',
-    lightImageClassName: 'object-cover object-top',
+    darkImageClassName: 'object-contain object-center p-2',
+    lightImageClassName: 'object-contain object-center p-2',
     chatSurface: true,
   },
   {
@@ -275,8 +285,8 @@ export const privacyAssistantGallery = [
     title: 'DSAR data request',
     caption:
       'Guided intake for download, delete, correct, or marketing opt-out — with name and email collection.',
-    darkImageClassName: 'object-cover object-top',
-    lightImageClassName: 'object-cover object-top',
+    darkImageClassName: 'object-contain object-center p-1',
+    lightImageClassName: 'object-contain object-center p-1',
     chatSurface: true,
   },
   {
@@ -284,8 +294,8 @@ export const privacyAssistantGallery = [
     title: 'Request confirmation',
     caption:
       'Reference number, email confirmation, and DPDP 30-day response timeline after submission.',
-    darkImageClassName: 'object-cover object-top',
-    lightImageClassName: 'object-cover object-top',
+    darkImageClassName: 'object-contain object-center p-1',
+    lightImageClassName: 'object-contain object-center p-1',
     chatSurface: true,
   },
   {
@@ -293,8 +303,8 @@ export const privacyAssistantGallery = [
     title: 'Grievance filing',
     caption:
       'Structured Section 13 complaint flow with concern categories, free-text details, and submit summary.',
-    darkImageClassName: 'object-cover object-top',
-    lightImageClassName: 'object-cover object-top',
+    darkImageClassName: 'object-contain object-center p-1',
+    lightImageClassName: 'object-contain object-center p-1',
     chatSurface: true,
   },
 ] as const satisfies readonly ThemedFeatureCard[]

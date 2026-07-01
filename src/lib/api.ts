@@ -47,6 +47,7 @@ export async function initiateScan(data: {
   name: string
   company: string
   consent: boolean
+  sessionId?: string
 }) {
   return apiClient.post<{ data: { scanId: string; sessionId: string } }>(
     '/api/v1/sdk/website/scan/initiate',

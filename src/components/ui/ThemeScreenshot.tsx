@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import type { SyntheticEvent } from "react";
 import { cn } from "@/lib/utils";
 
 export interface ThemeScreenshotProps {
@@ -11,12 +11,60 @@ export interface ThemeScreenshotProps {
   className?: string;
   darkClassName?: string;
   lightClassName?: string;
+  /** @deprecated Native img ignores sizes; kept for API compatibility. */
   sizes?: string;
   priority?: boolean;
   width?: number;
   height?: number;
-  /** Chat widget screenshots need a white canvas in either site theme. */
-  surface?: "default" | "white";
+  /** Chat widget: white canvas in light theme, dark canvas in dark theme. */
+  surface?: "default" | "white" | "chat";
+}
+
+function blockImageAction(event: SyntheticEvent) {
+  event.preventDefault();
+}
+
+function ProtectedScreenshotImg({
+  src,
+  className,
+  width,
+  height,
+  alt,
+  priority,
+}: {
+  src: string;
+  className: string;
+  width?: number;
+  height?: number;
+  alt: string;
+  priority?: boolean;
+}) {
+  return (
+    <img
+      src={src}
+      alt={alt}
+      width={width}
+      height={height}
+      decoding="async"
+      loading={priority ? "eager" : "lazy"}
+      {...(priority ? { fetchPriority: "high" as const } : {})}
+      draggable={false}
+      onContextMenu={blockImageAction}
+      onDragStart={blockImageAction}
+      className={className}
+    />
+  );
+}
+
+function ViewOnlyShield() {
+  return (
+    <div
+      className="theme-screenshot__shield absolute inset-0 z-10"
+      aria-hidden
+      onContextMenu={blockImageAction}
+      onDragStart={blockImageAction}
+    />
+  );
 }
 
 export function ThemeScreenshot({
@@ -27,65 +75,83 @@ export function ThemeScreenshot({
   className,
   darkClassName,
   lightClassName,
-  sizes,
   priority,
   width,
   height,
   surface = "default",
 }: ThemeScreenshotProps) {
-  const baseClass = fill ? "object-cover object-top" : "";
-  const whiteSurface = surface === "white";
-  const darkImageClass = cn(baseClass, className, darkClassName, whiteSurface && "bg-white");
-  const lightImageClass = cn(baseClass, className, lightClassName, whiteSurface && "bg-white");
-  const containerBg = whiteSurface ? "bg-white" : "bg-muted/20";
+  const baseClass = fill ? "object-contain object-top" : "";
+  const darkImageClass = cn(
+    "theme-screenshot__img theme-screenshot__img--dark",
+    baseClass,
+    className,
+    darkClassName,
+    surface === "white" && "bg-white",
+  );
+  const lightImageClass = cn(
+    "theme-screenshot__img theme-screenshot__img--light",
+    baseClass,
+    className,
+    lightClassName,
+    (surface === "white" || surface === "chat") && "bg-white",
+  );
+  const darkContainerBg =
+    surface === "chat" ? "bg-[#0b0f11]" : surface === "white" ? "bg-white" : "bg-muted/20";
+  const lightContainerBg =
+    surface === "chat" || surface === "white" ? "bg-white" : "bg-muted/20";
 
   if (!fill) {
     return (
-      <span className="theme-screenshot inline-block">
-        <Image
+      <span
+        className="theme-screenshot relative inline-block"
+        onContextMenu={blockImageAction}
+      >
+        <ProtectedScreenshotImg
           src={dark}
-          alt={alt}
           width={width}
           height={height}
-          className={cn("theme-screenshot__img theme-screenshot__img--dark", darkImageClass)}
-          sizes={sizes}
+          alt={alt}
           priority={priority}
-          unoptimized
+          className={darkImageClass}
         />
-        <Image
+        <ProtectedScreenshotImg
           src={light}
-          alt={alt}
           width={width}
           height={height}
-          className={cn("theme-screenshot__img theme-screenshot__img--light", lightImageClass)}
-          sizes={sizes}
+          alt={alt}
           priority={priority}
-          unoptimized
+          className={lightImageClass}
         />
+        <ViewOnlyShield />
       </span>
     );
   }
 
   return (
-    <div className={cn("theme-screenshot relative h-full w-full", containerBg)}>
-      <Image
+    <div
+      className={cn(
+        "theme-screenshot relative isolate h-full w-full select-none",
+        darkContainerBg,
+      )}
+      onContextMenu={blockImageAction}
+    >
+      <ProtectedScreenshotImg
         src={dark}
         alt={alt}
-        fill
-        className={cn("theme-screenshot__img theme-screenshot__img--dark", darkImageClass)}
-        sizes={sizes}
         priority={priority}
-        unoptimized
+        className={cn(darkImageClass, "absolute inset-0 h-full w-full")}
       />
-      <Image
+      <ProtectedScreenshotImg
         src={light}
         alt={alt}
-        fill
-        className={cn("theme-screenshot__img theme-screenshot__img--light", containerBg, lightImageClass)}
-        sizes={sizes}
         priority={priority}
-        unoptimized
+        className={cn(
+          lightImageClass,
+          lightContainerBg,
+          "absolute inset-0 h-full w-full",
+        )}
       />
+      <ViewOnlyShield />
     </div>
   );
 }

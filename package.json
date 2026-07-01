@@ -8,7 +8,8 @@
     "start": "next start -p 8000",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "capture:agigx-ui": "node scripts/capture-agigx-ui-screenshots.cjs"
+    "capture:agigx-ui": "node scripts/capture-agigx-ui-screenshots.cjs",
+    "convert:chat-dark": "node scripts/convert-chat-mockups-dark.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",

@@ -92,10 +92,11 @@ export function PrivacyAssistantShowcase() {
                     dark={item.dark}
                     light={item.light}
                     alt={item.title}
-                    surface={item.chatSurface ? "white" : "default"}
+                    surface={item.chatSurface ? "chat" : "default"}
                     darkClassName={item.darkImageClassName}
                     lightClassName={item.lightImageClassName}
-                    sizes="(max-width: 1024px) 100vw, 560px"
+                    priority={active === 0}
+                    sizes="(max-width: 1024px) 100vw, 1120px"
                   />
                 </motion.div>
               </AnimatePresence>

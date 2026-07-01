@@ -196,7 +196,15 @@ export function QuestionnaireWizard() {
     let resolvedResult: ScanResult | null = scanDone && scanResult ? scanResult : null
 
     try {
-      await submitQuestionnaire(formData).catch(() => undefined)
+      let questionnaireSessionId: string | undefined
+      try {
+        const submitted = unwrapConsentApiEnvelope<{ sessionId: string; message: string }>(
+          await submitQuestionnaire(formData)
+        )
+        questionnaireSessionId = submitted.sessionId
+      } catch {
+        /* proceed with scan if questionnaire save fails */
+      }
 
       if (resolvedResult) {
         navigateToResults(resolvedResult)
@@ -211,6 +219,7 @@ export function QuestionnaireWizard() {
             name: formData.name!,
             company: formData.company!,
             consent: formData.consentGiven,
+            sessionId: questionnaireSessionId,
           })
         )
         activeScanId = initiated.scanId

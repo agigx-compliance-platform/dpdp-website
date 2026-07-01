@@ -110,8 +110,8 @@ export function ProductsOverview() {
                     productPreviewThumbs[0].light
                   }
                   alt={productPreviewThumbs[i]?.alt ?? ""}
-                  className="object-cover object-top
-                             transition-transform duration-700 ease-out group-hover:scale-105"
+                  className="object-contain object-top"
+                  priority={i === 0}
                   sizes="(max-width: 640px) 100vw, 33vw"
                 />
                 <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/5 transition-colors duration-500" />
