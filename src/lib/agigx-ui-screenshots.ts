@@ -97,7 +97,7 @@ export const productScreenshots = {
     highlights: [
       adminHighlight('cmp-dsar-requests.png', 'Request analytics'),
       adminHighlight('cmp-dsar-workflows.png', 'Workflow builder'),
-      adminHighlight('cmp-consent-logs.png', 'Audit trail'),
+      adminHighlight('cmp-dsar-requests.png', 'DSAR audit trail'),
       adminHighlight('cmp-analytics.png', 'Trend monitoring'),
     ],
   },
@@ -109,7 +109,7 @@ export const productScreenshots = {
       adminHighlight('cmp-processors.png', 'Processor registry'),
       adminHighlight('cmp-dashboard.png', 'Vendor risk overview'),
       adminHighlight('cmp-domains.png', 'Third-party discovery'),
-      adminHighlight('cmp-dsar-workflows.png', 'Downstream tasks'),
+      adminHighlight('cmp-processor-monitoring.png', 'Downstream tasks'),
     ],
   },
   'infra-scanner': {
@@ -139,7 +139,7 @@ export const productScreenshots = {
     highlights: [
       adminHighlight('cmp-compliance-health.png', 'Regulatory coverage'),
       adminHighlight('cmp-dashboard.png', 'Org dashboard'),
-      adminHighlight('cmp-consent-logs.png', 'Audit trail'),
+      adminHighlight('cmp-purpose-consent-logs.png', 'Purpose audit trail'),
       adminHighlight('cmp-analytics.png', 'Compliance trends'),
     ],
   },

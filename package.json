@@ -9,7 +9,9 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "capture:agigx-ui": "node scripts/capture-agigx-ui-screenshots.cjs",
-    "convert:chat-dark": "node scripts/convert-chat-mockups-dark.mjs"
+    "convert:chat-dark": "node scripts/convert-chat-mockups-dark.mjs",
+    "sync:agigx-ui-dark-mockups": "node scripts/sync-agigx-ui-dark-mockups.mjs",
+    "sync:agigx-ui-light-mockups": "node scripts/sync-agigx-ui-light-mockups.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",
