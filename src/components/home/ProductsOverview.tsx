@@ -1,11 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Fingerprint, ScanSearch, FileKey, ArrowRight } from "lucide-react";
 import { SectionWrapper } from "@/components/ui/SectionWrapper";
 import { Button } from "@/components/ui/Button";
+import { ThemeScreenshot } from "@/components/ui/ThemeScreenshot";
 import { productPreviewThumbs } from "@/lib/agigx-ui-screenshots";
 
 const products = [
@@ -101,12 +101,15 @@ export function ProductsOverview() {
                 className="relative aspect-[16/10] w-full shrink-0 border-b border-border/40
                               overflow-hidden rounded-t-[inherit]"
               >
-                <Image
-                  src={
-                    productPreviewThumbs[i]?.src ?? productPreviewThumbs[0].src
+                <ThemeScreenshot
+                  dark={
+                    productPreviewThumbs[i]?.dark ?? productPreviewThumbs[0].dark
+                  }
+                  light={
+                    productPreviewThumbs[i]?.light ??
+                    productPreviewThumbs[0].light
                   }
                   alt={productPreviewThumbs[i]?.alt ?? ""}
-                  fill
                   className="object-cover object-top
                              transition-transform duration-700 ease-out group-hover:scale-105"
                   sizes="(max-width: 640px) 100vw, 33vw"

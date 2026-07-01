@@ -76,29 +76,33 @@ export function usePersistedQuestionnaireState() {
     }
   }, [])
 
+  const notifySync = useCallback(() => {
+    setTimeout(() => window.dispatchEvent(new Event('agigx-questionnaire-sync')), 0)
+  }, [])
+
   const clearPersistedState = useCallback(() => {
     localStorage.removeItem(STORAGE_KEY)
     setState(defaultState)
-    window.dispatchEvent(new Event('agigx-questionnaire-sync'))
-  }, [])
+    notifySync()
+  }, [notifySync])
 
   const updateState = useCallback((updates: Partial<PersistedQuestionnaireState>) => {
     setState((prev) => {
       const next = { ...prev, ...updates }
       localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
-      window.dispatchEvent(new Event('agigx-questionnaire-sync'))
       return next
     })
-  }, [])
+    notifySync()
+  }, [notifySync])
 
   const updateFormData = useCallback((field: keyof QuestionnaireResponses, value: any) => {
     setState((prev) => {
       const next = { ...prev, formData: { ...prev.formData, [field]: value } }
       localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
-      window.dispatchEvent(new Event('agigx-questionnaire-sync'))
       return next
     })
-  }, [])
+    notifySync()
+  }, [notifySync])
 
   return {
     ...state,

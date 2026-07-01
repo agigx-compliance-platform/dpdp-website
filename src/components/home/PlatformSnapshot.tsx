@@ -1,8 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { motion } from "framer-motion";
 import { SectionWrapper } from "@/components/ui/SectionWrapper";
+import { ThemeScreenshot } from "@/components/ui/ThemeScreenshot";
 import { platformSnapshots } from "@/lib/agigx-ui-screenshots";
 
 /**
@@ -49,8 +49,8 @@ export function PlatformSnapshot() {
           See the Platform <span className="gradient-text">in Action</span>
         </motion.h2>
         <p className="mt-3 text-sm text-muted-foreground max-w-2xl mx-auto">
-          Real screens from the Consent Cockpit consent-management experience (CMP home,
-          analytics, health, and policy tools).
+          Real screens from Consent Cockpit — admin console views that adapt to
+          your light or dark theme automatically.
         </p>
       </div>
 
@@ -79,18 +79,18 @@ export function PlatformSnapshot() {
             {/* ══ IMAGE AREA ══ */}
             <div className="relative aspect-[16/10] w-full overflow-hidden">
               {/* screenshot */}
-              <Image
-                src={item.src}
+              <ThemeScreenshot
+                dark={item.dark}
+                light={item.light}
                 alt={item.title}
-                fill
                 className="object-cover object-top
                            transition-transform duration-700 ease-out
                            group-hover:scale-[1.04]"
                 sizes="(max-width: 640px) 100vw, 50vw"
               />
 
-              {/* base dark veil: lifts on hover to illuminate the screen */}
-              <div className="absolute inset-0 bg-black/25 group-hover:bg-black/5 transition-colors duration-600 z-10" />
+              {/* base veil: lifts on hover to illuminate the screen */}
+              <div className="absolute inset-0 bg-foreground/[0.04] group-hover:bg-transparent transition-colors duration-600 z-10" />
 
               {/* ── Scan-line sweep ── */}
               <span

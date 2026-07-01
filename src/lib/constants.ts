@@ -470,6 +470,40 @@ export const PRODUCTS: Product[] = [
     complianceDomains: ['Data Principal Rights'],
   },
   {
+    id: 'processor-governance',
+    name: 'Vendor & Processor Governance',
+    tagline: 'Section 8(2) processor oversight from registry to downstream action',
+    description: 'Register third-party processors and vendors, map them to processing purposes, orchestrate consent and DSAR propagation via webhooks, and monitor integration delivery health — with vendor risk visibility on the organisation dashboard.',
+    features: [
+      {
+        title: 'Processor and Vendor Registry',
+        description: 'Central register of all third-party processors with category, lifecycle status (draft, in review, active, archived), contact details, and secure webhook credential management.',
+      },
+      {
+        title: 'Downstream Webhook Orchestration',
+        description: 'Automated propagation to registered processors when consent preferences change or DSAR workflows require downstream action, ensuring processors honour updated legal bases.',
+      },
+      {
+        title: 'Integration Delivery Monitoring',
+        description: 'Real-time visibility into processor webhook delivery status, failures, retries, and alert history — linked from the processor registry for operational accountability.',
+      },
+      {
+        title: 'Vendor Risk Classification',
+        description: 'Risk-tiered vendor matrix on the organisation dashboard aggregating processor counts by risk level, supporting Section 8(2) due diligence and board-level reporting.',
+      },
+      {
+        title: 'Purpose and Processor Mapping',
+        description: 'Link each processor to lawful processing purposes so preference centres, privacy notices, and audit trails accurately disclose who receives personal data and why.',
+      },
+      {
+        title: 'Lifecycle and Audit Governance',
+        description: 'Govern processor onboarding, review, activation, and archival with immutable change history suitable for regulator and internal audit review.',
+      },
+    ],
+    dpdpSections: ['8(2)', '8(5)', '8(7)'],
+    complianceDomains: ['Governance & Readiness', 'Data Security & Breach'],
+  },
+  {
     id: 'infra-scanner',
     name: 'Infrastructure and Code Scanner',
     tagline: 'Compliance visibility from cloud to codebase',

@@ -1,16 +1,16 @@
 "use client";
 
-import { useMemo, useCallback } from 'react'
+import { useMemo, useCallback, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { Download, Calendar, Star, Package, Wrench, AlertTriangle, BarChart3 } from 'lucide-react'
+import { Download, Calendar, Star, Package, Wrench, AlertTriangle, BarChart3, Mail } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/Button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
 import { generateRecommendations } from '@/lib/recommendation-logic'
 import { getConsultationHref, getRecommendationHref } from '@/lib/recommendation-links'
-import { downloadReportPdfUrl } from '@/lib/api'
+import { downloadReportPdfUrl, deliverScanReport } from '@/lib/api'
 import { useQuestionnaireStore } from '@/store/questionnaireStore'
 import type { QuestionnaireResponses, ScanResult, Recommendation } from '@/lib/types'
 
@@ -291,6 +291,39 @@ export function ResultsView({ responses, scanResult }: ResultsViewProps) {
     [responses, scanResult],
   );
 
+  const deliverAttempted = useRef(false)
+
+  useEffect(() => {
+    if (
+      deliverAttempted.current ||
+      !scanResult?.scanId ||
+      !responses.consentGiven ||
+      !responses.email
+    ) {
+      return
+    }
+
+    deliverAttempted.current = true
+
+    deliverScanReport(scanResult.scanId, {
+      role: responses.role,
+      orgType: responses.orgType,
+      journeyStage: responses.journeyStage,
+      dataTypes: responses.dataTypes,
+      priorities: responses.priorities,
+      supportType: responses.supportType,
+      recommendations: recommendations.map((rec) => ({
+        type: rec.type,
+        id: rec.id,
+        title: rec.title,
+        reason: rec.reason,
+        relevanceScore: rec.relevanceScore,
+      })),
+    }).catch(() => {
+      deliverAttempted.current = false
+    })
+  }, [scanResult, responses, recommendations])
+
   const products = recommendations.filter((r) => r.type === "product");
   const services = recommendations.filter((r) => r.type === "service");
   const packages = recommendations.filter((r) => r.type === "package");
@@ -480,6 +513,40 @@ export function ResultsView({ responses, scanResult }: ResultsViewProps) {
           </motion.section>
         )}
       </div>
+
+      {hasScan && responses.email && responses.consentGiven && (
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: p4Delay - 0.2 }}
+          className="glass-card rounded-xl border border-primary/20 bg-primary/5 p-6 sm:p-8"
+        >
+          <div className="flex items-start gap-4">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+              <Mail className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-foreground">Report sent to your mailbox</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                A detailed review of your application has been assessed, and your current standing
+                score based on our <strong className="text-foreground">External Privacy Scan Engine</strong>{' '}
+                has been sent to <strong className="text-foreground">{responses.email}</strong>.
+                The email includes your compliance score, recommended products and services, and a
+                PDF report. Our sales team will get in touch with you shortly.
+              </p>
+              <p className="mt-3 text-sm text-muted-foreground">
+                Questions? Contact us at{' '}
+                <a
+                  href="mailto:operations@dpdpconsultancy.in"
+                  className="text-primary hover:underline"
+                >
+                  operations@dpdpconsultancy.in
+                </a>
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      )}
 
       {/* Phase 4: Action Row */}
       <motion.div

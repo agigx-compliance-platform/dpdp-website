@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { EnquiryFormData, QuestionnaireResponses, ScanStatusResponse, ScanReportResponse } from './types'
+import type { EnquiryFormData, QuestionnaireResponses, ScanStatusResponse, ScanReportResponse, Recommendation } from './types'
 
 const API_BASE =
   process.env.NEXT_PUBLIC_CONSENT_API_URL ||
@@ -71,6 +71,25 @@ export async function getScanReport(scanId: string) {
 
 export function downloadReportPdfUrl(scanId: string): string {
   return `${API_BASE}/api/v1/sdk/website/scan/report/${scanId}/pdf`
+}
+
+export async function deliverScanReport(
+  scanId: string,
+  data: {
+    role: string
+    orgType: string
+    journeyStage: string
+    dataTypes: string[]
+    priorities: string[]
+    supportType: string[]
+    recommendations: Pick<Recommendation, 'type' | 'id' | 'title' | 'reason' | 'relevanceScore'>[]
+  }
+) {
+  return apiClient.post<{ data: { delivered: boolean; email?: string; alreadySent?: boolean } }>(
+    `/api/v1/sdk/website/scan/report/${scanId}/deliver`,
+    data,
+    { timeout: 30000 }
+  )
 }
 
 export async function submitContactForm(data: EnquiryFormData) {

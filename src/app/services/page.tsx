@@ -12,6 +12,7 @@ import { SectionWrapper } from "@/components/ui/SectionWrapper";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
+import { ServicesPlatformStrip } from "@/components/services/ServicesPlatformStrip";
 
 const SERVICE_CATEGORIES = [
   {
@@ -1071,6 +1072,7 @@ export default function ServicesPage() {
       <RealityCheckSection />
       <PenaltyMeterSection />
       <TimelineNav activePhase={activePhase} setActivePhase={setActivePhase} />
+      <ServicesPlatformStrip />
 
       <section className="px-6 pb-8" style={{ background: "hsl(var(--background))" }}>
         <div className="max-w-6xl mx-auto">

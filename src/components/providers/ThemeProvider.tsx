@@ -7,16 +7,12 @@ type Theme = 'dark' | 'light'
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>('dark')
-  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     const stored = localStorage.getItem('theme') as Theme | null
     const initial = stored === 'light' ? 'light' : 'dark'
     document.documentElement.setAttribute('data-theme', initial)
-    queueMicrotask(() => {
-      setTheme(initial)
-      setMounted(true)
-    })
+    setTheme(initial)
   }, [])
 
   const toggleTheme = useCallback(() => {
@@ -27,8 +23,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       return next
     })
   }, [])
-
-  if (!mounted) return null
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>

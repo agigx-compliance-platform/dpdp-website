@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 64" fill="none" role="img" aria-label="DPDP Consultancy">
+  <defs>
+    <linearGradient id="blueGrad" x1="8" y1="8" x2="36" y2="56" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6BB5FF"/>
+      <stop offset="1" stop-color="#2B7AE0"/>
+    </linearGradient>
+    <linearGradient id="redGrad" x1="28" y1="20" x2="56" y2="58" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF8585"/>
+      <stop offset="1" stop-color="#E0354F"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#blueGrad)" d="M22 10a14 14 0 0 1 14 14v3h-6v-3a8 8 0 1 0-16 0v3h-6v-3A14 14 0 0 1 22 10Z"/>
+  <path fill="url(#blueGrad)" d="M14 27h18c3.3 0 6 2.7 6 6v16c0 3.3-2.7 6-6 6H14c-3.3 0-6-2.7-6-6V33c0-3.3 2.7-6 6-6Z"/>
+  <path fill="url(#redGrad)" d="M30 33h20c3.3 0 6 2.7 6 6v16c0 3.3-2.7 6-6 6H30c-2.2 0-4-1.8-4-4V37c0-2.2 1.8-4 4-4Z"/>
+  <text x="76" y="30" fill="#F9FAFB" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="22" font-weight="700" letter-spacing="0.04em">DPDP</text>
+  <text x="76" y="48" fill="#D1D5DB" font-family="system-ui, -apple-system, Segoe UI, sans-serif" font-size="11" font-weight="500" letter-spacing="0.28em">CONSULTANCY</text>
+</svg>

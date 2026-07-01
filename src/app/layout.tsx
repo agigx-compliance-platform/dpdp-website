@@ -13,8 +13,8 @@ export const metadata: Metadata = {
       ? new URL(process.env.NEXT_PUBLIC_SITE_URL)
       : new URL('http://localhost:8000'),
   title: {
-    default: 'Consent Cockpit · DPDP Compliance Intelligence',
-    template: '%s | Consent Cockpit',
+    default: 'DPDP Consultancy · DPDP Compliance Intelligence',
+    template: '%s | DPDP Consultancy',
   },
   description:
     'Transform DPDP and AI governance into a living, enforceable compliance engine. Automated assessments, consent management, and AI-powered governance for Indian enterprises.',
@@ -29,29 +29,37 @@ export const metadata: Metadata = {
     'compliance scanner',
     'DSAR management',
   ],
-  authors: [{ name: 'Consent Cockpit' }],
+  authors: [{ name: 'DPDP Consultancy' }],
+  icons: {
+    icon: [
+      { url: '/images/brand/favicon.svg', type: 'image/svg+xml' },
+      { url: '/images/brand/favicon-32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/images/brand/favicon-16.png', sizes: '16x16', type: 'image/png' },
+    ],
+    apple: '/images/brand/apple-touch-icon.png',
+  },
   openGraph: {
     type: 'website',
     locale: 'en_IN',
-    siteName: 'Consent Cockpit',
-    title: 'Consent Cockpit · DPDP Compliance Intelligence',
+    siteName: 'DPDP Consultancy',
+    title: 'DPDP Consultancy · DPDP Compliance Intelligence',
     description:
       'Transform DPDP and AI governance into a living, enforceable compliance engine.',
     images: [
       {
-        url: '/images/hero-poster.png',
-        width: 1536,
+        url: '/images/brand/social-icon-1024.png',
+        width: 1024,
         height: 1024,
-        alt: 'Consent Cockpit · DPDP compliance intelligence',
+        alt: 'DPDP Consultancy',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Consent Cockpit · DPDP Compliance Intelligence',
+    title: 'DPDP Consultancy · DPDP Compliance Intelligence',
     description:
       'Transform DPDP and AI governance into a living, enforceable compliance engine.',
-    images: ['/images/hero-poster.png'],
+    images: ['/images/brand/social-icon-1024.png'],
   },
   robots: {
     index: true,
@@ -74,7 +82,14 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth">
+    <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth" data-theme="dark">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();`,
+          }}
+        />
+      </head>
       <body className="antialiased font-sans">
         <ThemeProvider>
           <SmoothScrollProvider>

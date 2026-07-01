@@ -5,17 +5,36 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { useQuestionnaireStore } from '@/store/questionnaireStore'
 import { Button } from '@/components/ui/Button'
+import { submitEnquiry } from '@/lib/api'
 
 
 export function FinalCTA() {
   const [form, setForm] = useState({ name: '', email: '', company: '', message: '' })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setIsSubmitting(true)
+    try {
+      await submitEnquiry({
+        name: form.name,
+        email: form.email,
+        company: form.company,
+        role: '',
+        subject: 'Get in Touch',
+        message: form.message,
+      })
+      setSubmitted(true)
+    } catch {
+      // Silently handle - user can retry
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -66,59 +85,71 @@ export function FinalCTA() {
           </Link>
         </motion.div>
 
-        <motion.form
-          onSubmit={handleSubmit}
+        <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.3 }}
           className="glass-card p-6 sm:p-8 max-w-2xl mx-auto"
         >
-          <h3 className="text-lg font-semibold mb-6 text-center">
-            Get in Touch
-          </h3>
-          <div className="grid sm:grid-cols-2 gap-4 mb-4">
-            <input
-              type="text"
-              name="name"
-              placeholder="Your name"
-              value={form.name}
-              onChange={handleChange}
-              className="input-field"
-              required
-            />
-            <input
-              type="email"
-              name="email"
-              placeholder="Work email"
-              value={form.email}
-              onChange={handleChange}
-              className="input-field"
-              required
-            />
-          </div>
-          <input
-            type="text"
-            name="company"
-            placeholder="Company"
-            value={form.company}
-            onChange={handleChange}
-            className="input-field mb-4 w-full"
-          />
-          <textarea
-            name="message"
-            placeholder="Tell us about your compliance needs…"
-            value={form.message}
-            onChange={handleChange}
-            rows={4}
-            className="input-field mb-6 w-full resize-none"
-          />
-          <div className="text-center">
-            <Button type="submit" variant="primary" size="lg">
-              Send Message
-            </Button>
-          </div>
-        </motion.form>
+          {submitted ? (
+            <div className="text-center py-6">
+              <h3 className="text-lg font-semibold mb-3 text-foreground">
+                Message Sent Successfully
+              </h3>
+              <p className="text-muted-foreground">
+                Thank you for reaching out. Our team will respond within 24 hours.
+              </p>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit}>
+              <h3 className="text-lg font-semibold mb-6 text-center">
+                Get in Touch
+              </h3>
+              <div className="grid sm:grid-cols-2 gap-4 mb-4">
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Your name"
+                  value={form.name}
+                  onChange={handleChange}
+                  className="input-field"
+                  required
+                />
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Work email"
+                  value={form.email}
+                  onChange={handleChange}
+                  className="input-field"
+                  required
+                />
+              </div>
+              <input
+                type="text"
+                name="company"
+                placeholder="Company"
+                value={form.company}
+                onChange={handleChange}
+                className="input-field mb-4 w-full"
+              />
+              <textarea
+                name="message"
+                placeholder="Tell us about your compliance needs…"
+                value={form.message}
+                onChange={handleChange}
+                rows={4}
+                className="input-field mb-6 w-full resize-none"
+              />
+              <div className="text-center">
+                <Button type="submit" variant="primary" size="lg" disabled={isSubmitting}>
+                  {isSubmitting ? 'Sending...' : 'Send Message'}
+                </Button>
+              </div>
+            </form>
+          )}
+        </motion.div>
       </div>
     </section>
   )

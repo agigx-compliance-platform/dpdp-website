@@ -37,6 +37,20 @@
     scroll-behavior: smooth;
   }
 
+  html[data-theme='light'] .brand-mark__logo--dark,
+  html:not([data-theme='light']) .brand-mark__logo--light {
+    display: none;
+  }
+
+  html[data-theme='light'] .theme-screenshot__img--dark,
+  html:not([data-theme='light']) .theme-screenshot__img--light {
+    display: none;
+  }
+
+  .privacy-assistant-preview {
+    background-color: #ffffff;
+  }
+
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-sans);

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Send, ArrowRight, BookOpen } from "lucide-react";
+import { Mail, MapPin, Send, ArrowRight, BookOpen } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SectionWrapper } from "@/components/ui/SectionWrapper";
 import { Button } from "@/components/ui/Button";
@@ -298,31 +298,12 @@ export default function ContactPage() {
                   <h3 className="text-sm font-semibold text-foreground mb-1">
                     Email
                   </h3>
-                  <p className="text-sm text-muted-foreground">
-                    contact@dpdpconsultancy.com
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    privacy@dpdpconsultancy.com
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-5 flex items-start gap-4">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                  <Phone className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-semibold text-foreground mb-1">
-                    Phone
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    +91 98841 51319
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Mon-Fri, 9:00 AM - 6:00 PM IST
-                  </p>
+                  <a
+                    href="mailto:operations@dpdpconsultancy.in"
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    operations@dpdpconsultancy.in
+                  </a>
                 </div>
               </CardContent>
             </Card>

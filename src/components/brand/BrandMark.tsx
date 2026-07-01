@@ -4,13 +4,13 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
-const LOGO_SRC = '/images/brand/consent-cockpit-logo.png'
+const LOGO_LIGHT = '/images/brand/logo-light.svg'
+const LOGO_WHITE = '/images/brand/logo-white.svg'
 
 type BrandMarkProps = {
   className?: string
   linkClassName?: string
   size?: 'default' | 'compact'
-  showTagline?: boolean
   priority?: boolean
 }
 
@@ -18,33 +18,38 @@ export function BrandMark({
   className,
   linkClassName,
   size = 'default',
-  showTagline = true,
   priority = false,
 }: BrandMarkProps) {
-  const dimension = size === 'compact' ? 32 : 44
+  const width = size === 'compact' ? 132 : 168
+  const height = size === 'compact' ? 34 : 44
+
   return (
     <Link
       href="/"
-      className={cn('inline-flex flex-col items-center gap-0.5 shrink-0 text-center', linkClassName)}
-      aria-label="dpdpconsultancy home"
+      className={cn('brand-mark inline-flex shrink-0 items-center', linkClassName)}
+      aria-label="DPDP Consultancy home"
     >
       <Image
-        src={LOGO_SRC}
-        alt="dpdpconsultancy"
-        width={dimension}
-        height={dimension}
-        className={cn(
-          'object-contain',
-          size === 'compact' ? 'h-8 w-8' : 'h-10 w-10 sm:h-11 sm:w-11',
-          className,
-        )}
+        src={LOGO_LIGHT}
+        alt="DPDP Consultancy"
+        width={width}
+        height={height}
+        className={cn('brand-mark__logo brand-mark__logo--light h-auto w-auto object-contain object-left', className)}
+        style={{ width, height }}
         priority={priority}
+        unoptimized
       />
-      {showTagline && (
-        <span className="block w-full text-center text-[10px] font-medium tracking-wide text-muted-foreground sm:text-xs">
-          dpdpconsultancy
-        </span>
-      )}
+      <Image
+        src={LOGO_WHITE}
+        alt=""
+        aria-hidden
+        width={width}
+        height={height}
+        className={cn('brand-mark__logo brand-mark__logo--dark h-auto w-auto object-contain object-left', className)}
+        style={{ width, height }}
+        priority={priority}
+        unoptimized
+      />
     </Link>
   )
 }

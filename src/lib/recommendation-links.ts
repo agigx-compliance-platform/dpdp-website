@@ -11,7 +11,7 @@ const RECOMMENDATION_HREFS: Record<string, string> = {
   'ai-assistant': '/products',
   'cyber-privacy': '/products',
   'data-sovereignty': '/products',
-  'processor-governance': '/products',
+  'processor-governance': '/products#processor-governance',
   advisory: '/services',
   assurance: '/services',
   'technical-implementation': '/services',
