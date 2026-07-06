@@ -32,7 +32,12 @@ export function QuestionnaireModal() {
 
         if (status.status === 'completed') {
           const report = unwrapConsentApiEnvelope<ScanReportResponse>(await getScanReport(scanId))
-          updateState({ scanResult: mapScanReportToResult(report, scanId), scanDone: true })
+          updateState({
+            scanResult: mapScanReportToResult(report, scanId),
+            scanDone: true,
+            scanProgress: 100,
+            ...(currentStep >= 7 ? { currentStep: 8, direction: 1 } : {}),
+          })
           clearInterval(interval)
         } else if (status.status === 'failed') {
           updateState({ scanDone: true }) // Stop polling on fail
@@ -44,7 +49,7 @@ export function QuestionnaireModal() {
     }, 2000)
     
     return () => clearInterval(interval)
-  }, [scanId, scanDone, updateState])
+  }, [scanId, scanDone, updateState, currentStep])
 
   const handleClose = () => {
     closeModal()

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import type { QuestionnaireResponses, ScanResult } from '@/lib/types'
 
 const STORAGE_KEY = 'agigx_questionnaire_v1'
@@ -13,6 +13,8 @@ export interface PersistedQuestionnaireState {
   issuesFound: number
   scanDone: boolean
   scanResult: ScanResult | null
+  /** Monotonic write counter — prevents stale cross-instance sync from rolling back state. */
+  _seq?: number
 }
 
 const defaultState: PersistedQuestionnaireState = {
@@ -40,9 +42,48 @@ const defaultState: PersistedQuestionnaireState = {
   scanResult: null,
 }
 
+function readPersistedState(): PersistedQuestionnaireState | null {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    if (!stored) return null
+    return JSON.parse(stored) as PersistedQuestionnaireState
+  } catch {
+    return null
+  }
+}
+
+function latestPersistedState(
+  local: PersistedQuestionnaireState
+): PersistedQuestionnaireState {
+  const stored = readPersistedState()
+  if (!stored) return local
+  return (stored._seq ?? 0) >= (local._seq ?? 0) ? stored : local
+}
+
 export function usePersistedQuestionnaireState() {
   const [state, setState] = useState<PersistedQuestionnaireState>(defaultState)
+  const stateRef = useRef(defaultState)
   const [isInitialized, setIsInitialized] = useState(false)
+  const lastAppliedSeqRef = useRef(0)
+
+  const applyStoredState = useCallback((stored: PersistedQuestionnaireState) => {
+    const seq = stored._seq ?? 0
+    if (seq < lastAppliedSeqRef.current) return
+    lastAppliedSeqRef.current = seq
+    stateRef.current = stored
+    setState(stored)
+  }, [])
+
+  const persistNextState = useCallback(
+    (prev: PersistedQuestionnaireState, updates: Partial<PersistedQuestionnaireState>) => {
+      const seq = (prev._seq ?? 0) + 1
+      const next = { ...prev, ...updates, _seq: seq }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
+      lastAppliedSeqRef.current = seq
+      return next
+    },
+    []
+  )
 
   // Load from localStorage on mount and setup sync
   useEffect(() => {
@@ -50,8 +91,10 @@ export function usePersistedQuestionnaireState() {
       try {
         const stored = localStorage.getItem(STORAGE_KEY)
         if (stored) {
-          setState(JSON.parse(stored))
+          applyStoredState(JSON.parse(stored))
         } else {
+          lastAppliedSeqRef.current = 0
+          stateRef.current = defaultState
           setState(defaultState)
         }
       } catch (e) {
@@ -65,7 +108,11 @@ export function usePersistedQuestionnaireState() {
     const handleStorage = (e: StorageEvent) => {
       if (e.key === STORAGE_KEY) loadState()
     }
-    const handleCustom = () => loadState()
+    const handleCustom = (e: Event) => {
+      const seq = (e as CustomEvent<{ seq?: number }>).detail?.seq
+      if (seq != null && seq < lastAppliedSeqRef.current) return
+      loadState()
+    }
 
     window.addEventListener('storage', handleStorage)
     window.addEventListener('agigx-questionnaire-sync', handleCustom)
@@ -74,35 +121,49 @@ export function usePersistedQuestionnaireState() {
       window.removeEventListener('storage', handleStorage)
       window.removeEventListener('agigx-questionnaire-sync', handleCustom)
     }
-  }, [])
+  }, [applyStoredState])
 
-  const notifySync = useCallback(() => {
-    setTimeout(() => window.dispatchEvent(new Event('agigx-questionnaire-sync')), 0)
+  const notifySync = useCallback((seq: number) => {
+    setTimeout(
+      () =>
+        window.dispatchEvent(
+          new CustomEvent('agigx-questionnaire-sync', { detail: { seq } })
+        ),
+      0
+    )
   }, [])
 
   const clearPersistedState = useCallback(() => {
     localStorage.removeItem(STORAGE_KEY)
+    lastAppliedSeqRef.current = 0
+    stateRef.current = defaultState
     setState(defaultState)
-    notifySync()
+    notifySync(0)
   }, [notifySync])
 
-  const updateState = useCallback((updates: Partial<PersistedQuestionnaireState>) => {
-    setState((prev) => {
-      const next = { ...prev, ...updates }
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
-      return next
-    })
-    notifySync()
-  }, [notifySync])
+  const updateState = useCallback(
+    (updates: Partial<PersistedQuestionnaireState>) => {
+      const base = latestPersistedState(stateRef.current)
+      const next = persistNextState(base, updates)
+      stateRef.current = next
+      setState(next)
+      notifySync(next._seq ?? 0)
+    },
+    [notifySync, persistNextState]
+  )
 
-  const updateFormData = useCallback((field: keyof QuestionnaireResponses, value: any) => {
-    setState((prev) => {
-      const next = { ...prev, formData: { ...prev.formData, [field]: value } }
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
-      return next
-    })
-    notifySync()
-  }, [notifySync])
+  const updateFormData = useCallback(
+    (field: keyof QuestionnaireResponses, value: any) => {
+      const base = latestPersistedState(stateRef.current)
+      const next = persistNextState(base, {
+        formData: { ...base.formData, [field]: value },
+      })
+      stateRef.current = next
+      setState(next)
+      notifySync(next._seq ?? 0)
+    },
+    [notifySync, persistNextState]
+  )
 
   return {
     ...state,

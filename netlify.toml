@@ -1,0 +1,11 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Required in Netlify UI → Site configuration → Environment variables:
+#   NEXT_PUBLIC_CONSENT_API_URL = https://your-consent-api.example.com  (scope: Builds)
+#   CONSENT_API_URL             = same value                             (scope: Builds + Functions)
+# Re-deploy after changing env vars — NEXT_PUBLIC_* values are baked in at build time.

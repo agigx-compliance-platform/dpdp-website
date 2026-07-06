@@ -84,7 +84,22 @@ Dark mode (default) and light mode via `data-theme` attribute toggle. Design tok
 
 ## API Integration
 
-All API calls use placeholder URLs configured via `NEXT_PUBLIC_CONSENT_API_URL`. Endpoints:
+All API calls target the Consent Management Service, configured via environment variables.
+
+| Variable | Purpose |
+|----------|---------|
+| `NEXT_PUBLIC_CONSENT_API_URL` | Inlined at **build time** (required for Netlify builds) |
+| `CONSENT_API_URL` | Read at **runtime** via `/api/config` fallback |
+
+### Netlify deployment
+
+1. In **Site configuration → Environment variables**, add:
+   - `NEXT_PUBLIC_CONSENT_API_URL` = your API URL (scope: **Builds**)
+   - `CONSENT_API_URL` = same URL (scope: **Builds** and **Functions**)
+2. **Trigger a new deploy** after saving — changing env vars does not update existing bundles.
+3. Ensure the site **base directory** is `dpdp-website` if deploying from the monorepo root.
+
+Endpoints (base URL + path):
 
 - `POST /api/enquiry`: Contact form submission
 - `POST /api/questionnaire`: Questionnaire response submission

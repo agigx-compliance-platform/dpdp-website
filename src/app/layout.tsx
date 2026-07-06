@@ -81,6 +81,12 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const consentApiUrl =
+    process.env.CONSENT_API_URL?.trim() ||
+    process.env.NEXT_PUBLIC_CONSENT_API_URL?.trim() ||
+    process.env.NEXT_PUBLIC_API_URL?.trim() ||
+    ''
+
   return (
     <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth" data-theme="dark">
       <head>
@@ -89,6 +95,13 @@ export default function RootLayout({
             __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();`,
           }}
         />
+        {consentApiUrl ? (
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `window.__RUNTIME_CONFIG__=Object.assign(window.__RUNTIME_CONFIG__||{},{consentApiUrl:${JSON.stringify(consentApiUrl)}});`,
+            }}
+          />
+        ) : null}
       </head>
       <body className="antialiased font-sans">
         <ThemeProvider>

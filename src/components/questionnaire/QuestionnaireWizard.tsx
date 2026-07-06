@@ -237,11 +237,16 @@ export function QuestionnaireWizard() {
       })
       resolvedResult = mapScanReportToResult(report, activeScanId)
       updateState({
+        currentStep: 8,
+        direction: 1,
         scanResult: resolvedResult,
         scanDone: true,
         scanId: activeScanId,
+        scanProgress: 100,
       })
-      navigateToResults(resolvedResult)
+      if (!isModalOpen) {
+        navigateToResults(resolvedResult)
+      }
     } catch {
       if (!resolvedResult && activeScanId) {
         try {
@@ -250,9 +255,12 @@ export function QuestionnaireWizard() {
           )
           resolvedResult = mapScanReportToResult(report, activeScanId)
           updateState({
+            currentStep: 8,
+            direction: 1,
             scanResult: resolvedResult,
             scanDone: true,
             scanId: activeScanId,
+            scanProgress: 100,
           })
         } catch {
           // Scan genuinely unavailable
@@ -260,12 +268,18 @@ export function QuestionnaireWizard() {
       }
 
       if (resolvedResult) {
-        navigateToResults(resolvedResult)
+        if (!isModalOpen) {
+          navigateToResults(resolvedResult)
+        }
         return
       }
 
       setErrors({ general: 'Scan failed. Showing recommendations based on your answers.' })
-      navigateToResults()
+      if (isModalOpen) {
+        updateState({ currentStep: 8, direction: 1 })
+      } else {
+        navigateToResults()
+      }
     } finally {
       setIsScanning(false)
       setIsSubmitting(false)

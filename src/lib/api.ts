@@ -1,19 +1,24 @@
-import axios from 'axios'
+import axios, { type AxiosInstance } from 'axios'
 import type { EnquiryFormData, QuestionnaireResponses, ScanStatusResponse, ScanReportResponse, Recommendation } from './types'
+import { ensureConsentApiUrl } from './consent-api-url'
 
-const API_BASE =
-  process.env.NEXT_PUBLIC_CONSENT_API_URL ||
-  process.env.NEXT_PUBLIC_API_URL ||
-  'http://localhost:8084'
+let apiClientPromise: Promise<AxiosInstance> | null = null
 
-const apiClient = axios.create({
-  baseURL: API_BASE,
-  headers: { 'Content-Type': 'application/json' },
-  timeout: 30000,
-})
+async function getApiClient(): Promise<AxiosInstance> {
+  if (!apiClientPromise) {
+    apiClientPromise = ensureConsentApiUrl().then((baseURL) =>
+      axios.create({
+        baseURL,
+        headers: { 'Content-Type': 'application/json' },
+        timeout: 30000,
+      })
+    )
+  }
+  return apiClientPromise
+}
 
 export async function submitEnquiry(data: EnquiryFormData) {
-  return apiClient.post('/api/v1/sdk/website/enquiry', {
+  return (await getApiClient()).post('/api/v1/sdk/website/enquiry', {
     name: data.name,
     email: data.email,
     company: data.company,
@@ -25,7 +30,7 @@ export async function submitEnquiry(data: EnquiryFormData) {
 }
 
 export async function submitQuestionnaire(data: QuestionnaireResponses) {
-  return apiClient.post<{ data: { sessionId: string; message: string } }>('/api/v1/sdk/website/questionnaire', {
+  return (await getApiClient()).post<{ data: { sessionId: string; message: string } }>('/api/v1/sdk/website/questionnaire', {
     role: data.role,
     orgType: data.orgType,
     journeyStage: data.journeyStage,
@@ -49,7 +54,7 @@ export async function initiateScan(data: {
   consent: boolean
   sessionId?: string
 }) {
-  return apiClient.post<{ data: { scanId: string; sessionId: string } }>(
+  return (await getApiClient()).post<{ data: { scanId: string; sessionId: string } }>(
     '/api/v1/sdk/website/scan/initiate',
     data,
     { timeout: 60000 }
@@ -57,21 +62,22 @@ export async function initiateScan(data: {
 }
 
 export async function getScanStatus(scanId: string) {
-  return apiClient.get<{ data: ScanStatusResponse }>(
+  return (await getApiClient()).get<{ data: ScanStatusResponse }>(
     `/api/v1/sdk/website/scan/status/${scanId}`,
     { timeout: 15000 }
   )
 }
 
 export async function getScanReport(scanId: string) {
-  return apiClient.get<{ data: ScanReportResponse }>(
+  return (await getApiClient()).get<{ data: ScanReportResponse }>(
     `/api/v1/sdk/website/scan/report/${scanId}`,
     { timeout: 60000 }
   )
 }
 
-export function downloadReportPdfUrl(scanId: string): string {
-  return `${API_BASE}/api/v1/sdk/website/scan/report/${scanId}/pdf`
+export async function downloadReportPdfUrl(scanId: string): Promise<string> {
+  const baseURL = await ensureConsentApiUrl()
+  return `${baseURL}/api/v1/sdk/website/scan/report/${scanId}/pdf`
 }
 
 export async function deliverScanReport(
@@ -86,7 +92,7 @@ export async function deliverScanReport(
     recommendations: Pick<Recommendation, 'type' | 'id' | 'title' | 'reason' | 'relevanceScore'>[]
   }
 ) {
-  return apiClient.post<{ data: { delivered: boolean; email?: string; alreadySent?: boolean } }>(
+  return (await getApiClient()).post<{ data: { delivered: boolean; email?: string; alreadySent?: boolean } }>(
     `/api/v1/sdk/website/scan/report/${scanId}/deliver`,
     data,
     { timeout: 30000 }
@@ -94,7 +100,7 @@ export async function deliverScanReport(
 }
 
 export async function submitContactForm(data: EnquiryFormData) {
-  return apiClient.post('/api/v1/sdk/website/enquiry', {
+  return (await getApiClient()).post('/api/v1/sdk/website/enquiry', {
     ...data,
     sourcePage: 'contact',
   })

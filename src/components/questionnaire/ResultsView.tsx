@@ -561,7 +561,9 @@ export function ResultsView({ responses, scanResult }: ResultsViewProps) {
           className="flex-1"
           onClick={() => {
             if (scanResult?.scanId) {
-              window.open(downloadReportPdfUrl(scanResult.scanId), '_blank')
+              void downloadReportPdfUrl(scanResult.scanId).then((url) => {
+                window.open(url, '_blank')
+              })
             }
           }}
           disabled={!scanResult?.scanId}
