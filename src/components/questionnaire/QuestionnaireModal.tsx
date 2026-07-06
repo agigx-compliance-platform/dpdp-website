@@ -7,6 +7,7 @@ import { usePersistedQuestionnaireState } from '@/hooks/usePersistedQuestionnair
 import { QuestionnaireWizard } from './QuestionnaireWizard'
 import { getScanStatus, getScanReport } from '@/lib/api'
 import { unwrapConsentApiEnvelope, mapScanReportToResult } from '@/lib/website-scan'
+import { prewarmConsentApi } from '@/lib/consent-api-prewarm'
 import type { ScanReportResponse, ScanStatusResponse } from '@/lib/types'
 import { cn } from '@/lib/utils'
 import { X } from 'lucide-react'
@@ -20,6 +21,12 @@ export function QuestionnaireModal() {
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  useEffect(() => {
+    if (isModalOpen) {
+      void prewarmConsentApi('questionnaire-modal')
+    }
+  }, [isModalOpen])
 
   // Background polling loop that runs as long as this component is mounted
   // (which is typically global if placed in layout or a top-level page)

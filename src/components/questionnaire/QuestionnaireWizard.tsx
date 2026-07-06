@@ -34,6 +34,7 @@ import {
   pollUntilScanReport,
 } from '@/lib/website-scan'
 import type { ScanReportResponse, ScanResult } from '@/lib/types'
+import { prewarmConsentApi } from '@/lib/consent-api-prewarm'
 const slideVariants = {
   enter: (direction: number) => ({
     x: direction > 0 ? 300 : -300,
@@ -121,6 +122,11 @@ export function QuestionnaireWizard() {
       return () => clearTimeout(t)
     }
   }, []) // run once on mount
+
+  // Wake Cloud Run while the user fills out the questionnaire (free-tier friendly).
+  useEffect(() => {
+    void prewarmConsentApi('questionnaire-open')
+  }, [])
 
 
   const validateCurrentStep = useCallback((): boolean => {
@@ -288,6 +294,7 @@ export function QuestionnaireWizard() {
   }
 
   const handleStartScan = async () => {
+    void prewarmConsentApi('questionnaire-start')
     updateState({ wantsScan: true, direction: 1, currentStep: 1 })
   }
 
@@ -326,6 +333,10 @@ export function QuestionnaireWizard() {
                 Analyzing your website for privacy compliance.
                 <br />
                 This may take a minute or two.
+                <br />
+                <span className="text-xs">
+                  First request after idle can take up to 90 seconds while the server starts.
+                </span>
               </p>
             </div>
           </div>
