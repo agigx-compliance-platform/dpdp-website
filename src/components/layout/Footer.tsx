@@ -30,11 +30,8 @@ const footerSections = [
   },
   {
     title: 'Legal',
-    links: [
-      { label: 'Privacy Policy', href: '/privacy-policy' },
-      { label: 'Terms', href: '/terms' },
-      { label: 'Cookie Policy', href: '/cookie-policy' },
-    ],
+    links: [{ label: 'Terms', href: '/terms' }],
+    sdkPolicyLinks: true,
   },
 ]
 
@@ -49,6 +46,14 @@ export function Footer() {
                 {section.title}
               </h4>
               <ul className="space-y-2.5">
+                {'sdkPolicyLinks' in section && section.sdkPolicyLinks ? (
+                  <li>
+                    <div
+                      id="agigx-policy-links"
+                      className="flex flex-col gap-2.5 text-sm text-muted-foreground [&_a]:hover:text-foreground [&_a]:transition-colors"
+                    />
+                  </li>
+                ) : null}
                 {section.links.map((link) => (
                   <li key={link.label}>
                     <Link
@@ -59,14 +64,6 @@ export function Footer() {
                     </Link>
                   </li>
                 ))}
-                {section.title === 'Legal' ? (
-                  <li>
-                    <div
-                      id="agigx-policy-links"
-                      className="flex flex-col gap-2.5 text-sm text-muted-foreground [&_a]:hover:text-foreground [&_a]:transition-colors"
-                    />
-                  </li>
-                ) : null}
               </ul>
             </div>
           ))}
