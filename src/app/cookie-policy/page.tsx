@@ -15,9 +15,8 @@ export default function CookiePolicyPage() {
         Last updated: July 2026
       </p>
       <p>
-        This marketing website may use essential cookies and local storage to
-        remember your theme preference and questionnaire progress. We do not
-        use third-party advertising cookies on this site.
+        This marketing website uses Consent Cockpit to manage cookie preferences.
+        We only load non-essential cookies and analytics after you provide consent.
       </p>
       <h2>Essential storage</h2>
       <ul>
@@ -29,12 +28,23 @@ export default function CookiePolicyPage() {
           <strong>Questionnaire state</strong> — stored locally while you
           complete an assessment
         </li>
+        <li>
+          <strong>Consent preferences</strong> — stored by Consent Cockpit to
+          remember your cookie choices
+        </li>
       </ul>
+      <h2>Analytics cookies</h2>
+      <p>
+        If you accept the <strong>Analytics</strong> category in our consent
+        banner, we load Google Analytics (GA4) to understand how visitors use
+        this site and measure our digital campaigns. Google Analytics is not
+        loaded before you consent.
+      </p>
       <h2>Managing cookies</h2>
       <p>
-        You can clear site data through your browser settings. Our Consent
-        Cockpit product provides full cookie consent management for your own
-        properties.
+        Use the consent banner or preference centre on this site to change your
+        choices at any time. You can also clear site data through your browser
+        settings.
       </p>
       <h2>Contact</h2>
       <p>

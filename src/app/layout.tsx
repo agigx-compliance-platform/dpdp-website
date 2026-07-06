@@ -6,6 +6,9 @@ import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { QuestionnaireModal } from '@/components/questionnaire/QuestionnaireModal'
 import { FloatingBlob } from '@/components/questionnaire/FloatingBlob'
+import { AgigxSdkScripts } from '@/components/consent/AgigxSdkScripts'
+import { ConsentGatedGtagScripts } from '@/components/analytics/ConsentGatedGtagScripts'
+import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics'
 
 export const metadata: Metadata = {
   metadataBase:
@@ -102,6 +105,7 @@ export default function RootLayout({
             }}
           />
         ) : null}
+        <ConsentGatedGtagScripts />
       </head>
       <body className="antialiased font-sans">
         <ThemeProvider>
@@ -111,8 +115,10 @@ export default function RootLayout({
             <Footer />
             <QuestionnaireModal />
             <FloatingBlob />
+            <GoogleAnalytics />
           </SmoothScrollProvider>
         </ThemeProvider>
+        <AgigxSdkScripts />
       </body>
     </html>
   )

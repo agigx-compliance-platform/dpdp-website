@@ -59,6 +59,14 @@ export function Footer() {
                     </Link>
                   </li>
                 ))}
+                {section.title === 'Legal' ? (
+                  <li>
+                    <div
+                      id="agigx-policy-links"
+                      className="flex flex-col gap-2.5 text-sm text-muted-foreground [&_a]:hover:text-foreground [&_a]:transition-colors"
+                    />
+                  </li>
+                ) : null}
               </ul>
             </div>
           ))}

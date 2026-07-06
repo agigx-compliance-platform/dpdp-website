@@ -93,11 +93,30 @@ All API calls target the Consent Management Service, configured via environment 
 
 ### Netlify deployment
 
-1. In **Site configuration → Environment variables**, add:
+1. In **Project configuration → Environment variables**, add:
    - `NEXT_PUBLIC_CONSENT_API_URL` = your API URL (scope: **Builds**)
    - `CONSENT_API_URL` = same URL (scope: **Builds** and **Functions**)
+   - `NEXT_PUBLIC_CONSENT_DOMAIN` = `dpdpconsultancy.in` (scope: **Builds**)
+   - `NEXT_PUBLIC_GA_MEASUREMENT_ID` = `G-S52KHLM8Q0` (scope: **Builds**)
 2. **Trigger a new deploy** after saving — changing env vars does not update existing bundles.
 3. Ensure the site **base directory** is `dpdp-website` if deploying from the monorepo root.
+
+## Consent Cockpit SDK + Google Analytics
+
+The marketing site embeds **Consent Cockpit** (`agigx.js`) and loads **GA4 only after analytics consent** (`data-cookie-category="analytics"`).
+
+### Platform setup (agigx-ui, before first deploy)
+
+1. Register domain **`dpdpconsultancy.in`** in Consent Management.
+2. Deploy an **active opt-in banner** with an **analytics** category.
+3. Confirm SDK is reachable: `{CONSENT_API_URL}/api/v1/sdk/agigx.js`
+
+### Verify after Netlify deploy
+
+1. Open the site in **incognito** — consent banner should appear.
+2. **Before** accepting analytics — Network tab should show **no** `googletagmanager.com` requests.
+3. **Accept analytics** — GA requests should fire.
+4. Check **GA4 → Reports → Realtime** for your visit.
 
 Endpoints (base URL + path):
 
