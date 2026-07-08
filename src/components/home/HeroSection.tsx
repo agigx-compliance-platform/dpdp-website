@@ -76,8 +76,8 @@ export function HeroSection() {
         className={cn(
           "pointer-events-none absolute inset-0 z-[2]",
           isLight
-            ? "bg-gradient-to-b from-white/55 via-white/35 to-white/15"
-            : "bg-gradient-to-b from-background/88 via-background/62 to-background/20",
+            ? "bg-gradient-to-b from-white/50 via-white/30 to-white/10"
+            : "bg-gradient-to-b from-background/72 via-background/45 to-background/15",
         )}
         aria-hidden
         initial={{ opacity: 0 }}

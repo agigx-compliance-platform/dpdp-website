@@ -24,12 +24,12 @@ Open [http://localhost:8000](http://localhost:8000).
 
 ## Static assets
 
-### Hero video & poster (`public/`)
+### Hero images (`public/images/`)
 
-- `images/hero-poster.png`: full-bleed hero background (shown on all breakpoints; dominant on mobile)
-- `videos/hero.mp4`: muted loop from `md` breakpoint up
+- `hero-light.png`: full-bleed hero background for **light theme**
+- `hero-dark.png`: full-bleed hero background for **dark theme** (default)
 
-In **light theme**, the hero uses a **dark scrim** over the video so it stays readable. **`NEXT_PUBLIC_HERO_VIDEO_DISCLAIMER`** in `.env.local` can correct on-page copy if the clip still shows draft text.
+The homepage switches images when the user toggles theme. Optional **`NEXT_PUBLIC_HERO_SUBLINE`** in `.env.local` adds a line under the headline.
 
 ### CMP screenshots (products & services)
 
