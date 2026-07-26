@@ -6,6 +6,7 @@ import { Navbar } from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { QuestionnaireModal } from '@/components/questionnaire/QuestionnaireModal'
 import { FloatingBlob } from '@/components/questionnaire/FloatingBlob'
+import { PrivacyPitstopCallout } from '@/components/ui/PrivacyPitstopCallout'
 import { AgigxSdkScripts } from '@/components/consent/AgigxSdkScripts'
 import { ConsentGatedGtagScripts } from '@/components/analytics/ConsentGatedGtagScripts'
 import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics'
@@ -115,6 +116,7 @@ export default function RootLayout({
             <Footer />
             <QuestionnaireModal />
             <FloatingBlob />
+            <PrivacyPitstopCallout />
             <GoogleAnalytics />
           </SmoothScrollProvider>
         </ThemeProvider>
