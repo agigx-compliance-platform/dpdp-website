@@ -17,6 +17,12 @@ import {
   Scale,
   Sparkles,
   ArrowLeft,
+  ChevronRight,
+  Eye,
+  HelpCircle,
+  Megaphone,
+  ArrowUpRight,
+  MessageSquare,
 } from 'lucide-react'
 import { SectionWrapper } from '@/components/ui/SectionWrapper'
 import { Button } from '@/components/ui/Button'
@@ -222,7 +228,7 @@ export default function PrivacyPitstopPage() {
       const match = result.categories.find(c => c.name === catName)
       return match ? Math.round(match.score) : 0
     }
-    if (catName === 'Data Collection') return Math.min(100, Math.round(baseScore * 1.05))
+    if (catName === 'Notice Transparency') return Math.min(100, Math.round(baseScore * 1.05))
     if (catName === 'Cookie & Consent') return Math.min(100, Math.round(baseScore * 0.94))
     if (catName === 'User Rights & Redressal') return Math.min(100, Math.round(baseScore * 0.97))
     if (catName === 'AI Transparency') return Math.min(100, Math.round(baseScore * 1.02))
@@ -310,9 +316,9 @@ export default function PrivacyPitstopPage() {
 
           <div className="flex flex-wrap items-center gap-3 justify-center">
             {[
-              { title: 'FREE FOR EVERYONE', sub: 'No sign-up. No cost.', icon: ShieldCheck },
-              { title: 'FOR EVERY CITIZEN', sub: 'Your data. Your rights.', icon: Globe },
-              { title: '100% PUBLIC SCAN', sub: 'Transparent. Independent.', icon: Search }
+              { title: '100% PUBLIC SCAN', sub: 'Transparent. Independent.', icon: Search },
+              { title: 'NO SIGN-UP', sub: 'Free for everyone', icon: ShieldCheck },
+              { title: 'YOUR DATA', sub: 'Your rights. Your voice.', icon: Globe },
             ].map(({ title, sub, icon: Icon }) => (
               <div key={title} className="flex items-center gap-2.5 px-3.5 py-1.5 rounded-lg bg-cyan-950/20 border border-cyan-500/20">
                 <Icon className="w-4 h-4 text-cyan-400" />
@@ -394,8 +400,8 @@ export default function PrivacyPitstopPage() {
           </motion.div>
         ) : (
           /* View: Scanner */
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            <div className="lg:col-span-8 space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <div className={`${view === 'results' ? 'lg:col-span-6' : 'lg:col-span-8'} space-y-6`}>
               {/* Title Block */}
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-full border border-cyan-500/30 flex items-center justify-center bg-cyan-950/10">
@@ -403,8 +409,8 @@ export default function PrivacyPitstopPage() {
                 </div>
                 <div className="text-left">
                   <h1 className="text-3xl font-extrabold text-white leading-tight">Privacy Pitstop</h1>
-                  <p className="text-sm font-semibold text-cyan-400 leading-none">Free Public Privacy Scan</p>
-                  <p className="text-xs text-muted-foreground mt-1">Scan any website. Compare privacy scores. Know your rights.</p>
+                  <p className="text-sm font-semibold text-cyan-400 leading-none">Scan. Understand. Question. Grieve. Track. Escalate.</p>
+                  <p className="text-xs text-muted-foreground mt-1">A free public privacy capability by DPDP Consultancy</p>
                 </div>
               </div>
 
@@ -513,14 +519,40 @@ export default function PrivacyPitstopPage() {
                     animate={{ opacity: 1 }}
                     className="space-y-6"
                   >
+                    {/* ── Scan Result Header ──────────────────────────── */}
+                    <div className="border border-cyan-500/20 rounded-2xl bg-cyan-950/5 p-5">
+                      <p className="text-[9px] font-bold tracking-widest text-cyan-400/60 uppercase mb-3">SCAN RESULT</p>
+                      <div className="flex items-center justify-between flex-wrap gap-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-lg bg-white/10 border border-cyan-500/20 flex items-center justify-center">
+                            <Globe className="w-5 h-5 text-cyan-400" />
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-1.5">
+                              <h3 className="text-sm font-bold text-white">{result.domain}</h3>
+                              <a href={`https://${result.domain}`} target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300">
+                                <ArrowUpRight className="w-3.5 h-3.5" />
+                              </a>
+                            </div>
+                            <div className="flex items-center gap-2 mt-0.5">
+                              <span className="text-[9px] px-2 py-0.5 rounded border border-cyan-500/20 text-muted-foreground">Website</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-[10px] text-muted-foreground">
+                            Scanned on {new Date(result.analyzedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} · India 🇮🇳
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
                     {/* ── Section 1: Privacy Score Summary ──────────── */}
                     <div className="border border-cyan-500/20 rounded-2xl bg-cyan-950/5 p-6 md:p-8">
+                      <p className="text-[9px] font-bold tracking-widest text-cyan-400/60 uppercase mb-5">OVERALL PRIVACY SCORE</p>
                       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
                         {/* Score Ring */}
                         <div className="md:col-span-5 text-center flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-cyan-500/10 pb-6 md:pb-0 pr-0 md:pr-8">
-                          <p className="text-[10px] font-bold tracking-widest text-cyan-400/80 mb-4 uppercase">
-                            PRIVACY SCORE
-                          </p>
                           <div className="relative w-36 h-36">
                             <svg viewBox="0 0 120 120" className="w-full h-full -rotate-90">
                               <circle cx="60" cy="60" r="54" fill="none" stroke="#0e1329" strokeWidth="6" />
@@ -532,6 +564,7 @@ export default function PrivacyPitstopPage() {
                               />
                             </svg>
                             <div className="absolute inset-0 flex flex-col items-center justify-center">
+                              <ShieldCheck className={`w-5 h-5 mb-1 ${getScoreColor(displayScore)}`} />
                               <div className="text-3xl font-extrabold text-foreground leading-none">{displayScore}</div>
                               <div className="text-[10px] text-muted-foreground mt-0.5">/100</div>
                             </div>
@@ -540,23 +573,27 @@ export default function PrivacyPitstopPage() {
                             <div className={`text-base font-bold uppercase tracking-wider ${getScoreColor(displayScore)}`}>
                               {displayRating}
                             </div>
-                            <p className="text-[9px] text-muted-foreground mt-1">Transparent • Respectful • Accountable</p>
-                          </div>
-                          {/* Confidence badge */}
-                          <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-950/30 border border-cyan-500/20">
-                            <ShieldCheck className="w-3 h-3 text-cyan-400" />
-                            <span className="text-[9px] text-cyan-400 font-semibold">Based on {result.pagesAnalyzed} public page{result.pagesAnalyzed !== 1 ? 's' : ''} analyzed</span>
+                            <p className="text-[9px] text-muted-foreground mt-1">Privacy is a right. Transparency is respect.</p>
                           </div>
                         </div>
 
                         {/* Category bars */}
                         <div className="md:col-span-7 space-y-4 text-left">
-                          {['Data Collection', 'Cookie & Consent', 'User Rights & Redressal', 'AI Transparency', 'Security Signals'].map((catName) => {
-                            const score = getCategoryScore(catName)
+                          {[
+                            { name: 'Notice Transparency', icon: FileText },
+                            { name: 'Cookie & Consent', icon: Cookie },
+                            { name: 'User Rights & Redressal', icon: Scale },
+                            { name: 'AI Transparency', icon: Brain },
+                            { name: 'Security Signals', icon: ShieldCheck },
+                          ].map((cat) => {
+                            const score = getCategoryScore(cat.name)
                             return (
-                              <div key={catName} className="space-y-1">
+                              <div key={cat.name} className="space-y-1">
                                 <div className="flex justify-between items-center text-[10px] font-semibold text-muted-foreground">
-                                  <span>{catName}</span>
+                                  <div className="flex items-center gap-1.5">
+                                    <cat.icon className="w-3 h-3 text-cyan-400/60" />
+                                    <span>{cat.name}</span>
+                                  </div>
                                   <span className="text-foreground font-bold">{score}/100</span>
                                 </div>
                                 <div className="h-1.5 w-full bg-[#0e1329] rounded-full overflow-hidden">
@@ -569,108 +606,47 @@ export default function PrivacyPitstopPage() {
                       </div>
                     </div>
 
-                    {/* ── Section 2: What This Means ────────────────── */}
+                    {/* ── GAP SUMMARY + POTENTIAL DPDP CONCERNS ──────── */}
                     <motion.div
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.15 }}
-                      className="border border-cyan-500/20 rounded-2xl bg-cyan-950/5 p-5 md:p-6"
+                      transition={{ delay: 0.1 }}
+                      className="grid grid-cols-1 sm:grid-cols-2 gap-4"
                     >
-                      <div className="flex items-start gap-4">
-                        <div className={`shrink-0 w-10 h-10 rounded-xl flex items-center justify-center ${
-                          displayScore >= 70 ? 'bg-emerald-500/15' : displayScore >= 40 ? 'bg-yellow-500/15' : 'bg-red-500/15'
-                        }`}>
-                          {displayScore >= 70 ? (
-                            <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-                          ) : displayScore >= 40 ? (
-                            <AlertTriangle className="w-5 h-5 text-yellow-400" />
-                          ) : (
-                            <AlertTriangle className="w-5 h-5 text-red-400" />
-                          )}
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="text-sm font-bold text-foreground mb-1">What This Score Means</h3>
-                          <p className="text-xs text-muted-foreground leading-relaxed">
-                            {displayScore >= 70
-                              ? 'Your data appears to follow stronger privacy practices. This website demonstrates reasonable transparency in how it handles personal data.'
-                              : displayScore >= 40
-                              ? 'Some privacy concerns exist. Review the findings below to understand where this website may need to improve its data protection practices.'
-                              : 'Lower scores indicate higher privacy risks and may suggest weaker privacy practices or transparency. Consider reviewing your permissions and data shared with this website.'}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Score legend */}
-                      <div className="grid grid-cols-3 gap-3 mt-5 pt-4 border-t border-cyan-500/10">
-                        {[
-                          { label: 'High Score', range: '70–100', color: 'bg-emerald-400', textColor: 'text-emerald-400', desc: 'Stronger practices' },
-                          { label: 'Medium Score', range: '40–69', color: 'bg-yellow-400', textColor: 'text-yellow-400', desc: 'Some concerns' },
-                          { label: 'Low Score', range: '0–39', color: 'bg-red-400', textColor: 'text-red-400', desc: 'Higher risks' },
-                        ].map((item) => (
-                          <div key={item.label} className="flex items-center gap-2">
-                            <div className={`w-2 h-2 rounded-full ${item.color} shrink-0`} />
-                            <div>
-                              <span className={`text-[10px] font-bold ${item.textColor}`}>{item.label}</span>
-                              <span className="text-[9px] text-muted-foreground ml-1">{item.range}</span>
-                              <p className="text-[9px] text-muted-foreground leading-tight">{item.desc}</p>
+                      {/* GAP SUMMARY */}
+                      <div className="border border-cyan-500/20 rounded-2xl bg-cyan-950/5 p-5">
+                        <p className="text-[9px] font-bold tracking-widest text-cyan-400/60 uppercase mb-3">GAP SUMMARY</p>
+                        <div className="space-y-2.5">
+                          {[
+                            'Withdrawal of consent not clearly visible',
+                            'Grievance contact available but hard to find',
+                            'Retention period is vague',
+                            'AI / profiling disclosure needs more clarity',
+                          ].map((gap) => (
+                            <div key={gap} className="flex items-start gap-2">
+                              <AlertTriangle className="w-3 h-3 text-amber-400 shrink-0 mt-0.5" />
+                              <span className="text-[10px] text-muted-foreground leading-snug">{gap}</span>
                             </div>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
                       </div>
-                    </motion.div>
 
-                    {/* ── Section 3: Know Your Rights (DPDP) ───────── */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 12 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.25 }}
-                    >
-                      <div className="flex items-center gap-2 mb-4">
-                        <Scale className="w-4 h-4 text-cyan-400" />
-                        <h3 className="text-sm font-bold text-foreground">Know Your Rights Under DPDP Act</h3>
-                      </div>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-                        {[
-                          {
-                            icon: ShieldCheck,
-                            title: 'Your Rights',
-                            desc: 'Under the DPDP Act, you have the right to access, correct, and erase your personal data held by any organization.',
-                            accent: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
-                          },
-                          {
-                            icon: FileText,
-                            title: 'Raise a Grievance',
-                            desc: 'If you believe your personal data has been mishandled, you can raise a grievance with the organization or the Data Protection Board.',
-                            accent: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20',
-                          },
-                          {
-                            icon: Globe,
-                            title: 'Organization Duties',
-                            desc: 'Organizations have legal responsibilities when collecting, storing, processing, and sharing your personal data.',
-                            accent: 'text-blue-400 bg-blue-500/10 border-blue-500/20',
-                          },
-                          {
-                            icon: AlertTriangle,
-                            title: 'Regulatory Oversight',
-                            desc: 'Certain violations under the DPDP Act can result in regulatory penalties of up to ₹250 crore against organizations.',
-                            accent: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
-                          },
-                          {
-                            icon: Brain,
-                            title: 'Privacy Best Practices',
-                            desc: 'Review permissions regularly, limit unnecessary data sharing, and choose services that respect your privacy.',
-                            accent: 'text-violet-400 bg-violet-500/10 border-violet-500/20',
-                          },
-                        ].map((card) => (
-                          <div
-                            key={card.title}
-                            className={`rounded-xl border p-4 ${card.accent} transition-all duration-200 hover:scale-[1.02]`}
-                          >
-                            <card.icon className="w-5 h-5 mb-2.5" />
-                            <h4 className="text-[11px] font-bold text-foreground mb-1">{card.title}</h4>
-                            <p className="text-[9px] text-muted-foreground leading-relaxed">{card.desc}</p>
-                          </div>
-                        ))}
+                      {/* POTENTIAL DPDP CONCERNS */}
+                      <div className="border border-cyan-500/20 rounded-2xl bg-cyan-950/5 p-5">
+                        <p className="text-[9px] font-bold tracking-widest text-amber-400/60 uppercase mb-3">POTENTIAL DPDP CONCERNS</p>
+                        <div className="space-y-2.5">
+                          {[
+                            'Consent withdrawal process not straightforward',
+                            'Purpose specification and retention vague',
+                            'Automated decision-making disclosure unclear',
+                            'User rights exercise flow lacks clarity',
+                          ].map((concern) => (
+                            <div key={concern} className="flex items-start gap-2">
+                              <AlertTriangle className="w-3 h-3 text-red-400 shrink-0 mt-0.5" />
+                              <span className="text-[10px] text-muted-foreground leading-snug">{concern}</span>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </motion.div>
 
@@ -734,8 +710,59 @@ export default function PrivacyPitstopPage() {
               </div>
             </div>
 
+            {/* Middle Column: Your Privacy Action Journey (only on results) */}
+            {view === 'results' && result && (
+            <div className="lg:col-span-3 border border-cyan-500/20 rounded-2xl bg-cyan-950/5 p-5 space-y-0">
+              <div className="flex items-center gap-2 mb-5 border-b border-cyan-500/10 pb-3">
+                <Shield className="w-4 h-4 text-cyan-400" />
+                <h3 className="text-xs font-bold text-white uppercase tracking-wider">Your Privacy Action Journey</h3>
+              </div>
+
+              {/* Journey Steps */}
+              <div className="relative">
+                {/* Vertical connecting line */}
+                <div className="absolute left-[15px] top-4 bottom-4 w-px bg-gradient-to-b from-cyan-400/40 via-cyan-400/20 to-cyan-400/40" />
+
+                <div className="space-y-4">
+                  {[
+                    { step: 1, icon: Search, title: 'Scan', desc: 'Check any company website or app', color: 'from-cyan-500 to-cyan-600' },
+                    { step: 2, icon: Eye, title: 'Understand', desc: 'See privacy score, gaps, and plain-language insights', color: 'from-emerald-500 to-emerald-600' },
+                    { step: 3, icon: HelpCircle, title: 'Question', desc: 'Ask the fiduciary about your data, consent, retention, and AI use', color: 'from-blue-500 to-blue-600' },
+                    { step: 4, icon: AlertTriangle, title: 'Grieve', desc: 'Raise a privacy grievance using guided templates', color: 'from-amber-500 to-amber-600' },
+                    { step: 5, icon: BarChart3, title: 'Track', desc: 'Monitor responses and unresolved issues', color: 'from-violet-500 to-violet-600' },
+                    { step: 6, icon: ArrowUpRight, title: 'Escalate', desc: 'Build a complaint pack for formal escalation', color: 'from-rose-500 to-rose-600' },
+                  ].map((item) => (
+                    <div key={item.step} className="flex items-start gap-3 relative">
+                      <div className={`w-[30px] h-[30px] rounded-full bg-gradient-to-br ${item.color} flex items-center justify-center shrink-0 z-10 shadow-lg shadow-cyan-900/20`}>
+                        <span className="text-[10px] font-extrabold text-white">{item.step}</span>
+                      </div>
+                      <div className="pt-0.5">
+                        <div className="flex items-center gap-1.5">
+                          <item.icon className="w-3.5 h-3.5 text-cyan-400" />
+                          <h4 className="text-[11px] font-bold text-white">{item.title}</h4>
+                        </div>
+                        <p className="text-[9px] text-muted-foreground leading-snug mt-0.5">{item.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Bottom CTA */}
+              <div className="mt-5 pt-3 border-t border-cyan-500/10">
+                <div className="flex items-start gap-2 px-3 py-2.5 rounded-lg bg-cyan-500/5 border border-cyan-500/15">
+                  <Megaphone className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-[10px] font-bold text-cyan-400 leading-tight">Your voice creates accountability.</p>
+                    <p className="text-[9px] text-muted-foreground leading-snug mt-0.5">Together, we build a privacy-respectful India.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            )}
+
             {/* Right Column */}
-            <div className="lg:col-span-4 border border-cyan-500/20 rounded-2xl bg-cyan-950/5 p-6 space-y-6">
+            <div className={`${view === 'results' ? 'lg:col-span-3' : 'lg:col-span-4'} border border-cyan-500/20 rounded-2xl bg-cyan-950/5 p-5 space-y-5`}>
               <div className="flex items-center justify-between border-b border-cyan-500/10 pb-4">
                 <div className="text-left">
                   <h3 className="text-base font-bold text-white leading-none">Privacy Market Watch</h3>
