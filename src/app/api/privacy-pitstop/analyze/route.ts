@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { analyzePrivacyPitstop } from '@/lib/privacy-pitstop/analyzer'
 
 export const dynamic = 'force-dynamic'
-export const maxDuration = 30
+export const maxDuration = 60
 
 export async function POST(request: Request) {
   try {

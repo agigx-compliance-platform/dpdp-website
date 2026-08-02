@@ -1,7 +1,7 @@
 import type {
   Finding, PillarResult, DisplayCategory, AnalysisResult,
   FetchedPage, Severity, ConfidenceLevel,
-  RiskRating,
+  RiskRating, ScanContext,
 } from './types'
 import { SEVERITY_WEIGHT, CONFIDENCE_WEIGHT } from './types'
 import {
@@ -12,7 +12,17 @@ import {
   TRACKER_DOMAINS, AD_PIXEL_PATTERNS, CMP_INDICATORS,
   SESSION_REPLAY_DOMAINS, FINGERPRINT_PATTERNS,
   POLICY_SECTIONS, PRIVACY_LINK_PATTERNS, RIGHTS_LINK_PATTERNS,
+  PILLAR_TO_CATEGORY,
 } from './constants'
+import { crawlPages, normalizeUrl as crawlerNormalizeUrl, getDomainFromUrl as crawlerGetDomain } from './crawler'
+import {
+  detectNotice, detectConsent, detectCookies, detectTrackers,
+  detectRights, detectAITransparency, detectChildrensPrivacy,
+  detectSecurity, detectDataLeakage,
+} from './detectors'
+import { computeScores } from './scoring'
+import { generateReport } from './report'
+import { generateCitizenActions } from './citizen-actions'
 
 /* ═══════════════════════════════════════════════════════════════
    1. PAGE FETCHING
@@ -148,6 +158,8 @@ function finding(
   return {
     id: `${pillarId}-${module}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
     pillarId, module, title, description, severity, confidence, evidence,
+    evidenceItems: [],
+    categoryId: PILLAR_TO_CATEGORY[pillarId] || 'security',
     recommendation, details,
   }
 }
@@ -694,17 +706,63 @@ function generateSummary(riskScore: number, rating: RiskRating, categories: Disp
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   5. MAIN ORCHESTRATOR
+   5. MAIN ORCHESTRATOR (refactored with new pipeline)
    ═══════════════════════════════════════════════════════════════ */
 
-export async function analyzePrivacyPitstop(domain: string): Promise<AnalysisResult> {
-  // 1. Fetch pages
-  const pages = await fetchAllPages(domain)
-  const successfulPages = pages.filter(p => p.status === 200)
-  const siteDomain = getDomainFromUrl(normalizeUrl(domain))
+/**
+ * Backward-compatible helper: ensures every Finding has evidenceItems
+ * (legacy detectors produce findings without evidenceItems).
+ */
+function ensureEvidenceItems(f: Finding): Finding {
+  if (!f.evidenceItems) {
+    return {
+      ...f,
+      evidenceItems: [],
+      categoryId: f.categoryId || PILLAR_TO_CATEGORY[f.pillarId] || 'security',
+    }
+  }
+  if (!f.categoryId) {
+    return { ...f, categoryId: PILLAR_TO_CATEGORY[f.pillarId] || 'security' }
+  }
+  return f
+}
 
-  // 2. Run all pillar detectors
-  const allFindings: Finding[] = [
+export async function analyzePrivacyPitstop(domain: string): Promise<AnalysisResult> {
+  const scanId = typeof crypto !== 'undefined' && crypto.randomUUID
+    ? crypto.randomUUID()
+    : `scan-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+  const analyzedAt = new Date().toISOString()
+
+  // ── 1. Crawl pages (enhanced crawler with link discovery) ──
+  const pages = await crawlPages(domain)
+  const successfulPages = pages.filter(p => p.status === 200)
+  const siteDomain = crawlerGetDomain(crawlerNormalizeUrl(domain))
+
+  // ── 2. Build scan context ──────────────────────────────────
+  const ctx: ScanContext = {
+    scanId,
+    domain,
+    siteDomain,
+    startedAt: analyzedAt,
+    pages,
+    successfulPages,
+  }
+
+  // ── 3. Run NEW modular detectors ───────────────────────────
+  const newFindings: Finding[] = [
+    ...detectNotice(ctx),
+    ...detectConsent(ctx),
+    ...detectCookies(ctx),
+    ...detectTrackers(ctx),
+    ...detectRights(ctx),
+    ...detectAITransparency(ctx),
+    ...detectChildrensPrivacy(ctx),
+    ...detectSecurity(ctx),
+    ...detectDataLeakage(ctx),
+  ]
+
+  // ── 4. Also run LEGACY pillar detectors for backward compat ─
+  const legacyFindings: Finding[] = [
     ...detectP1(pages, siteDomain),
     ...detectP2(pages),
     ...detectP3(pages, siteDomain),
@@ -715,11 +773,11 @@ export async function analyzePrivacyPitstop(domain: string): Promise<AnalysisRes
     ...detectP8(pages),
     ...detectP9(pages),
     ...detectP10(pages),
-  ]
+  ].map(ensureEvidenceItems)
 
-  // 3. Build pillar results
+  // ── 5. Build legacy pillar results (backward compat) ───────
   const pillarResults: PillarResult[] = PILLARS.map(pd => {
-    const pillarFindings = allFindings.filter(f => f.pillarId === pd.id)
+    const pillarFindings = legacyFindings.filter(f => f.pillarId === pd.id)
     const { score, confidence } = computePillarScore(pillarFindings, PILLAR_MODULE_COUNTS[pd.id] || 2)
     return {
       id: pd.id,
@@ -732,27 +790,48 @@ export async function analyzePrivacyPitstop(domain: string): Promise<AnalysisRes
     }
   })
 
-  // 4. Compute overall scores
-  const { riskScore, confidenceScore, coverageScore } = computeOverallScores(pillarResults, successfulPages.length)
+  // ── 6. Legacy overall scores (backward compat) ─────────────
+  const { riskScore: legacyRiskScore, confidenceScore: legacyConfidenceScore, coverageScore: legacyCoverageScore } =
+    computeOverallScores(pillarResults, successfulPages.length)
+  const legacyCategories = buildCategories(pillarResults)
+
+  // ── 7. NEW 7-category scoring ──────────────────────────────
+  const scoring = computeScores(newFindings, successfulPages.length, PAGE_PATHS.length)
+
+  // Use the new scoring as the primary score
+  const riskScore = scoring.overallScore
   const riskRating = getRiskRating(riskScore)
 
-  // 5. Build display categories
-  const categories = buildCategories(pillarResults)
+  // ── 8. Generate structured report ──────────────────────────
+  const report = generateReport(
+    scanId, domain, analyzedAt,
+    scoring, newFindings, successfulPages.length,
+  )
 
-  // 6. Generate summary
-  const summary = generateSummary(riskScore, riskRating, categories, allFindings)
+  // ── 9. Generate citizen actions ────────────────────────────
+  const citizenActions = generateCitizenActions(newFindings, domain)
+
+  // ── 10. Generate legacy summary ────────────────────────────
+  const summary = generateSummary(
+    riskScore, riskRating, legacyCategories, legacyFindings,
+  )
 
   return {
+    scanId,
     domain,
-    analyzedAt: new Date().toISOString(),
+    analyzedAt,
     riskScore,
     riskRating,
-    confidenceScore,
-    coverageScore,
+    confidenceScore: scoring.confidenceScore,
+    coverageScore: scoring.coverageScore,
+    // Legacy fields (backward compat)
     pillars: pillarResults,
-    categories,
-    totalFindings: allFindings.length,
+    categories: legacyCategories,
+    totalFindings: newFindings.length,
     pagesAnalyzed: successfulPages.length,
     summary,
+    // New structured output
+    report,
+    citizenActions,
   }
 }
