@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
 const LOGO_LIGHT = '/images/brand/logo-light.svg'
-const LOGO_WHITE = '/images/brand/logo-white.svg'
+const LOGO_WHITE = '/images/brand/logo-dark.svg'
 
 type BrandMarkProps = {
   className?: string
