@@ -578,20 +578,32 @@ export default function PrivacyPitstopPage() {
                         </div>
 
                         {/* Category bars */}
-                        <div className="md:col-span-7 space-y-4 text-left">
-                          {[
-                            { name: 'Notice Transparency', icon: FileText },
-                            { name: 'Cookie & Consent', icon: Cookie },
-                            { name: 'User Rights & Redressal', icon: Scale },
-                            { name: 'AI Transparency', icon: Brain },
-                            { name: 'Security Signals', icon: ShieldCheck },
-                          ].map((cat) => {
-                            const score = getCategoryScore(cat.name)
+                        <div className="md:col-span-7 space-y-3 text-left">
+                          {(result?.report?.categories || [
+                            { id: 'notice', name: 'Privacy Notice', score: getCategoryScore('Notice Transparency') },
+                            { id: 'consent', name: 'Consent', score: getCategoryScore('Cookie & Consent') },
+                            { id: 'cookies', name: 'Cookies', score: getCategoryScore('Cookie & Consent') },
+                            { id: 'rights', name: 'Rights', score: getCategoryScore('User Rights & Redressal') },
+                            { id: 'ai_transparency', name: 'AI Transparency', score: getCategoryScore('AI Transparency') },
+                            { id: 'childrens_privacy', name: "Children's Privacy", score: getCategoryScore('Notice Transparency') },
+                            { id: 'security', name: 'Security', score: getCategoryScore('Security Signals') },
+                          ]).map((cat) => {
+                            const iconMap: Record<string, any> = {
+                              notice: FileText,
+                              consent: ShieldCheck,
+                              cookies: Cookie,
+                              rights: Scale,
+                              ai_transparency: Brain,
+                              childrens_privacy: HelpCircle,
+                              security: Shield,
+                            }
+                            const IconComp = iconMap[cat.id] || FileText
+                            const score = Math.round(cat.score)
                             return (
                               <div key={cat.name} className="space-y-1">
                                 <div className="flex justify-between items-center text-[10px] font-semibold text-muted-foreground">
                                   <div className="flex items-center gap-1.5">
-                                    <cat.icon className="w-3 h-3 text-cyan-400/60" />
+                                    <IconComp className="w-3 h-3 text-cyan-400/60" />
                                     <span>{cat.name}</span>
                                   </div>
                                   <span className="text-foreground font-bold">{score}/100</span>
@@ -617,13 +629,13 @@ export default function PrivacyPitstopPage() {
                       <div className="border border-cyan-500/20 rounded-2xl bg-cyan-950/5 p-5">
                         <p className="text-[9px] font-bold tracking-widest text-cyan-400/60 uppercase mb-3">GAP SUMMARY</p>
                         <div className="space-y-2.5">
-                          {[
+                          {(result?.report?.sections.flatMap(s => s.findings).filter(f => f.severity === 'medium' || f.severity === 'low').slice(0, 4).map(f => f.title) || [
                             'Withdrawal of consent not clearly visible',
                             'Grievance contact available but hard to find',
                             'Retention period is vague',
                             'AI / profiling disclosure needs more clarity',
-                          ].map((gap) => (
-                            <div key={gap} className="flex items-start gap-2">
+                          ]).map((gap, idx) => (
+                            <div key={idx} className="flex items-start gap-2">
                               <AlertTriangle className="w-3 h-3 text-amber-400 shrink-0 mt-0.5" />
                               <span className="text-[10px] text-muted-foreground leading-snug">{gap}</span>
                             </div>
@@ -635,13 +647,13 @@ export default function PrivacyPitstopPage() {
                       <div className="border border-cyan-500/20 rounded-2xl bg-cyan-950/5 p-5">
                         <p className="text-[9px] font-bold tracking-widest text-amber-400/60 uppercase mb-3">POTENTIAL DPDP CONCERNS</p>
                         <div className="space-y-2.5">
-                          {[
+                          {(result?.report?.sections.flatMap(s => s.findings).filter(f => f.severity === 'critical' || f.severity === 'high').slice(0, 4).map(f => f.title) || [
                             'Consent withdrawal process not straightforward',
                             'Purpose specification and retention vague',
                             'Automated decision-making disclosure unclear',
                             'User rights exercise flow lacks clarity',
-                          ].map((concern) => (
-                            <div key={concern} className="flex items-start gap-2">
+                          ]).map((concern, idx) => (
+                            <div key={idx} className="flex items-start gap-2">
                               <AlertTriangle className="w-3 h-3 text-red-400 shrink-0 mt-0.5" />
                               <span className="text-[10px] text-muted-foreground leading-snug">{concern}</span>
                             </div>

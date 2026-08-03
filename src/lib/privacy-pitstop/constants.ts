@@ -1,4 +1,4 @@
-import type { PillarDefinition } from './types'
+import type { PillarDefinition, ScanCategoryDefinition, ScanCategoryId } from './types'
 
 /* ─── Pillar definitions with exact weights ────────────────── */
 
@@ -62,6 +62,22 @@ export const PAGE_PATHS: { path: string; pageClass: string }[] = [
   { path: '/terms', pageClass: 'privacy' },
   { path: '/contact', pageClass: 'support' },
   { path: '/about', pageClass: 'support' },
+  // Spec-required additional paths
+  { path: '/legal', pageClass: 'privacy' },
+  { path: '/security', pageClass: 'security' },
+  { path: '/trust', pageClass: 'security' },
+  { path: '/trust-center', pageClass: 'security' },
+  { path: '/ai-policy', pageClass: 'ai' },
+  { path: '/responsible-ai', pageClass: 'ai' },
+  { path: '/support', pageClass: 'support' },
+  { path: '/rights', pageClass: 'rights' },
+  { path: '/data-protection', pageClass: 'privacy' },
+  { path: '/grievance', pageClass: 'rights' },
+  { path: '/dpo', pageClass: 'rights' },
+  { path: '/accessibility', pageClass: 'support' },
+  { path: '/data-subject-request', pageClass: 'rights' },
+  { path: '/opt-out', pageClass: 'rights' },
+  { path: '/.well-known/security.txt', pageClass: 'security_txt' },
 ]
 
 /* ─── Known third-party tracker domains ────────────────────── */
@@ -180,4 +196,125 @@ export const RIGHTS_LINK_PATTERNS = [
   /opt[\s_-]?out/i, /do[\s_-]?not[\s_-]?sell/i, /unsubscribe/i,
   /grievance/i, /redressal/i, /complaint/i,
   /right[\s_-]?to[\s_-]?access/i, /right[\s_-]?to[\s_-]?delete/i,
+]
+
+/* ─── 7-Category Scoring System (spec weights) ─────────────── */
+
+const TOTAL_CATEGORY_WEIGHT = 54
+
+export const SCAN_CATEGORIES: ScanCategoryDefinition[] = [
+  { id: 'notice',            name: 'Privacy Notice',      weight: 10, normalizedWeight: 10 / TOTAL_CATEGORY_WEIGHT },
+  { id: 'consent',           name: 'Consent',             weight: 10, normalizedWeight: 10 / TOTAL_CATEGORY_WEIGHT },
+  { id: 'cookies',           name: 'Cookies',             weight: 10, normalizedWeight: 10 / TOTAL_CATEGORY_WEIGHT },
+  { id: 'rights',            name: 'Rights',              weight: 10, normalizedWeight: 10 / TOTAL_CATEGORY_WEIGHT },
+  { id: 'ai_transparency',   name: 'AI Transparency',     weight: 6,  normalizedWeight: 6 / TOTAL_CATEGORY_WEIGHT },
+  { id: 'childrens_privacy', name: "Children's Privacy",  weight: 5,  normalizedWeight: 5 / TOTAL_CATEGORY_WEIGHT },
+  { id: 'security',          name: 'Security',            weight: 3,  normalizedWeight: 3 / TOTAL_CATEGORY_WEIGHT },
+]
+
+/** Maps legacy pillar IDs to the new 7-category system */
+export const PILLAR_TO_CATEGORY: Record<string, ScanCategoryId> = {
+  P1: 'notice',
+  P2: 'consent',
+  P3: 'cookies',
+  P4: 'consent',
+  P5: 'cookies',
+  P6: 'consent',
+  P7: 'ai_transparency',
+  P8: 'security',
+  P9: 'security',
+  P10: 'rights',
+}
+
+/* ─── Excluded path patterns (crawler safety) ──────────────── */
+
+export const EXCLUDED_PATH_PATTERNS = [
+  /\/admin/i, /\/login/i, /\/signin/i, /\/signup/i,
+  /\/dashboard/i, /\/account/i, /\/settings/i,
+  /\/wp-admin/i, /\/wp-login/i,
+  /\/api\//i, /\/graphql/i,
+  /\.(pdf|zip|doc|xls|ppt|exe|dmg|apk)/i,
+]
+
+export const EXCLUDED_DOMAINS = new Set([
+  'localhost', '127.0.0.1', '0.0.0.0', '::1',
+])
+
+/* ─── AI Transparency detection patterns ───────────────────── */
+
+export const AI_DISCLOSURE_PATTERNS = [
+  /artificial\s+intelligence/i, /\bAI\b.*(?:use|usage|system|model|train)/i,
+  /machine\s+learning/i, /deep\s+learning/i, /neural\s+network/i,
+  /generative\s+AI/i, /GenAI/i, /large\s+language\s+model/i, /\bLLM\b/i,
+  /automated\s+decision[\s-]?making/i, /algorithmic\s+decision/i,
+  /profiling/i, /automated\s+profiling/i,
+  /human\s+review/i, /human\s+oversight/i, /human-in-the-loop/i,
+  /explainab/i, /interpretab/i, /transparency.*AI/i,
+  /AI\s+opt[\s-]?out/i, /opt[\s-]?out.*AI/i,
+  /AI\s+training/i, /train.*(?:model|data|algorithm)/i,
+  /responsible\s+AI/i, /AI\s+ethics/i, /AI\s+governance/i,
+  /AI\s+fairness/i, /bias\s+(?:detection|mitigation)/i,
+]
+
+export const AI_PAGE_PATTERNS = [
+  /\/ai[\s_-]?policy/i, /\/responsible[\s_-]?ai/i, /\/ai[\s_-]?ethics/i,
+  /\/ai[\s_-]?transparency/i, /\/ai[\s_-]?governance/i,
+  /\/machine[\s_-]?learning/i,
+]
+
+/* ─── Children's privacy detection patterns ────────────────── */
+
+export const CHILDRENS_PRIVACY_PATTERNS = [
+  /child(ren)?('s)?\s+privacy/i,
+  /under\s+(the\s+age\s+of\s+)?(13|14|16|18)/i,
+  /minors?('s)?\s+(data|privacy|information)/i,
+  /parental\s+consent/i, /verifiable\s+parental/i,
+  /child(ren)?('s)?\s+data/i, /child(ren)?('s)?\s+information/i,
+  /COPPA/i, /\bSection\s+9\b/i,
+  /guardian('s)?\s+consent/i,
+  /age\s+verification/i, /age\s+gate/i, /age\s+check/i,
+]
+
+/* ─── Security headers to check ────────────────────────────── */
+
+export const SECURITY_HEADERS: { header: string; severity: 'high' | 'medium' | 'low' }[] = [
+  { header: 'strict-transport-security', severity: 'high' },
+  { header: 'content-security-policy', severity: 'medium' },
+  { header: 'x-frame-options', severity: 'medium' },
+  { header: 'x-content-type-options', severity: 'low' },
+  { header: 'referrer-policy', severity: 'low' },
+  { header: 'permissions-policy', severity: 'low' },
+  { header: 'x-xss-protection', severity: 'low' },
+]
+
+/* ─── Privacy-relevant link discovery patterns ─────────────── */
+
+export const DISCOVERABLE_PRIVACY_LINKS = [
+  /privacy/i, /cookie/i, /terms/i, /legal/i,
+  /security/i, /trust/i, /compliance/i,
+  /\bai[\s_-]?policy/i, /responsible[\s_-]?ai/i,
+  /rights/i, /data[\s_-]?protection/i,
+  /grievance/i, /\bdpo\b/i, /data[\s_-]?subject/i,
+  /opt[\s_-]?out/i, /accessibility/i, /contact/i,
+  /support/i, /\bdsar\b/i,
+]
+
+/* ─── Individual rights detection patterns ─────────────────── */
+
+export const INDIVIDUAL_RIGHTS_PATTERNS: { right: string; patterns: RegExp[] }[] = [
+  { right: 'access', patterns: [/right\s+(?:of|to)\s+access/i, /access\s+(?:your|my|personal)\s+(?:data|information)/i, /request.*copy.*data/i] },
+  { right: 'correction', patterns: [/right\s+to\s+(?:correct|rectif)/i, /correct.*(?:your|personal).*(?:data|information)/i, /rectification/i] },
+  { right: 'deletion', patterns: [/right\s+to\s+(?:delet|erasure)/i, /delete.*(?:your|my).*(?:data|account)/i, /right\s+to\s+be\s+forgotten/i, /erasure/i] },
+  { right: 'withdrawal', patterns: [/withdraw.*consent/i, /revoke.*consent/i, /right\s+to\s+withdraw/i] },
+  { right: 'grievance', patterns: [/grievance/i, /redressal/i, /complaint.*(?:mechanism|process|procedure)/i, /nodal\s+officer/i] },
+  { right: 'contact', patterns: [/contact.*(?:dpo|data\s+protection\s+officer|privacy\s+officer)/i, /dpo.*contact/i, /privacy.*(?:email|contact)/i] },
+  { right: 'opt_out', patterns: [/opt[\s-]?out/i, /do\s+not\s+sell/i, /do\s+not\s+share/i, /unsubscribe/i] },
+]
+
+/* ─── Last-updated date extraction patterns ────────────────── */
+
+export const POLICY_DATE_PATTERNS = [
+  /(?:last\s+)?(?:updated|modified|revised|effective)\s*(?:on|:)?\s*(\d{1,2}[\s/.-]\w+[\s/.-]\d{2,4})/i,
+  /(?:effective|updated)\s+(?:date|as\s+of)\s*:?\s*(\w+\s+\d{1,2},?\s+\d{4})/i,
+  /(?:date|version)\s*:?\s*(\d{1,2}[\s/.-]\d{1,2}[\s/.-]\d{2,4})/i,
 ]
