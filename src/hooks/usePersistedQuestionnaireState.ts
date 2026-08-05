@@ -103,7 +103,7 @@ export function usePersistedQuestionnaireState() {
     }
 
     loadState()
-    setIsInitialized(true)
+    queueMicrotask(() => setIsInitialized(true))
 
     const handleStorage = (e: StorageEvent) => {
       if (e.key === STORAGE_KEY) loadState()

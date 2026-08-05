@@ -7,14 +7,15 @@ declare global {
 }
 
 const LOCAL_FALLBACK = 'http://localhost:8084'
+const PROD_FALLBACK = 'https://consent-management-service-ywx2kc3tdq-ma.a.run.app'
 
 function trim(value: string | undefined): string | undefined {
   const v = value?.trim()
   return v || undefined
 }
 
-function isLocalhostUrl(url: string): boolean {
-  return /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\/?$/i.test(url)
+export function getDefaultConsentApiUrl(): string {
+  return process.env.NODE_ENV === 'production' ? PROD_FALLBACK : LOCAL_FALLBACK
 }
 
 export function getBuildTimeConsentApiUrl(): string | undefined {
@@ -33,7 +34,7 @@ function getInjectedConsentApiUrl(): string | undefined {
 let cachedUrl: string | null = null
 let loading: Promise<string> | null = null
 
-/** Best-effort URL without network I/O (may be localhost until ensureConsentApiUrl runs). */
+/** Best-effort URL without network I/O. */
 export function resolveConsentApiUrlSync(): string {
   if (cachedUrl) return cachedUrl
 
@@ -43,26 +44,29 @@ export function resolveConsentApiUrlSync(): string {
     return configured
   }
 
-  return LOCAL_FALLBACK
+  return getDefaultConsentApiUrl()
 }
 
-/** Resolves the consent API base URL, fetching Netlify runtime config when needed. */
+/** Resolves the consent API base URL, fetching runtime config when needed. */
 export async function ensureConsentApiUrl(): Promise<string> {
+  const defaultUrl = getDefaultConsentApiUrl()
   const injected = getInjectedConsentApiUrl()
   const built = getBuildTimeConsentApiUrl()
   const configured = injected || built
 
-  if (configured && (process.env.NODE_ENV !== 'production' || !isLocalhostUrl(configured))) {
+  if (configured) {
     cachedUrl = configured
     return configured
   }
 
-  if (cachedUrl && cachedUrl !== LOCAL_FALLBACK) {
+  if (cachedUrl) {
     return cachedUrl
   }
 
   if (typeof window === 'undefined') {
-    return trim(process.env.CONSENT_API_URL) || configured || LOCAL_FALLBACK
+    const serverUrl = trim(process.env.CONSENT_API_URL) || defaultUrl
+    cachedUrl = serverUrl
+    return serverUrl
   }
 
   if (!loading) {
@@ -74,12 +78,10 @@ export async function ensureConsentApiUrl(): Promise<string> {
         if (!url) throw new Error('consentApiUrl missing in runtime config')
         return url
       })
-      .catch(() => configured || LOCAL_FALLBACK)
+      .catch(() => defaultUrl)
   }
 
   const url = await loading
-  if (!isLocalhostUrl(url) || process.env.NODE_ENV === 'development') {
-    cachedUrl = url
-  }
+  cachedUrl = url
   return url
 }

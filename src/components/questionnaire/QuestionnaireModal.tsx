@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useSyncExternalStore } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useQuestionnaireStore } from '@/store/questionnaireStore'
 import { usePersistedQuestionnaireState } from '@/hooks/usePersistedQuestionnaireState'
@@ -13,14 +13,12 @@ import { cn } from '@/lib/utils'
 import { X } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 
+const emptySubscribe = () => () => {}
+
 export function QuestionnaireModal() {
   const { isModalOpen, closeModal } = useQuestionnaireStore()
   const { scanId, scanDone, updateState, currentStep, clearPersistedState } = usePersistedQuestionnaireState()
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
+  const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false)
 
   useEffect(() => {
     if (isModalOpen) {

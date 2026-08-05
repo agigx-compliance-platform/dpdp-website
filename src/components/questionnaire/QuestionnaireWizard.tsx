@@ -117,11 +117,14 @@ export function QuestionnaireWizard() {
   // Resume animation
   useEffect(() => {
     if (currentStep > 0) {
-      setIsResuming(true)
-      const t = setTimeout(() => setIsResuming(false), 400)
-      return () => clearTimeout(t)
+      const t1 = setTimeout(() => setIsResuming(true), 0)
+      const t2 = setTimeout(() => setIsResuming(false), 400)
+      return () => {
+        clearTimeout(t1)
+        clearTimeout(t2)
+      }
     }
-  }, []) // run once on mount
+  }, [currentStep])
 
   // Wake Cloud Run while the user fills out the questionnaire (free-tier friendly).
   useEffect(() => {

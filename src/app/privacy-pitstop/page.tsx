@@ -74,6 +74,27 @@ export default function PrivacyPitstopPage() {
   const abortRef = useRef<AbortController | null>(null)
 
   // Leaderboard state
+  const INITIAL_TOP_LEADERBOARD = [
+    { domain: 'zoho.com', score: 86 },
+    { domain: 'tata.com', score: 83 },
+    { domain: 'infosys.com', score: 78 },
+  ]
+
+  const [topLeaderboard, setTopLeaderboard] = useState<{ domain: string; score: number }[]>(INITIAL_TOP_LEADERBOARD)
+
+  // Rehydrate persisted leaderboard state after client hydration
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('dpdp_privacy_top3_leaderboard')
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          queueMicrotask(() => setTopLeaderboard(parsed.slice(0, 3)))
+        }
+      }
+    } catch (err) {}
+  }, [])
+
   const [leaderboardScores, setLeaderboardScores] = useState<Record<string, number>>({
     'zoho.com': 86,
     'tata.com': 83,
@@ -102,9 +123,15 @@ export default function PrivacyPitstopPage() {
     return () => cleanup()
   }, [cleanup])
 
-  // Trigger background scans for top 5 leaderboard companies on mount
+  // Trigger background scans for leaderboard companies on mount if score is missing
   useEffect(() => {
+    let isMounted = true
+
     const scanCompany = async (d: string) => {
+      if (!isMounted) return
+      // Skip background scanning on mount if a valid score already exists in leaderboard state
+      if (leaderboardScores[d] !== undefined && leaderboardScores[d] > 0) return
+
       setScanningLeaderboard(prev => ({ ...prev, [d]: true }))
       try {
         const res = await fetch('/api/privacy-pitstop/analyze', {
@@ -112,23 +139,61 @@ export default function PrivacyPitstopPage() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ domain: d }),
         })
+
+        if (!res.ok) {
+          return
+        }
+
         const data = await res.json()
-        if (res.ok && data?.riskScore !== undefined) {
-          setLeaderboardScores(prev => ({ ...prev, [d]: data.riskScore }))
+        if (isMounted && data?.riskScore !== undefined) {
+          const scoreVal = Math.round(data.riskScore)
+          setLeaderboardScores(prev => ({ ...prev, [d]: scoreVal }))
+          setTopLeaderboard(prev => {
+            const cleanDomain = d.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '')
+            const existingIndex = prev.findIndex(item => item.domain.toLowerCase() === cleanDomain)
+            let updated = [...prev]
+
+            if (existingIndex !== -1) {
+              updated[existingIndex] = { ...updated[existingIndex], score: scoreVal }
+            } else {
+              updated.push({ domain: cleanDomain, score: scoreVal })
+            }
+
+            updated.sort((a, b) => b.score - a.score)
+            const top3 = updated.slice(0, 3)
+
+            try {
+              localStorage.setItem('dpdp_privacy_top3_leaderboard', JSON.stringify(top3))
+            } catch (err) {}
+
+            return top3
+          })
         }
       } catch (err) {
-        console.error(`Leaderboard scan failed for ${d}:`, err)
+        // Quietly absorb background refresh drops
       } finally {
-        setScanningLeaderboard(prev => ({ ...prev, [d]: false }))
+        if (isMounted) {
+          setScanningLeaderboard(prev => ({ ...prev, [d]: false }))
+        }
       }
     }
 
     const runAll = async () => {
       for (const d of LEADERBOARD_DOMAINS) {
-        await scanCompany(d)
+        if (!isMounted) break
+        try {
+          await scanCompany(d)
+        } catch (err) {
+          // Continue remaining scans
+        }
       }
     }
+
     runAll()
+
+    return () => {
+      isMounted = false
+    }
   }, [])
 
   const startAnalysis = useCallback(async (targetDomain: string) => {
@@ -162,10 +227,36 @@ export default function PrivacyPitstopPage() {
         throw new Error(data.error || `Analysis failed (${res.status})`)
       }
 
+      const analysisData = data as AnalysisResult
+      const scoreVal = Math.round(analysisData.riskScore)
+      const cleanDomain = targetDomain.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '')
+
+      setTopLeaderboard(prev => {
+        const existingIndex = prev.findIndex(item => item.domain.toLowerCase() === cleanDomain)
+        let updated = [...prev]
+
+        if (existingIndex !== -1) {
+          updated[existingIndex] = { ...updated[existingIndex], score: scoreVal }
+        } else {
+          updated.push({ domain: cleanDomain, score: scoreVal })
+        }
+
+        updated.sort((a, b) => b.score - a.score)
+        const top3 = updated.slice(0, 3)
+
+        try {
+          localStorage.setItem('dpdp_privacy_top3_leaderboard', JSON.stringify(top3))
+        } catch (err) {}
+
+        return top3
+      })
+
+      setLeaderboardScores(prev => ({ ...prev, [cleanDomain]: scoreVal }))
+
       setActiveStep(ANALYSIS_STEPS.length - 1)
       timersRef.current.push(
         setTimeout(() => {
-          setResult(data as AnalysisResult)
+          setResult(analysisData)
           setView('results')
         }, 800)
       )
@@ -221,6 +312,32 @@ export default function PrivacyPitstopPage() {
 
   const displayScore = result ? result.riskScore : 0
   const displayRating = result ? getRatingText(result.riskScore) : 'Not Scanned'
+
+  const getAllFindings = (res: AnalysisResult | null) => {
+    if (!res) return []
+    const fromSections = res.report?.sections?.flatMap(s => s.findings) ?? []
+    if (fromSections.length > 0) return fromSections
+    const fromReportCategories = res.report?.categories?.flatMap(c => c.findings) ?? []
+    if (fromReportCategories.length > 0) return fromReportCategories
+    const fromPillars = res.pillars?.flatMap(p => p.findings) ?? []
+    return fromPillars
+  }
+
+  const allFindings = getAllFindings(result)
+
+  const dpdpConcerns = Array.from(new Set(
+    allFindings
+      .filter(f => f.severity === 'critical' || f.severity === 'high')
+      .map(f => f.title)
+      .filter(Boolean)
+  )).slice(0, 5)
+
+  const gapSummary = Array.from(new Set(
+    allFindings
+      .filter(f => f.severity === 'medium' || f.severity === 'low' || f.severity === 'info')
+      .map(f => f.title)
+      .filter(Boolean)
+  )).slice(0, 5)
 
   const getCategoryScore = (catName: string, baseScore: number = displayScore) => {
     if (!result && baseScore === 0) return 0
@@ -629,17 +746,19 @@ export default function PrivacyPitstopPage() {
                       <div className="border border-cyan-500/20 rounded-2xl bg-cyan-950/5 p-5">
                         <p className="text-[9px] font-bold tracking-widest text-cyan-400/60 uppercase mb-3">GAP SUMMARY</p>
                         <div className="space-y-2.5">
-                          {(result?.report?.sections.flatMap(s => s.findings).filter(f => f.severity === 'medium' || f.severity === 'low').slice(0, 4).map(f => f.title) || [
-                            'Withdrawal of consent not clearly visible',
-                            'Grievance contact available but hard to find',
-                            'Retention period is vague',
-                            'AI / profiling disclosure needs more clarity',
-                          ]).map((gap, idx) => (
-                            <div key={idx} className="flex items-start gap-2">
-                              <AlertTriangle className="w-3 h-3 text-amber-400 shrink-0 mt-0.5" />
-                              <span className="text-[10px] text-muted-foreground leading-snug">{gap}</span>
+                          {gapSummary.length > 0 ? (
+                            gapSummary.map((gap, idx) => (
+                              <div key={idx} className="flex items-start gap-2">
+                                <AlertTriangle className="w-3 h-3 text-amber-400 shrink-0 mt-0.5" />
+                                <span className="text-[10px] text-muted-foreground leading-snug">{gap}</span>
+                              </div>
+                            ))
+                          ) : (
+                            <div className="flex items-center gap-2 py-1">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                              <span className="text-[10px] text-muted-foreground leading-snug">No compliance gaps identified.</span>
                             </div>
-                          ))}
+                          )}
                         </div>
                       </div>
 
@@ -647,17 +766,19 @@ export default function PrivacyPitstopPage() {
                       <div className="border border-cyan-500/20 rounded-2xl bg-cyan-950/5 p-5">
                         <p className="text-[9px] font-bold tracking-widest text-amber-400/60 uppercase mb-3">POTENTIAL DPDP CONCERNS</p>
                         <div className="space-y-2.5">
-                          {(result?.report?.sections.flatMap(s => s.findings).filter(f => f.severity === 'critical' || f.severity === 'high').slice(0, 4).map(f => f.title) || [
-                            'Consent withdrawal process not straightforward',
-                            'Purpose specification and retention vague',
-                            'Automated decision-making disclosure unclear',
-                            'User rights exercise flow lacks clarity',
-                          ]).map((concern, idx) => (
-                            <div key={idx} className="flex items-start gap-2">
-                              <AlertTriangle className="w-3 h-3 text-red-400 shrink-0 mt-0.5" />
-                              <span className="text-[10px] text-muted-foreground leading-snug">{concern}</span>
+                          {dpdpConcerns.length > 0 ? (
+                            dpdpConcerns.map((concern, idx) => (
+                              <div key={idx} className="flex items-start gap-2">
+                                <AlertTriangle className="w-3 h-3 text-red-400 shrink-0 mt-0.5" />
+                                <span className="text-[10px] text-muted-foreground leading-snug">{concern}</span>
+                              </div>
+                            ))
+                          ) : (
+                            <div className="flex items-center gap-2 py-1">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                              <span className="text-[10px] text-muted-foreground leading-snug">No critical or high concerns identified.</span>
                             </div>
-                          ))}
+                          )}
                         </div>
                       </div>
                     </motion.div>
@@ -790,13 +911,9 @@ export default function PrivacyPitstopPage() {
 
               {[
                 {
-                  title: 'Top Gainers',
+                  title: 'Top Gainers (Top 3)',
                   color: 'text-emerald-400',
-                  items: [
-                    { name: 'zoho.com', domain: 'zoho.com' },
-                    { name: 'tata.com', domain: 'tata.com' },
-                    { name: 'infosys.com', domain: 'infosys.com' }
-                  ]
+                  items: topLeaderboard.map(item => ({ name: item.domain, domain: item.domain, score: item.score }))
                 },
                 {
                   title: 'Top Decliners',
@@ -841,7 +958,7 @@ export default function PrivacyPitstopPage() {
                         'flashnews.com': 26,
                         'dealscorner.com': 24
                       }
-                      const displayVal = score !== undefined ? score : (defaultScores[item.domain] ?? 70)
+                      const displayVal = (item as any).score !== undefined ? (item as any).score : (score !== undefined ? score : (defaultScores[item.domain] ?? 70))
 
                       return (
                         <div key={item.domain} className="flex items-center justify-between text-xs py-1 hover:bg-cyan-950/20 px-2 rounded-md transition-all">

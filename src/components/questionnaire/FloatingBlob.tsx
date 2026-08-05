@@ -5,7 +5,9 @@ import { AlertTriangle, CheckCircle2, ArrowRight, Activity, ListTodo } from 'luc
 import { useQuestionnaireStore } from '@/store/questionnaireStore'
 import { usePersistedQuestionnaireState } from '@/hooks/usePersistedQuestionnaireState'
 import { cn } from '@/lib/utils'
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useSyncExternalStore } from 'react'
+
+const emptySubscribe = () => () => {}
 
 export function FloatingBlob() {
   const { isModalOpen, openModal } = useQuestionnaireStore()
@@ -21,20 +23,16 @@ export function FloatingBlob() {
     updateState,
   } = usePersistedQuestionnaireState()
   
-  const [mounted, setMounted] = useState(false)
+  const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false)
   const [isHovered, setIsHovered] = useState(false)
   const [tempExpanded, setTempExpanded] = useState(false)
   const prevIsModalOpen = useRef(isModalOpen)
-  
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   useEffect(() => {
-    if (isModalOpen) {
-      setIsHovered(false)
+    if (isModalOpen && isHovered) {
+      queueMicrotask(() => setIsHovered(false))
     }
-  }, [isModalOpen])
+  }, [isModalOpen, isHovered])
 
   const hasStarted = currentStep > 0 || !!scanId
 

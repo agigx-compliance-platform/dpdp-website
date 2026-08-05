@@ -1,17 +1,21 @@
 import { NextResponse } from 'next/server'
-import { analyzePrivacyPitstop } from '@/lib/privacy-pitstop/analyzer'
+import { initiatePitstopScan } from '@/lib/api'
+import { pollUntilPitstopReport, unwrapConsentApiEnvelope } from '@/lib/website-scan'
+import { ensureConsentApiUrl } from '@/lib/consent-api-url'
+import { isAxiosError } from 'axios'
 
 export const dynamic = 'force-dynamic'
-export const maxDuration = 60
+export const maxDuration = 120
 
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const domain = typeof body?.domain === 'string' ? body.domain.trim() : ''
+    const rawInput = typeof body?.domain === 'string' ? body.domain : (typeof body?.url === 'string' ? body.url : '')
+    const domain = rawInput.trim()
 
     if (!domain) {
       return NextResponse.json(
-        { error: 'Missing required field: domain' },
+        { error: 'Missing required field: domain or url' },
         { status: 400 }
       )
     }
@@ -24,16 +28,35 @@ export async function POST(request: Request) {
       )
     }
 
-    const result = await analyzePrivacyPitstop(domain)
+    const initiateRes = await initiatePitstopScan(domain)
+    const { scanId } = unwrapConsentApiEnvelope<{ scanId: string }>(initiateRes)
+
+    const result = await pollUntilPitstopReport(scanId)
 
     return NextResponse.json(result, {
       headers: { 'Cache-Control': 'no-store' },
     })
   } catch (err) {
-    console.error('[PrivacyPitstop] Analysis error:', err)
+    const baseUrl = await ensureConsentApiUrl().catch(() => 'unknown')
+    console.error('[PrivacyPitstop] Backend scan error:', {
+      baseUrl,
+      endpoint: '/api/v1/sdk/website/scan/pitstop/initiate',
+      message: err instanceof Error ? err.message : String(err),
+      ...(isAxiosError(err) ? {
+        status: err.response?.status,
+        statusText: err.response?.statusText,
+        responseData: err.response?.data,
+      } : {}),
+    })
+
+    const statusCode = isAxiosError(err) && err.response?.status ? err.response.status : 500
+    const errorMessage = isAxiosError(err) && err.response?.data?.message
+      ? err.response.data.message
+      : (err instanceof Error ? err.message : 'Analysis failed')
+
     return NextResponse.json(
-      { error: err instanceof Error ? err.message : 'Analysis failed' },
-      { status: 500 }
+      { error: errorMessage },
+      { status: statusCode }
     )
   }
 }

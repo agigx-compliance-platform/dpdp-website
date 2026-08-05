@@ -1,3 +1,7 @@
+/**
+ * @deprecated Client-side scanning and scoring has been migrated to consent-management-service.
+ * Use the backend Pitstop scan API (/api/v1/sdk/website/scan/pitstop/*) instead.
+ */
 import type {
   Finding, PillarResult, DisplayCategory, AnalysisResult,
   FetchedPage, Severity, ConfidenceLevel,
