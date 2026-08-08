@@ -58,7 +58,7 @@ export async function initiateScan(data: {
   return (await getApiClient()).post<{ data: { scanId: string; sessionId: string } }>(
     '/api/v1/sdk/website/scan/initiate',
     data,
-    { timeout: 120_000 }
+    { timeout: 300_000 }
   )
 }
 
@@ -72,7 +72,7 @@ export async function getScanStatus(scanId: string) {
 export async function getScanReport(scanId: string) {
   return (await getApiClient()).get<{ data: ScanReportResponse }>(
     `/api/v1/sdk/website/scan/report/${scanId}`,
-    { timeout: 120_000 }
+    { timeout: 300_000 }
   )
 }
 
@@ -80,7 +80,7 @@ export async function initiatePitstopScan(url: string) {
   return (await getApiClient()).post<{ data: { scanId: string } }>(
     '/api/v1/sdk/website/scan/pitstop/initiate',
     { url },
-    { timeout: 120_000 }
+    { timeout: 300_000 }
   )
 }
 
@@ -94,7 +94,7 @@ export async function getPitstopScanStatus(scanId: string) {
 export async function getPitstopScanReport(scanId: string) {
   return (await getApiClient()).get<{ data: import('./privacy-pitstop/types').AnalysisResult }>(
     `/api/v1/sdk/website/scan/pitstop/report/${scanId}`,
-    { timeout: 120_000 }
+    { timeout: 300_000 }
   )
 }
 

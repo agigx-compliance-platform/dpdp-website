@@ -315,29 +315,138 @@ export default function PrivacyPitstopPage() {
 
   const getAllFindings = (res: AnalysisResult | null) => {
     if (!res) return []
+    const list: any[] = []
+
     const fromSections = res.report?.sections?.flatMap(s => s.findings) ?? []
-    if (fromSections.length > 0) return fromSections
+    list.push(...fromSections)
+
     const fromReportCategories = res.report?.categories?.flatMap(c => c.findings) ?? []
-    if (fromReportCategories.length > 0) return fromReportCategories
+    list.push(...fromReportCategories)
+
+    const fromCategories = (res.categories as any[])?.flatMap(c => c.findings ?? []) ?? []
+    list.push(...fromCategories)
+
     const fromPillars = res.pillars?.flatMap(p => p.findings) ?? []
-    return fromPillars
+    list.push(...fromPillars)
+
+    const rawFlags = (res as any).complianceFlags || (res.report as any)?.complianceFlags || []
+    if (Array.isArray(rawFlags)) {
+      for (const flag of rawFlags) {
+        if (flag && flag.passed === false) {
+          list.push({
+            id: flag.id || String(Math.random()),
+            pillarId: flag.pillar || flag.categoryId || 'notice',
+            categoryId: flag.categoryId || flag.pillar || 'notice',
+            title: flag.title,
+            description: flag.description,
+            severity: flag.severity || 'high',
+            confidence: 'high',
+            evidenceItems: [],
+            evidence: flag.evidence ? String(flag.evidence) : 'detected',
+            details: typeof flag.evidence === 'string' ? flag.evidence : (flag.description || ''),
+            recommendation: flag.remediation || flag.description || '',
+          })
+        }
+      }
+    }
+
+    return list
+  }
+
+  const SEVERITY_WEIGHT_VAL: Record<string, number> = {
+    critical: 10,
+    high: 8,
+    medium: 5,
+    low: 2.5,
+    info: 1,
+  }
+
+  const CATEGORY_LABEL_MAP: Record<string, string> = {
+    notice: 'Privacy Notice',
+    consent: 'Consent',
+    cookies: 'Cookies',
+    rights: 'Rights',
+    ai_transparency: 'AI Transparency',
+    childrens_privacy: "Children's Privacy",
+    security: 'Security',
+    P1: 'Privacy Notice',
+    P2: 'Consent',
+    P3: 'Cookies',
+    P4: 'Rights',
+    P5: 'AI Transparency',
+    P6: "Children's Privacy",
+    P7: 'Security',
   }
 
   const allFindings = getAllFindings(result)
 
-  const dpdpConcerns = Array.from(new Set(
-    allFindings
-      .filter(f => f.severity === 'critical' || f.severity === 'high')
-      .map(f => f.title)
-      .filter(Boolean)
-  )).slice(0, 5)
+  const getDynamicDPDPConcerns = () => {
+    if (!result) return []
 
-  const gapSummary = Array.from(new Set(
-    allFindings
-      .filter(f => f.severity === 'medium' || f.severity === 'low' || f.severity === 'info')
-      .map(f => f.title)
-      .filter(Boolean)
-  )).slice(0, 5)
+    const validFindings = allFindings.filter(f => f.severity !== 'info')
+
+    const mapped = validFindings.map(f => {
+      const catId = (f as any).categoryId || (f as any).pillarId || 'notice'
+      const catName = CATEGORY_LABEL_MAP[catId] || 'Privacy Notice'
+      const explanation =
+        (f as any).scoreImpact ||
+        f.description ||
+        f.recommendation ||
+        `${catName} non-compliance finding.`
+
+      const weight = SEVERITY_WEIGHT_VAL[f.severity] || 5
+      const deductionPoints = Math.round(weight)
+
+      const evidenceBullets: string[] = []
+      if (f.evidenceItems && f.evidenceItems.length > 0) {
+        for (const item of f.evidenceItems) {
+          if (item.cookieName) evidenceBullets.push(`Cookie: ${item.cookieName}`)
+          if (item.snippet) evidenceBullets.push(`Snippet: ${item.snippet}`)
+          if (item.url) evidenceBullets.push(`URL: ${item.url}`)
+        }
+      }
+      if (evidenceBullets.length === 0) {
+        const detailStr = (f as any).details || (f as any).evidence
+        if (detailStr && typeof detailStr === 'string' && detailStr !== 'detected' && detailStr !== 'not-detected') {
+          evidenceBullets.push(detailStr)
+        }
+      }
+
+      return {
+        categoryName: catName,
+        title: f.title,
+        explanation,
+        deductionPoints,
+        evidenceBullets: Array.from(new Set(evidenceBullets)).slice(0, 3),
+        severity: f.severity,
+        severityWeight: weight,
+      }
+    })
+
+    mapped.sort((a, b) => b.severityWeight - a.severityWeight)
+
+    const seenTitles = new Set<string>()
+    const uniqueConcerns: typeof mapped = []
+    for (const c of mapped) {
+      if (!seenTitles.has(c.title)) {
+        seenTitles.add(c.title)
+        uniqueConcerns.push(c)
+      }
+    }
+    return uniqueConcerns.slice(0, 5)
+  }
+
+  const dynamicDPDPConcerns = getDynamicDPDPConcerns()
+
+  const gapSummary = (result?.gapReasons && result.gapReasons.length > 0)
+    ? result.gapReasons
+    : Array.from(new Set(
+        allFindings
+          .filter(f => f.severity !== 'info')
+          .sort((a, b) => (SEVERITY_WEIGHT_VAL[b.severity] || 0) - (SEVERITY_WEIGHT_VAL[a.severity] || 0))
+          .map(f => f.title + (f.description ? ` — ${f.description}` : ''))
+          .filter(Boolean)
+      )).slice(0, 5)
 
   const getCategoryScore = (catName: string, baseScore: number = displayScore) => {
     if (!result && baseScore === 0) return 0
@@ -747,12 +856,14 @@ export default function PrivacyPitstopPage() {
                         <p className="text-[9px] font-bold tracking-widest text-cyan-400/60 uppercase mb-3">GAP SUMMARY</p>
                         <div className="space-y-2.5">
                           {gapSummary.length > 0 ? (
-                            gapSummary.map((gap, idx) => (
-                              <div key={idx} className="flex items-start gap-2">
-                                <AlertTriangle className="w-3 h-3 text-amber-400 shrink-0 mt-0.5" />
-                                <span className="text-[10px] text-muted-foreground leading-snug">{gap}</span>
-                              </div>
-                            ))
+                            <ul className="space-y-2">
+                              {gapSummary.map((gap, idx) => (
+                                <li key={idx} className="flex items-start gap-2">
+                                  <AlertTriangle className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
+                                  <span className="text-[10px] text-muted-foreground leading-snug">{gap}</span>
+                                </li>
+                              ))}
+                            </ul>
                           ) : (
                             <div className="flex items-center gap-2 py-1">
                               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
@@ -765,21 +876,6 @@ export default function PrivacyPitstopPage() {
                       {/* POTENTIAL DPDP CONCERNS */}
                       <div className="border border-cyan-500/20 rounded-2xl bg-cyan-950/5 p-5">
                         <p className="text-[9px] font-bold tracking-widest text-amber-400/60 uppercase mb-3">POTENTIAL DPDP CONCERNS</p>
-                        <div className="space-y-2.5">
-                          {dpdpConcerns.length > 0 ? (
-                            dpdpConcerns.map((concern, idx) => (
-                              <div key={idx} className="flex items-start gap-2">
-                                <AlertTriangle className="w-3 h-3 text-red-400 shrink-0 mt-0.5" />
-                                <span className="text-[10px] text-muted-foreground leading-snug">{concern}</span>
-                              </div>
-                            ))
-                          ) : (
-                            <div className="flex items-center gap-2 py-1">
-                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                              <span className="text-[10px] text-muted-foreground leading-snug">No critical or high concerns identified.</span>
-                            </div>
-                          )}
-                        </div>
                       </div>
                     </motion.div>
 
