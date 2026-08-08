@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Search,
@@ -380,64 +380,6 @@ export default function PrivacyPitstopPage() {
 
   const allFindings = getAllFindings(result)
 
-  const getDynamicDPDPConcerns = () => {
-    if (!result) return []
-
-    const validFindings = allFindings.filter(f => f.severity !== 'info')
-
-    const mapped = validFindings.map(f => {
-      const catId = (f as any).categoryId || (f as any).pillarId || 'notice'
-      const catName = CATEGORY_LABEL_MAP[catId] || 'Privacy Notice'
-      const explanation =
-        (f as any).scoreImpact ||
-        f.description ||
-        f.recommendation ||
-        `${catName} non-compliance finding.`
-
-      const weight = SEVERITY_WEIGHT_VAL[f.severity] || 5
-      const deductionPoints = Math.round(weight)
-
-      const evidenceBullets: string[] = []
-      if (f.evidenceItems && f.evidenceItems.length > 0) {
-        for (const item of f.evidenceItems) {
-          if (item.cookieName) evidenceBullets.push(`Cookie: ${item.cookieName}`)
-          if (item.snippet) evidenceBullets.push(`Snippet: ${item.snippet}`)
-          if (item.url) evidenceBullets.push(`URL: ${item.url}`)
-        }
-      }
-      if (evidenceBullets.length === 0) {
-        const detailStr = (f as any).details || (f as any).evidence
-        if (detailStr && typeof detailStr === 'string' && detailStr !== 'detected' && detailStr !== 'not-detected') {
-          evidenceBullets.push(detailStr)
-        }
-      }
-
-      return {
-        categoryName: catName,
-        title: f.title,
-        explanation,
-        deductionPoints,
-        evidenceBullets: Array.from(new Set(evidenceBullets)).slice(0, 3),
-        severity: f.severity,
-        severityWeight: weight,
-      }
-    })
-
-    mapped.sort((a, b) => b.severityWeight - a.severityWeight)
-
-    const seenTitles = new Set<string>()
-    const uniqueConcerns: typeof mapped = []
-    for (const c of mapped) {
-      if (!seenTitles.has(c.title)) {
-        seenTitles.add(c.title)
-        uniqueConcerns.push(c)
-      }
-    }
-    return uniqueConcerns.slice(0, 5)
-  }
-
-  const dynamicDPDPConcerns = getDynamicDPDPConcerns()
-
   const gapSummary = (result?.gapReasons && result.gapReasons.length > 0)
     ? result.gapReasons
     : Array.from(new Set(
@@ -447,6 +389,30 @@ export default function PrivacyPitstopPage() {
           .map(f => f.title + (f.description ? ` — ${f.description}` : ''))
           .filter(Boolean)
       )).slice(0, 5)
+
+  const fullLeaderboardItems = useMemo(() => {
+    const items: { domain: string; category: string; score?: number }[] = []
+    const seen = new Set<string>()
+
+    for (const item of topLeaderboard) {
+      const clean = item.domain.toLowerCase().trim()
+      if (!seen.has(clean)) {
+        seen.add(clean)
+        items.push({ domain: item.domain, category: 'Top Gainers', score: item.score })
+      }
+    }
+
+    const decliners = ['facebook.com', 'twitter.com', 'newsportal.com']
+    for (const d of decliners) {
+      const clean = d.toLowerCase().trim()
+      if (!seen.has(clean)) {
+        seen.add(clean)
+        items.push({ domain: d, category: 'Top Decliners' })
+      }
+    }
+
+    return items
+  }, [topLeaderboard])
 
   const getCategoryScore = (catName: string, baseScore: number = displayScore) => {
     if (!result && baseScore === 0) return 0
@@ -580,7 +546,7 @@ export default function PrivacyPitstopPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {ALL_LEADERBOARD_ITEMS.map((item) => {
+              {fullLeaderboardItems.map((item: { domain: string; category: string; score?: number }) => {
                 const score = leaderboardScores[item.domain] !== undefined ? leaderboardScores[item.domain] : 70
                 return (
                   <div key={item.domain} className="border border-cyan-500/15 rounded-2xl bg-cyan-950/5 p-5 flex flex-col justify-between space-y-4 hover:border-cyan-500/30 transition-all">
@@ -844,12 +810,12 @@ export default function PrivacyPitstopPage() {
                       </div>
                     </div>
 
-                    {/* ── GAP SUMMARY + POTENTIAL DPDP CONCERNS ──────── */}
+                    {/* ── GAP SUMMARY ──────── */}
                     <motion.div
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.1 }}
-                      className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+                      className="w-full"
                     >
                       {/* GAP SUMMARY */}
                       <div className="border border-cyan-500/20 rounded-2xl bg-cyan-950/5 p-5">
@@ -871,11 +837,6 @@ export default function PrivacyPitstopPage() {
                             </div>
                           )}
                         </div>
-                      </div>
-
-                      {/* POTENTIAL DPDP CONCERNS */}
-                      <div className="border border-cyan-500/20 rounded-2xl bg-cyan-950/5 p-5">
-                        <p className="text-[9px] font-bold tracking-widest text-amber-400/60 uppercase mb-3">POTENTIAL DPDP CONCERNS</p>
                       </div>
                     </motion.div>
 
@@ -1018,24 +979,6 @@ export default function PrivacyPitstopPage() {
                     { name: 'facebook.com', domain: 'facebook.com' },
                     { name: 'twitter.com', domain: 'twitter.com' },
                     { name: 'newsportal.com', domain: 'newsportal.com' }
-                  ]
-                },
-                {
-                  title: 'Most Transparent',
-                  color: 'text-cyan-400',
-                  items: [
-                    { name: 'govt.in', domain: 'govt.in' },
-                    { name: 'pmindia.gov.in', domain: 'pmindia.gov.in' },
-                    { name: 'eci.gov.in', domain: 'eci.gov.in' }
-                  ]
-                },
-                {
-                  title: 'Needs Attention',
-                  color: 'text-orange-400',
-                  items: [
-                    { name: 'freegames.com', domain: 'freegames.com' },
-                    { name: 'flashnews.com', domain: 'flashnews.com' },
-                    { name: 'dealscorner.com', domain: 'dealscorner.com' }
                   ]
                 }
               ].map((section) => (
