@@ -337,7 +337,7 @@ export default function PrivacyPitstopPage() {
       for (const flag of rawFlags) {
         if (flag && flag.passed === false) {
           list.push({
-            id: flag.id || String(Math.random()),
+            id: flag.id || `flag-${flag.title || 'finding'}-${list.length}`,
             pillarId: flag.pillar || flag.categoryId || 'notice',
             categoryId: flag.categoryId || flag.pillar || 'notice',
             title: flag.title,
@@ -423,7 +423,10 @@ export default function PrivacyPitstopPage() {
     for (const item of fullLeaderboardItems) {
       const clean = item.domain.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '')
       if (!leaderboardFullResults[clean] && !scanningLeaderboard[clean]) {
-        fetchFullScanForDomain(clean)
+        const domainToScan = clean
+        queueMicrotask(() => {
+          fetchFullScanForDomain(domainToScan)
+        })
       }
     }
   }, [view, fullLeaderboardItems, leaderboardFullResults, scanningLeaderboard, fetchFullScanForDomain])
