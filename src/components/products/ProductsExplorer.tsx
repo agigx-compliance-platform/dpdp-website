@@ -24,7 +24,7 @@ export function ProductsExplorer() {
     const hash = window.location.hash.replace("#", "");
     if (!hash) return;
     const idx = PRODUCTS.findIndex((p) => p.id === hash);
-    if (idx >= 0) setActive(idx);
+    if (idx >= 0) queueMicrotask(() => setActive(idx));
   }, []);
 
   const selectProduct = (index: number) => {

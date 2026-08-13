@@ -1,3 +1,6 @@
+/**
+ * @deprecated Client-side scoring has been migrated to PitstopScoreCalculator in consent-management-service.
+ */
 import type {
   Finding, ScanCategoryResult, ScanCategoryId, Severity,
 } from './types'

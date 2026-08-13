@@ -203,6 +203,8 @@ export interface AnalysisResult {
   report?: ScanReport
   /** Generated citizen actions */
   citizenActions?: CitizenActions
+  /** Specific reasons describing missing/failed criteria that reduced score */
+  gapReasons?: string[]
 }
 
 export interface FetchedPage {

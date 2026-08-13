@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next'
+import Script from 'next/script'
 import './globals.css'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
 import { SmoothScrollProvider } from '@/providers/SmoothScrollProvider'
@@ -94,13 +95,17 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning data-scroll-behavior="smooth" data-theme="dark">
       <head>
-        <script
+        <Script
+          id="theme-init"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();`,
           }}
         />
         {consentApiUrl ? (
-          <script
+          <Script
+            id="runtime-config"
+            strategy="beforeInteractive"
             dangerouslySetInnerHTML={{
               __html: `window.__RUNTIME_CONFIG__=Object.assign(window.__RUNTIME_CONFIG__||{},{consentApiUrl:${JSON.stringify(consentApiUrl)}});`,
             }}

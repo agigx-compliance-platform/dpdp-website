@@ -12,7 +12,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const stored = localStorage.getItem('theme') as Theme | null
     const initial = stored === 'light' ? 'light' : 'dark'
     document.documentElement.setAttribute('data-theme', initial)
-    setTheme(initial)
+    queueMicrotask(() => setTheme(initial))
   }, [])
 
   const toggleTheme = useCallback(() => {

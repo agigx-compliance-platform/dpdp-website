@@ -73,3 +73,50 @@ export async function pollUntilScanReport(
 
   throw new Error('Scan timed out')
 }
+
+/** Poll Pitstop scan status until the report is ready. */
+export async function pollUntilPitstopReport(
+  scanId: string,
+  options?: {
+    pollIntervalMs?: number
+    maxAttempts?: number
+    onProgress?: (progress: number) => void
+  }
+): Promise<import('./privacy-pitstop/types').AnalysisResult> {
+  const { getPitstopScanReport, getPitstopScanStatus } = await import('./api')
+  const pollIntervalMs = options?.pollIntervalMs ?? 1600
+  const maxAttempts = options?.maxAttempts ?? 190
+
+  let consecutiveConflictRetries = 0
+
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    if (attempt > 0) {
+      await new Promise((resolve) => setTimeout(resolve, pollIntervalMs))
+    }
+
+    const status = unwrapConsentApiEnvelope<ScanStatusResponse>(await getPitstopScanStatus(scanId))
+    options?.onProgress?.(status.progress)
+
+    if (status.status === 'failed') {
+      throw new Error('Scan failed')
+    }
+
+    if (status.status === 'completed') {
+      try {
+        return unwrapConsentApiEnvelope<import('./privacy-pitstop/types').AnalysisResult>(await getPitstopScanReport(scanId))
+      } catch (err) {
+        if (isAxiosError(err) && err.response?.status === 409) {
+          consecutiveConflictRetries++
+          if (consecutiveConflictRetries >= 3) {
+            throw new Error('Scan completed but report body is empty or unavailable')
+          }
+          continue
+        }
+        throw err
+      }
+    }
+  }
+
+  throw new Error('Scan timed out')
+}
+

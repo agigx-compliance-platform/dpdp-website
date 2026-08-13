@@ -294,13 +294,22 @@ const Clock = ({
   initial: boolean;
 }) => {
   const clockRef = useRef<HTMLDivElement>(null);
-  const currentAngles = useRef({ h: 0, m: 0 });
+  const [angles, setAngles] = useState({ h: 0, m: 0 });
 
   const [isHovered, setIsHovered] = useState(false);
   const isHoveredRef = useRef(false);
 
   // NEW: We add a state to track the total cumulative spins
   const [spinOffset, setSpinOffset] = useState({ h: 0, m: 0 });
+
+  useEffect(() => {
+    queueMicrotask(() => {
+      setAngles((prev) => ({
+        h: normalizeAngle(h, prev.h),
+        m: normalizeAngle(m, prev.m),
+      }));
+    });
+  }, [h, m]);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -332,14 +341,9 @@ const Clock = ({
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  let baseH = normalizeAngle(h, currentAngles.current.h);
-  let baseM = normalizeAngle(m, currentAngles.current.m);
-
-  currentAngles.current = { h: baseH, m: baseM };
-
   // Add our permanent hover spins to the underlying correct time
-  let displayH = baseH + spinOffset.h;
-  let displayM = baseM + spinOffset.m;
+  let displayH = angles.h + spinOffset.h;
+  let displayM = angles.m + spinOffset.m;
 
   return (
     <div
@@ -396,7 +400,7 @@ export function CountdownTimer({ targetDate }: { targetDate: string }) {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true);
+    queueMicrotask(() => setIsMounted(true));
 
     const getTimeRemaining = () => {
       const total = Date.parse(targetDate) - Date.parse(new Date().toString());

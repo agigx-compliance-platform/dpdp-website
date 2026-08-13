@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Search,
@@ -74,6 +74,27 @@ export default function PrivacyPitstopPage() {
   const abortRef = useRef<AbortController | null>(null)
 
   // Leaderboard state
+  const INITIAL_TOP_LEADERBOARD = [
+    { domain: 'zoho.com', score: 86 },
+    { domain: 'tata.com', score: 83 },
+    { domain: 'infosys.com', score: 78 },
+  ]
+
+  const [topLeaderboard, setTopLeaderboard] = useState<{ domain: string; score: number }[]>(INITIAL_TOP_LEADERBOARD)
+
+  // Rehydrate persisted leaderboard state after client hydration
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('dpdp_privacy_top3_leaderboard')
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          queueMicrotask(() => setTopLeaderboard(parsed.slice(0, 3)))
+        }
+      }
+    } catch (err) {}
+  }, [])
+
   const [leaderboardScores, setLeaderboardScores] = useState<Record<string, number>>({
     'zoho.com': 86,
     'tata.com': 83,
@@ -102,9 +123,15 @@ export default function PrivacyPitstopPage() {
     return () => cleanup()
   }, [cleanup])
 
-  // Trigger background scans for top 5 leaderboard companies on mount
+  // Trigger background scans for leaderboard companies on mount if score is missing
   useEffect(() => {
+    let isMounted = true
+
     const scanCompany = async (d: string) => {
+      if (!isMounted) return
+      // Skip background scanning on mount if a valid score already exists in leaderboard state
+      if (leaderboardScores[d] !== undefined && leaderboardScores[d] > 0) return
+
       setScanningLeaderboard(prev => ({ ...prev, [d]: true }))
       try {
         const res = await fetch('/api/privacy-pitstop/analyze', {
@@ -112,23 +139,61 @@ export default function PrivacyPitstopPage() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ domain: d }),
         })
+
+        if (!res.ok) {
+          return
+        }
+
         const data = await res.json()
-        if (res.ok && data?.riskScore !== undefined) {
-          setLeaderboardScores(prev => ({ ...prev, [d]: data.riskScore }))
+        if (isMounted && data?.riskScore !== undefined) {
+          const scoreVal = Math.round(data.riskScore)
+          setLeaderboardScores(prev => ({ ...prev, [d]: scoreVal }))
+          setTopLeaderboard(prev => {
+            const cleanDomain = d.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '')
+            const existingIndex = prev.findIndex(item => item.domain.toLowerCase() === cleanDomain)
+            let updated = [...prev]
+
+            if (existingIndex !== -1) {
+              updated[existingIndex] = { ...updated[existingIndex], score: scoreVal }
+            } else {
+              updated.push({ domain: cleanDomain, score: scoreVal })
+            }
+
+            updated.sort((a, b) => b.score - a.score)
+            const top3 = updated.slice(0, 3)
+
+            try {
+              localStorage.setItem('dpdp_privacy_top3_leaderboard', JSON.stringify(top3))
+            } catch (err) {}
+
+            return top3
+          })
         }
       } catch (err) {
-        console.error(`Leaderboard scan failed for ${d}:`, err)
+        // Quietly absorb background refresh drops
       } finally {
-        setScanningLeaderboard(prev => ({ ...prev, [d]: false }))
+        if (isMounted) {
+          setScanningLeaderboard(prev => ({ ...prev, [d]: false }))
+        }
       }
     }
 
     const runAll = async () => {
       for (const d of LEADERBOARD_DOMAINS) {
-        await scanCompany(d)
+        if (!isMounted) break
+        try {
+          await scanCompany(d)
+        } catch (err) {
+          // Continue remaining scans
+        }
       }
     }
+
     runAll()
+
+    return () => {
+      isMounted = false
+    }
   }, [])
 
   const startAnalysis = useCallback(async (targetDomain: string) => {
@@ -162,10 +227,36 @@ export default function PrivacyPitstopPage() {
         throw new Error(data.error || `Analysis failed (${res.status})`)
       }
 
+      const analysisData = data as AnalysisResult
+      const scoreVal = Math.round(analysisData.riskScore)
+      const cleanDomain = targetDomain.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '')
+
+      setTopLeaderboard(prev => {
+        const existingIndex = prev.findIndex(item => item.domain.toLowerCase() === cleanDomain)
+        let updated = [...prev]
+
+        if (existingIndex !== -1) {
+          updated[existingIndex] = { ...updated[existingIndex], score: scoreVal }
+        } else {
+          updated.push({ domain: cleanDomain, score: scoreVal })
+        }
+
+        updated.sort((a, b) => b.score - a.score)
+        const top3 = updated.slice(0, 3)
+
+        try {
+          localStorage.setItem('dpdp_privacy_top3_leaderboard', JSON.stringify(top3))
+        } catch (err) {}
+
+        return top3
+      })
+
+      setLeaderboardScores(prev => ({ ...prev, [cleanDomain]: scoreVal }))
+
       setActiveStep(ANALYSIS_STEPS.length - 1)
       timersRef.current.push(
         setTimeout(() => {
-          setResult(data as AnalysisResult)
+          setResult(analysisData)
           setView('results')
         }, 800)
       )
@@ -221,6 +312,107 @@ export default function PrivacyPitstopPage() {
 
   const displayScore = result ? result.riskScore : 0
   const displayRating = result ? getRatingText(result.riskScore) : 'Not Scanned'
+
+  const getAllFindings = (res: AnalysisResult | null) => {
+    if (!res) return []
+    const list: any[] = []
+
+    const fromSections = res.report?.sections?.flatMap(s => s.findings) ?? []
+    list.push(...fromSections)
+
+    const fromReportCategories = res.report?.categories?.flatMap(c => c.findings) ?? []
+    list.push(...fromReportCategories)
+
+    const fromCategories = (res.categories as any[])?.flatMap(c => c.findings ?? []) ?? []
+    list.push(...fromCategories)
+
+    const fromPillars = res.pillars?.flatMap(p => p.findings) ?? []
+    list.push(...fromPillars)
+
+    const rawFlags = (res as any).complianceFlags || (res.report as any)?.complianceFlags || []
+    if (Array.isArray(rawFlags)) {
+      for (const flag of rawFlags) {
+        if (flag && flag.passed === false) {
+          list.push({
+            id: flag.id || String(Math.random()),
+            pillarId: flag.pillar || flag.categoryId || 'notice',
+            categoryId: flag.categoryId || flag.pillar || 'notice',
+            title: flag.title,
+            description: flag.description,
+            severity: flag.severity || 'high',
+            confidence: 'high',
+            evidenceItems: [],
+            evidence: flag.evidence ? String(flag.evidence) : 'detected',
+            details: typeof flag.evidence === 'string' ? flag.evidence : (flag.description || ''),
+            recommendation: flag.remediation || flag.description || '',
+          })
+        }
+      }
+    }
+
+    return list
+  }
+
+  const SEVERITY_WEIGHT_VAL: Record<string, number> = {
+    critical: 10,
+    high: 8,
+    medium: 5,
+    low: 2.5,
+    info: 1,
+  }
+
+  const CATEGORY_LABEL_MAP: Record<string, string> = {
+    notice: 'Privacy Notice',
+    consent: 'Consent',
+    cookies: 'Cookies',
+    rights: 'Rights',
+    ai_transparency: 'AI Transparency',
+    childrens_privacy: "Children's Privacy",
+    security: 'Security',
+    P1: 'Privacy Notice',
+    P2: 'Consent',
+    P3: 'Cookies',
+    P4: 'Rights',
+    P5: 'AI Transparency',
+    P6: "Children's Privacy",
+    P7: 'Security',
+  }
+
+  const allFindings = getAllFindings(result)
+
+  const gapSummary = (result?.gapReasons && result.gapReasons.length > 0)
+    ? result.gapReasons
+    : Array.from(new Set(
+        allFindings
+          .filter(f => f.severity !== 'info')
+          .sort((a, b) => (SEVERITY_WEIGHT_VAL[b.severity] || 0) - (SEVERITY_WEIGHT_VAL[a.severity] || 0))
+          .map(f => f.title + (f.description ? ` — ${f.description}` : ''))
+          .filter(Boolean)
+      )).slice(0, 5)
+
+  const fullLeaderboardItems = useMemo(() => {
+    const items: { domain: string; category: string; score?: number }[] = []
+    const seen = new Set<string>()
+
+    for (const item of topLeaderboard) {
+      const clean = item.domain.toLowerCase().trim()
+      if (!seen.has(clean)) {
+        seen.add(clean)
+        items.push({ domain: item.domain, category: 'Top Gainers', score: item.score })
+      }
+    }
+
+    const decliners = ['facebook.com', 'twitter.com', 'newsportal.com']
+    for (const d of decliners) {
+      const clean = d.toLowerCase().trim()
+      if (!seen.has(clean)) {
+        seen.add(clean)
+        items.push({ domain: d, category: 'Top Decliners' })
+      }
+    }
+
+    return items
+  }, [topLeaderboard])
 
   const getCategoryScore = (catName: string, baseScore: number = displayScore) => {
     if (!result && baseScore === 0) return 0
@@ -354,7 +546,7 @@ export default function PrivacyPitstopPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {ALL_LEADERBOARD_ITEMS.map((item) => {
+              {fullLeaderboardItems.map((item: { domain: string; category: string; score?: number }) => {
                 const score = leaderboardScores[item.domain] !== undefined ? leaderboardScores[item.domain] : 70
                 return (
                   <div key={item.domain} className="border border-cyan-500/15 rounded-2xl bg-cyan-950/5 p-5 flex flex-col justify-between space-y-4 hover:border-cyan-500/30 transition-all">
@@ -618,46 +810,32 @@ export default function PrivacyPitstopPage() {
                       </div>
                     </div>
 
-                    {/* ── GAP SUMMARY + POTENTIAL DPDP CONCERNS ──────── */}
+                    {/* ── GAP SUMMARY ──────── */}
                     <motion.div
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.1 }}
-                      className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+                      className="w-full"
                     >
                       {/* GAP SUMMARY */}
                       <div className="border border-cyan-500/20 rounded-2xl bg-cyan-950/5 p-5">
                         <p className="text-[9px] font-bold tracking-widest text-cyan-400/60 uppercase mb-3">GAP SUMMARY</p>
                         <div className="space-y-2.5">
-                          {(result?.report?.sections.flatMap(s => s.findings).filter(f => f.severity === 'medium' || f.severity === 'low').slice(0, 4).map(f => f.title) || [
-                            'Withdrawal of consent not clearly visible',
-                            'Grievance contact available but hard to find',
-                            'Retention period is vague',
-                            'AI / profiling disclosure needs more clarity',
-                          ]).map((gap, idx) => (
-                            <div key={idx} className="flex items-start gap-2">
-                              <AlertTriangle className="w-3 h-3 text-amber-400 shrink-0 mt-0.5" />
-                              <span className="text-[10px] text-muted-foreground leading-snug">{gap}</span>
+                          {gapSummary.length > 0 ? (
+                            <ul className="space-y-2">
+                              {gapSummary.map((gap, idx) => (
+                                <li key={idx} className="flex items-start gap-2">
+                                  <AlertTriangle className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
+                                  <span className="text-[10px] text-muted-foreground leading-snug">{gap}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          ) : (
+                            <div className="flex items-center gap-2 py-1">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                              <span className="text-[10px] text-muted-foreground leading-snug">No compliance gaps identified.</span>
                             </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* POTENTIAL DPDP CONCERNS */}
-                      <div className="border border-cyan-500/20 rounded-2xl bg-cyan-950/5 p-5">
-                        <p className="text-[9px] font-bold tracking-widest text-amber-400/60 uppercase mb-3">POTENTIAL DPDP CONCERNS</p>
-                        <div className="space-y-2.5">
-                          {(result?.report?.sections.flatMap(s => s.findings).filter(f => f.severity === 'critical' || f.severity === 'high').slice(0, 4).map(f => f.title) || [
-                            'Consent withdrawal process not straightforward',
-                            'Purpose specification and retention vague',
-                            'Automated decision-making disclosure unclear',
-                            'User rights exercise flow lacks clarity',
-                          ]).map((concern, idx) => (
-                            <div key={idx} className="flex items-start gap-2">
-                              <AlertTriangle className="w-3 h-3 text-red-400 shrink-0 mt-0.5" />
-                              <span className="text-[10px] text-muted-foreground leading-snug">{concern}</span>
-                            </div>
-                          ))}
+                          )}
                         </div>
                       </div>
                     </motion.div>
@@ -790,13 +968,9 @@ export default function PrivacyPitstopPage() {
 
               {[
                 {
-                  title: 'Top Gainers',
+                  title: 'Top Gainers (Top 3)',
                   color: 'text-emerald-400',
-                  items: [
-                    { name: 'zoho.com', domain: 'zoho.com' },
-                    { name: 'tata.com', domain: 'tata.com' },
-                    { name: 'infosys.com', domain: 'infosys.com' }
-                  ]
+                  items: topLeaderboard.map(item => ({ name: item.domain, domain: item.domain, score: item.score }))
                 },
                 {
                   title: 'Top Decliners',
@@ -805,24 +979,6 @@ export default function PrivacyPitstopPage() {
                     { name: 'facebook.com', domain: 'facebook.com' },
                     { name: 'twitter.com', domain: 'twitter.com' },
                     { name: 'newsportal.com', domain: 'newsportal.com' }
-                  ]
-                },
-                {
-                  title: 'Most Transparent',
-                  color: 'text-cyan-400',
-                  items: [
-                    { name: 'govt.in', domain: 'govt.in' },
-                    { name: 'pmindia.gov.in', domain: 'pmindia.gov.in' },
-                    { name: 'eci.gov.in', domain: 'eci.gov.in' }
-                  ]
-                },
-                {
-                  title: 'Needs Attention',
-                  color: 'text-orange-400',
-                  items: [
-                    { name: 'freegames.com', domain: 'freegames.com' },
-                    { name: 'flashnews.com', domain: 'flashnews.com' },
-                    { name: 'dealscorner.com', domain: 'dealscorner.com' }
                   ]
                 }
               ].map((section) => (
@@ -841,7 +997,7 @@ export default function PrivacyPitstopPage() {
                         'flashnews.com': 26,
                         'dealscorner.com': 24
                       }
-                      const displayVal = score !== undefined ? score : (defaultScores[item.domain] ?? 70)
+                      const displayVal = (item as any).score !== undefined ? (item as any).score : (score !== undefined ? score : (defaultScores[item.domain] ?? 70))
 
                       return (
                         <div key={item.domain} className="flex items-center justify-between text-xs py-1 hover:bg-cyan-950/20 px-2 rounded-md transition-all">
