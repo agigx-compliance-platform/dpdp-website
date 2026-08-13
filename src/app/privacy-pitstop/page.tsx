@@ -110,6 +110,8 @@ export default function PrivacyPitstopPage() {
     'dealscorner.com': 24,
   })
   const [scanningLeaderboard, setScanningLeaderboard] = useState<Record<string, boolean>>({})
+  const [leaderboardFullResults, setLeaderboardFullResults] = useState<Record<string, AnalysisResult>>({})
+  const [expandedDomain, setExpandedDomain] = useState<string | null>(null)
 
   // Clean up timers & fetches
   const cleanup = useCallback(() => {
@@ -123,66 +125,66 @@ export default function PrivacyPitstopPage() {
     return () => cleanup()
   }, [cleanup])
 
+  const fetchFullScanForDomain = useCallback(async (d: string) => {
+    const cleanDomain = d.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '')
+    if (!cleanDomain) return
+
+    setScanningLeaderboard(prev => ({ ...prev, [cleanDomain]: true }))
+    try {
+      const res = await fetch('/api/privacy-pitstop/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ domain: cleanDomain }),
+      })
+
+      if (!res.ok) return
+
+      const data = await res.json()
+      if (data?.riskScore !== undefined) {
+        const analysisData = data as AnalysisResult
+        const scoreVal = Math.round(analysisData.riskScore)
+
+        setLeaderboardFullResults(prev => ({ ...prev, [cleanDomain]: analysisData }))
+        setLeaderboardScores(prev => ({ ...prev, [cleanDomain]: scoreVal }))
+
+        setTopLeaderboard(prev => {
+          const existingIndex = prev.findIndex(item => item.domain.toLowerCase() === cleanDomain)
+          let updated = [...prev]
+
+          if (existingIndex !== -1) {
+            updated[existingIndex] = { ...updated[existingIndex], score: scoreVal }
+          } else {
+            updated.push({ domain: cleanDomain, score: scoreVal })
+          }
+
+          updated.sort((a, b) => b.score - a.score)
+          const top3 = updated.slice(0, 3)
+
+          try {
+            localStorage.setItem('dpdp_privacy_top3_leaderboard', JSON.stringify(top3))
+          } catch (err) {}
+
+          return top3
+        })
+      }
+    } catch (err) {
+      // Quietly absorb background scan errors
+    } finally {
+      setScanningLeaderboard(prev => ({ ...prev, [cleanDomain]: false }))
+    }
+  }, [])
+
   // Trigger background scans for leaderboard companies on mount if score is missing
   useEffect(() => {
     let isMounted = true
-
-    const scanCompany = async (d: string) => {
-      if (!isMounted) return
-      // Skip background scanning on mount if a valid score already exists in leaderboard state
-      if (leaderboardScores[d] !== undefined && leaderboardScores[d] > 0) return
-
-      setScanningLeaderboard(prev => ({ ...prev, [d]: true }))
-      try {
-        const res = await fetch('/api/privacy-pitstop/analyze', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ domain: d }),
-        })
-
-        if (!res.ok) {
-          return
-        }
-
-        const data = await res.json()
-        if (isMounted && data?.riskScore !== undefined) {
-          const scoreVal = Math.round(data.riskScore)
-          setLeaderboardScores(prev => ({ ...prev, [d]: scoreVal }))
-          setTopLeaderboard(prev => {
-            const cleanDomain = d.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '')
-            const existingIndex = prev.findIndex(item => item.domain.toLowerCase() === cleanDomain)
-            let updated = [...prev]
-
-            if (existingIndex !== -1) {
-              updated[existingIndex] = { ...updated[existingIndex], score: scoreVal }
-            } else {
-              updated.push({ domain: cleanDomain, score: scoreVal })
-            }
-
-            updated.sort((a, b) => b.score - a.score)
-            const top3 = updated.slice(0, 3)
-
-            try {
-              localStorage.setItem('dpdp_privacy_top3_leaderboard', JSON.stringify(top3))
-            } catch (err) {}
-
-            return top3
-          })
-        }
-      } catch (err) {
-        // Quietly absorb background refresh drops
-      } finally {
-        if (isMounted) {
-          setScanningLeaderboard(prev => ({ ...prev, [d]: false }))
-        }
-      }
-    }
 
     const runAll = async () => {
       for (const d of LEADERBOARD_DOMAINS) {
         if (!isMounted) break
         try {
-          await scanCompany(d)
+          if (leaderboardScores[d] === undefined || leaderboardScores[d] === 0) {
+            await fetchFullScanForDomain(d)
+          }
         } catch (err) {
           // Continue remaining scans
         }
@@ -194,7 +196,7 @@ export default function PrivacyPitstopPage() {
     return () => {
       isMounted = false
     }
-  }, [])
+  }, [fetchFullScanForDomain, leaderboardScores])
 
   const startAnalysis = useCallback(async (targetDomain: string) => {
     if (!targetDomain.trim()) return
@@ -231,6 +233,9 @@ export default function PrivacyPitstopPage() {
       const scoreVal = Math.round(analysisData.riskScore)
       const cleanDomain = targetDomain.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '')
 
+      setLeaderboardFullResults(prev => ({ ...prev, [cleanDomain]: analysisData }))
+      setLeaderboardScores(prev => ({ ...prev, [cleanDomain]: scoreVal }))
+
       setTopLeaderboard(prev => {
         const existingIndex = prev.findIndex(item => item.domain.toLowerCase() === cleanDomain)
         let updated = [...prev]
@@ -250,8 +255,6 @@ export default function PrivacyPitstopPage() {
 
         return top3
       })
-
-      setLeaderboardScores(prev => ({ ...prev, [cleanDomain]: scoreVal }))
 
       setActiveStep(ANALYSIS_STEPS.length - 1)
       timersRef.current.push(
@@ -334,7 +337,7 @@ export default function PrivacyPitstopPage() {
       for (const flag of rawFlags) {
         if (flag && flag.passed === false) {
           list.push({
-            id: flag.id || String(Math.random()),
+            id: flag.id || `flag-${flag.title || 'finding'}-${list.length}`,
             pillarId: flag.pillar || flag.categoryId || 'notice',
             categoryId: flag.categoryId || flag.pillar || 'notice',
             title: flag.title,
@@ -413,6 +416,20 @@ export default function PrivacyPitstopPage() {
 
     return items
   }, [topLeaderboard])
+
+  useEffect(() => {
+    if (view !== 'leaderboard') return
+
+    for (const item of fullLeaderboardItems) {
+      const clean = item.domain.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '')
+      if (!leaderboardFullResults[clean] && !scanningLeaderboard[clean]) {
+        const domainToScan = clean
+        queueMicrotask(() => {
+          fetchFullScanForDomain(domainToScan)
+        })
+      }
+    }
+  }, [view, fullLeaderboardItems, leaderboardFullResults, scanningLeaderboard, fetchFullScanForDomain])
 
   const getCategoryScore = (catName: string, baseScore: number = displayScore) => {
     if (!result && baseScore === 0) return 0
@@ -535,7 +552,7 @@ export default function PrivacyPitstopPage() {
             <div className="flex items-center justify-between border-b border-cyan-500/10 pb-4">
               <div className="text-left">
                 <h1 className="text-2xl font-extrabold text-white">Privacy Leaderboard - Detailed Analysis</h1>
-                <p className="text-xs text-cyan-400 mt-1">Detailed 5-pillar breakdown for top scanned public domains</p>
+                <p className="text-xs text-cyan-400 mt-1">Full scan details and compliance breakdowns for leaderboard domains</p>
               </div>
               <button
                 onClick={() => setView('landing')}
@@ -545,46 +562,192 @@ export default function PrivacyPitstopPage() {
               </button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6">
               {fullLeaderboardItems.map((item: { domain: string; category: string; score?: number }) => {
-                const score = leaderboardScores[item.domain] !== undefined ? leaderboardScores[item.domain] : 70
+                const cleanDomain = item.domain.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '')
+                const fullRes = leaderboardFullResults[cleanDomain]
+                const isScanning = scanningLeaderboard[cleanDomain]
+                const score = fullRes ? Math.round(fullRes.riskScore) : (leaderboardScores[cleanDomain] !== undefined ? leaderboardScores[cleanDomain] : (item.score ?? 70))
+                const isExpanded = expandedDomain === cleanDomain
+                const domainFindings = getAllFindings(fullRes || null)
+
+                const categoryList = [
+                  { id: 'notice', name: 'Notice Transparency' },
+                  { id: 'consent', name: 'Cookie & Consent' },
+                  { id: 'rights', name: 'User Rights & Redressal' },
+                  { id: 'ai_transparency', name: 'AI Transparency' },
+                  { id: 'security', name: 'Security Signals' },
+                ]
+
+                const getRealCategoryScore = (catName: string, catId: string) => {
+                  if (fullRes) {
+                    const match = fullRes.categories?.find(c => c.name.toLowerCase() === catName.toLowerCase() || (c as any).id === catId)
+                      || fullRes.report?.categories?.find(c => c.name.toLowerCase() === catName.toLowerCase() || c.id === catId)
+                    if (match) return Math.round(match.score)
+                  }
+                  return getCategoryScore(catName, score)
+                }
+
+                const itemGapReasons = fullRes?.gapReasons && fullRes.gapReasons.length > 0
+                  ? fullRes.gapReasons
+                  : domainFindings
+                      .filter(f => f.severity !== 'info')
+                      .sort((a, b) => (SEVERITY_WEIGHT_VAL[b.severity] || 0) - (SEVERITY_WEIGHT_VAL[a.severity] || 0))
+                      .map(f => f.title + (f.description ? ` — ${f.description}` : ''))
+                      .filter(Boolean)
+                      .slice(0, 3)
+
                 return (
-                  <div key={item.domain} className="border border-cyan-500/15 rounded-2xl bg-cyan-950/5 p-5 flex flex-col justify-between space-y-4 hover:border-cyan-500/30 transition-all">
-                    <div className="flex items-center justify-between">
+                  <div key={item.domain} className="border border-cyan-500/15 rounded-2xl bg-cyan-950/5 p-6 flex flex-col justify-between space-y-4 hover:border-cyan-500/30 transition-all">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-cyan-500/10 pb-4">
                       <div className="flex items-center gap-3">
-                        <span className="text-[10px] font-bold text-cyan-400/80 bg-cyan-950/30 px-2 py-0.5 rounded border border-cyan-500/20">
+                        <span className={`text-[10px] font-bold px-2.5 py-1 rounded border ${
+                          item.category === 'Top Gainers'
+                            ? 'text-emerald-400 bg-emerald-950/30 border-emerald-500/30'
+                            : 'text-red-400 bg-red-950/30 border-red-500/30'
+                        }`}>
                           {item.category}
                         </span>
-                        <h3 className="text-sm font-bold text-white">{item.domain}</h3>
+                        <h3 className="text-lg font-bold text-white">{item.domain}</h3>
+                        {isScanning && (
+                          <div className="flex items-center gap-1.5 text-xs text-cyan-400">
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            <span>Scanning...</span>
+                          </div>
+                        )}
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-[10px] text-muted-foreground">Overall:</span>
-                        <span className={`text-sm font-extrabold ${getScoreColor(score)}`}>{score}</span>
+
+                      <div className="flex items-center gap-4">
+                        <div className="text-right">
+                          <span className="text-[10px] text-muted-foreground block">Overall Privacy Score</span>
+                          <div className="flex items-center gap-2 justify-end">
+                            <span className={`text-xl font-extrabold ${getScoreColor(score)}`}>{score}/100</span>
+                            <span className="text-xs font-semibold text-cyan-400">({getRatingText(score)})</span>
+                          </div>
+                        </div>
+
+                        <button
+                          onClick={() => setExpandedDomain(isExpanded ? null : cleanDomain)}
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-cyan-500/30 text-xs font-medium hover:bg-cyan-950/20 text-cyan-400 transition-all"
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                          {isExpanded ? 'Hide Details' : 'View Full Report'}
+                        </button>
                       </div>
                     </div>
 
-                    <div className="space-y-2">
-                      {[
-                        'Data Collection',
-                        'Cookie & Consent',
-                        'User Rights & Redressal',
-                        'AI Transparency',
-                        'Security Signals',
-                      ].map((catName) => {
-                        const catScore = getCategoryScore(catName, score)
+                    {/* Category score bars */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
+                      {categoryList.map((cat) => {
+                        const catScore = getRealCategoryScore(cat.name, cat.id)
                         return (
-                          <div key={catName} className="flex items-center justify-between text-[10px]">
-                            <span className="text-muted-foreground">{catName}</span>
-                            <div className="flex items-center gap-3 flex-1 max-w-[200px] ml-4">
-                              <div className="h-1 w-full bg-[#0e1329] rounded-full overflow-hidden">
-                                <div className={`h-full rounded-full ${getBarBgColor(catScore)}`} style={{ width: `${catScore}%` }} />
-                              </div>
-                              <span className="text-foreground font-bold shrink-0">{catScore}</span>
+                          <div key={cat.id} className="bg-cyan-950/20 p-2.5 rounded-xl border border-cyan-500/10 text-left space-y-1">
+                            <div className="flex items-center justify-between text-[11px]">
+                              <span className="text-muted-foreground truncate">{cat.name}</span>
+                              <span className="text-foreground font-bold ml-1">{catScore}</span>
+                            </div>
+                            <div className="h-1.5 w-full bg-[#0e1329] rounded-full overflow-hidden">
+                              <div className={`h-full rounded-full ${getBarBgColor(catScore)}`} style={{ width: `${catScore}%` }} />
                             </div>
                           </div>
                         )
                       })}
                     </div>
+
+                    {/* Gap Summary / Key Concerns if available */}
+                    {itemGapReasons.length > 0 && (
+                      <div className="bg-cyan-950/10 rounded-xl p-3.5 border border-cyan-500/10 text-left space-y-2">
+                        <h4 className="text-xs font-bold text-cyan-400 flex items-center gap-2">
+                          <AlertTriangle className="w-3.5 h-3.5 text-yellow-400" /> Key Privacy Concerns
+                        </h4>
+                        <ul className="space-y-1 text-xs text-muted-foreground">
+                          {itemGapReasons.map((reason, idx) => (
+                            <li key={idx} className="flex items-start gap-2">
+                              <span className="text-cyan-500 font-bold">•</span>
+                              <span>{reason}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* Detailed Scan Result Panel when expanded */}
+                    {isExpanded && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="pt-4 border-t border-cyan-500/15 text-left space-y-4"
+                      >
+                        {fullRes ? (
+                          <>
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-cyan-950/20 p-3 rounded-xl border border-cyan-500/10 text-center">
+                              <div>
+                                <span className="text-[10px] text-muted-foreground block">Confidence Score</span>
+                                <span className="text-sm font-bold text-cyan-400">{fullRes.confidenceScore || 85}%</span>
+                              </div>
+                              <div>
+                                <span className="text-[10px] text-muted-foreground block">Coverage Score</span>
+                                <span className="text-sm font-bold text-cyan-400">{fullRes.coverageScore || 90}%</span>
+                              </div>
+                              <div>
+                                <span className="text-[10px] text-muted-foreground block">Pages Analyzed</span>
+                                <span className="text-sm font-bold text-white">{fullRes.pagesAnalyzed || 1}</span>
+                              </div>
+                              <div>
+                                <span className="text-[10px] text-muted-foreground block">Total Findings</span>
+                                <span className="text-sm font-bold text-yellow-400">{domainFindings.length}</span>
+                              </div>
+                            </div>
+
+                            {/* Detailed Findings List */}
+                            <div className="space-y-3">
+                              <h4 className="text-xs font-bold text-white tracking-wider uppercase">Full Scan Findings</h4>
+                              {domainFindings.length === 0 ? (
+                                <p className="text-xs text-muted-foreground italic">No compliance flags or issues detected for this domain.</p>
+                              ) : (
+                                <div className="space-y-2.5 max-h-96 overflow-y-auto pr-1">
+                                  {domainFindings.map((finding, idx) => (
+                                    <div key={finding.id || idx} className="p-3 rounded-xl bg-cyan-950/20 border border-cyan-500/10 text-xs space-y-1">
+                                      <div className="flex items-center justify-between">
+                                        <span className="font-bold text-white">{finding.title}</span>
+                                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${
+                                          finding.severity === 'critical' ? 'bg-red-950/50 text-red-400 border border-red-500/30' :
+                                          finding.severity === 'high' ? 'bg-orange-950/50 text-orange-400 border border-orange-500/30' :
+                                          finding.severity === 'medium' ? 'bg-yellow-950/50 text-yellow-400 border border-yellow-500/30' :
+                                          'bg-cyan-950/50 text-cyan-400 border border-cyan-500/30'
+                                        }`}>
+                                          {finding.severity}
+                                        </span>
+                                      </div>
+                                      {finding.description && <p className="text-muted-foreground">{finding.description}</p>}
+                                      {finding.recommendation && (
+                                        <p className="text-cyan-400/90 font-medium pt-0.5">Recommendation: {finding.recommendation}</p>
+                                      )}
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          </>
+                        ) : isScanning ? (
+                          <div className="flex items-center justify-center py-6 gap-3 text-cyan-400 text-xs font-medium">
+                            <Loader2 className="w-5 h-5 animate-spin" />
+                            <span>Performing full compliance scan for {item.domain}...</span>
+                          </div>
+                        ) : (
+                          <div className="flex items-center justify-between py-3 px-4 bg-cyan-950/20 rounded-xl border border-cyan-500/10 text-xs">
+                            <span className="text-muted-foreground">Full scan details not yet loaded for {item.domain}.</span>
+                            <button
+                              onClick={() => fetchFullScanForDomain(cleanDomain)}
+                              className="px-3 py-1 rounded bg-cyan-500/20 text-cyan-400 font-bold hover:bg-cyan-500/30 transition-all cursor-pointer"
+                            >
+                              Scan Now
+                            </button>
+                          </div>
+                        )}
+                      </motion.div>
+                    )}
                   </div>
                 )
               })}
