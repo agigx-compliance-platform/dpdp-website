@@ -391,7 +391,7 @@ const Clock = ({
 
 export function CountdownTimer({ targetDate }: { targetDate: string }) {
   const [timeLeft, setTimeLeft] = useState({
-    d: "00",
+    d: "000",
     h: "00",
     m: "00",
     s: "00",
@@ -404,7 +404,7 @@ export function CountdownTimer({ targetDate }: { targetDate: string }) {
 
     const getTimeRemaining = () => {
       const total = Date.parse(targetDate) - Date.parse(new Date().toString());
-      if (total <= 0) return { d: "00", h: "00", m: "00", s: "00" };
+      if (total <= 0) return { d: "000", h: "00", m: "00", s: "00" };
 
       const days = Math.floor(total / (1000 * 60 * 60 * 24));
       const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
@@ -412,7 +412,7 @@ export function CountdownTimer({ targetDate }: { targetDate: string }) {
       const seconds = Math.floor((total / 1000) % 60);
 
       return {
-        d: days < 10 ? `0${days}` : String(days),
+        d: String(days).padStart(3, "0"),
         h: hours < 10 ? `0${hours}` : String(hours),
         m: minutes < 10 ? `0${minutes}` : String(minutes),
         s: seconds < 10 ? `0${seconds}` : String(seconds),
@@ -450,11 +450,15 @@ export function CountdownTimer({ targetDate }: { targetDate: string }) {
 
   return (
     <div className="flex flex-col items-center justify-center w-full py-12 overflow-hidden">
-      <div className="flex items-center space-x-3 sm:space-x-6 md:space-x-10">
+      <p className="mb-8 text-sm font-medium uppercase tracking-[0.2em] text-slate-500">
+        Time remaining until enforcement
+      </p>
+
+      <div className="flex items-start space-x-3 sm:space-x-6 md:space-x-10">
         {groups.map((group, groupIdx) => (
-          <React.Fragment key={groupIdx}>
-            <div className="flex flex-col items-center space-y-6">
-              <div className="flex space-x-1 sm:space-x-2 md:space-x-3">
+          <React.Fragment key={group.label}>
+            <div className="flex flex-col items-center gap-6">
+              <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3 min-h-[2.5rem] sm:min-h-[3.5rem] md:min-h-[5rem]">
                 {group.value.split("").map((char, digitIdx) => (
                   <div
                     key={digitIdx}
@@ -472,7 +476,7 @@ export function CountdownTimer({ targetDate }: { targetDate: string }) {
             </div>
 
             {groupIdx < groups.length - 1 && (
-              <div className="flex flex-col space-y-4 sm:space-y-6 pb-10">
+              <div className="flex flex-col justify-center space-y-4 sm:space-y-6 min-h-[2.5rem] sm:min-h-[3.5rem] md:min-h-[5rem] self-start">
                 <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-primary/40 shadow-sm animate-pulse" />
                 <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-primary/40 shadow-sm animate-pulse" />
               </div>

@@ -1,19 +1,72 @@
 'use client'
 
-import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { SectionWrapper } from '@/components/ui/SectionWrapper'
 import { CountdownTimer } from '@/components/ui/CountdownTimer'
 import { Button } from '@/components/ui/Button'
 import { useQuestionnaireStore } from '@/store/questionnaireStore'
 
-const stats = [
-  { value: '₹250 Crore', label: 'Maximum penalty per violation' },
-  { value: '72 Hours', label: 'Breach notification window' },
-  { value: '18 Months', label: 'Until enforcement begins' },
-]
+/** DPDP phased enforcement target (shared with CountdownTimer). */
+export const DPDP_ENFORCEMENT_DATE = '2027-05-01T00:00:00'
+
+function getRemainingParts(targetDate: string) {
+  const total = Date.parse(targetDate) - Date.now()
+  if (total <= 0) {
+    return { days: 0, monthsApprox: 0 }
+  }
+  const days = Math.floor(total / (1000 * 60 * 60 * 24))
+  const monthsApprox = Math.max(1, Math.round(days / 30.44))
+  return { days, monthsApprox }
+}
+
+function formatRemainingHeadline(days: number) {
+  if (days <= 0) return 'DPDP enforcement has begun. Penalties up to ₹250 Crore per violation.'
+  if (days >= 60) {
+    const months = Math.max(1, Math.round(days / 30.44))
+    return `DPDP enforcement begins in ${months} months (${days.toLocaleString()} days). Penalties up to ₹250 Crore per violation.`
+  }
+  return `DPDP enforcement begins in ${days.toLocaleString()} days. Penalties up to ₹250 Crore per violation.`
+}
+
+function formatRemainingStat(days: number, monthsApprox: number) {
+  if (days <= 0) return { value: 'Now', label: 'Enforcement has begun' }
+  if (days >= 60) {
+    return {
+      value: `${monthsApprox} Months`,
+      label: 'Until enforcement begins',
+    }
+  }
+  return {
+    value: `${days} Days`,
+    label: 'Until enforcement begins',
+  }
+}
 
 export function WhyNow() {
+  const [remaining, setRemaining] = useState(() =>
+    getRemainingParts(DPDP_ENFORCEMENT_DATE),
+  )
+
+  useEffect(() => {
+    const tick = () => setRemaining(getRemainingParts(DPDP_ENFORCEMENT_DATE))
+    tick()
+    const id = setInterval(tick, 60_000)
+    return () => clearInterval(id)
+  }, [])
+
+  const headline = formatRemainingHeadline(remaining.days)
+  const remainingStat = formatRemainingStat(
+    remaining.days,
+    remaining.monthsApprox,
+  )
+
+  const stats = [
+    { value: '₹250 Crore', label: 'Maximum penalty per violation' },
+    { value: '72 Hours', label: 'Breach notification window' },
+    remainingStat,
+  ]
+
   return (
     <SectionWrapper id="urgency">
       <div className="text-center mb-12">
@@ -33,8 +86,7 @@ export function WhyNow() {
           transition={{ duration: 0.6, delay: 0.15 }}
           className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto"
         >
-          DPDP enforcement begins in 18 months. Penalties up to ₹250 Crore per
-          violation.
+          {headline}
         </motion.p>
       </div>
 
@@ -45,7 +97,7 @@ export function WhyNow() {
         transition={{ duration: 0.6, delay: 0.2 }}
         className="mb-12"
       >
-        <CountdownTimer targetDate="2027-05-01T00:00:00" />
+        <CountdownTimer targetDate={DPDP_ENFORCEMENT_DATE} />
       </motion.div>
 
       <div className="grid sm:grid-cols-3 gap-6 mb-12">

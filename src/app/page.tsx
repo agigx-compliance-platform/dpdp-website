@@ -8,7 +8,6 @@ import { WhyNow } from "@/components/home/WhyNow";
 import { PlatformSnapshot } from "@/components/home/PlatformSnapshot";
 import { PrivacyAssistantShowcase } from "@/components/home/PrivacyAssistantShowcase";
 import { MetricsSection } from "@/components/home/MetricsSection";
-import { CustomerLogos } from "@/components/home/CustomerLogos";
 import { ServicesOverview } from "@/components/home/ServicesOverview";
 import { ProductsOverview } from "@/components/home/ProductsOverview";
 import { PartnershipCTA } from "@/components/home/PartnershipCTA";
@@ -37,7 +36,6 @@ export default function HomePage() {
       <PlatformSnapshot />
       <PrivacyAssistantShowcase />
       <MetricsSection />
-      <CustomerLogos />
       <ServicesOverview />
       <ProductsOverview />
       <PartnershipCTA />
