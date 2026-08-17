@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ArrowLeft, ArrowRight, Loader2 } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Loader2, AlertTriangle } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { StepProgress } from './StepProgress'
 import { RiskMeter } from './RiskMeter'
@@ -328,19 +328,30 @@ export function QuestionnaireWizard() {
       <div className="mx-auto max-w-2xl space-y-6 p-4 sm:p-8">
         <StepProgress currentStep={currentStep} totalSteps={8} />
         <div className="glass-card overflow-hidden rounded-xl p-6 sm:p-10">
-          <div className="flex flex-col items-center justify-center gap-6 py-12">
-            <Loader2 className="h-14 w-14 animate-spin text-primary" />
-            <div className="text-center space-y-2">
+          <div className="flex flex-col items-center justify-center gap-6 py-8 text-center">
+            <Loader2 className="h-12 w-12 animate-spin text-cyan-400" />
+            <div className="space-y-2 max-w-md">
               <h3 className="text-xl font-semibold text-foreground">Scanning in progress</h3>
               <p className="text-sm text-muted-foreground">
-                Analyzing your website for privacy compliance.
-                <br />
-                This may take a minute or two.
-                <br />
-                <span className="text-xs">
-                  First request after idle can take up to 90 seconds while the server starts.
-                </span>
+                Analyzing your website for privacy compliance. This may take a minute or two.
               </p>
+            </div>
+
+            {/* ₹250 Crore Statutory Risk Card */}
+            <div className="w-full max-w-md rounded-xl border border-amber-500/25 bg-gradient-to-r from-amber-950/20 via-amber-950/10 to-red-950/20 p-4 text-left">
+              <div className="flex items-start gap-3">
+                <div className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 shrink-0 mt-0.5">
+                  <AlertTriangle className="w-4 h-4" />
+                </div>
+                <div className="space-y-1">
+                  <span className="text-[9px] font-bold uppercase tracking-wider text-amber-400 bg-amber-950/50 px-2 py-0.5 rounded border border-amber-500/30 inline-block">
+                    DPDP ACT 2023 STATUTORY RISK
+                  </span>
+                  <p className="text-xs sm:text-sm text-amber-100/90 font-medium leading-snug">
+                    DPDP fines in India can be up to <span className="font-extrabold text-amber-400">₹250 Crore</span> per violation instance.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
