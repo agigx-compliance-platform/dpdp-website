@@ -72,6 +72,8 @@ export default function PrivacyPitstopPage() {
   const inputRef = useRef<HTMLInputElement>(null)
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([])
   const abortRef = useRef<AbortController | null>(null)
+  const scannedOrScanningRef = useRef<Set<string>>(new Set())
+  const hasInitLeaderboardScansRef = useRef(false)
 
   // Leaderboard state
   const INITIAL_TOP_LEADERBOARD = [
@@ -127,8 +129,9 @@ export default function PrivacyPitstopPage() {
 
   const fetchFullScanForDomain = useCallback(async (d: string) => {
     const cleanDomain = d.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '')
-    if (!cleanDomain) return
+    if (!cleanDomain || scannedOrScanningRef.current.has(cleanDomain)) return
 
+    scannedOrScanningRef.current.add(cleanDomain)
     setScanningLeaderboard(prev => ({ ...prev, [cleanDomain]: true }))
     try {
       const res = await fetch('/api/privacy-pitstop/analyze', {
@@ -176,6 +179,9 @@ export default function PrivacyPitstopPage() {
 
   // Trigger background scans for leaderboard companies on mount if score is missing
   useEffect(() => {
+    if (hasInitLeaderboardScansRef.current) return
+    hasInitLeaderboardScansRef.current = true
+
     let isMounted = true
 
     const runAll = async () => {
@@ -196,7 +202,7 @@ export default function PrivacyPitstopPage() {
     return () => {
       isMounted = false
     }
-  }, [fetchFullScanForDomain, leaderboardScores])
+  }, [fetchFullScanForDomain])
 
   const startAnalysis = useCallback(async (targetDomain: string) => {
     if (!targetDomain.trim()) return
@@ -422,7 +428,7 @@ export default function PrivacyPitstopPage() {
 
     for (const item of fullLeaderboardItems) {
       const clean = item.domain.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '')
-      if (!leaderboardFullResults[clean] && !scanningLeaderboard[clean]) {
+      if (!leaderboardFullResults[clean] && !scanningLeaderboard[clean] && !scannedOrScanningRef.current.has(clean)) {
         const domainToScan = clean
         queueMicrotask(() => {
           fetchFullScanForDomain(domainToScan)
