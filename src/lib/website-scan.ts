@@ -85,7 +85,7 @@ export async function pollUntilPitstopReport(
 ): Promise<import('./privacy-pitstop/types').AnalysisResult> {
   const { getPitstopScanReport, getPitstopScanStatus } = await import('./api')
   const pollIntervalMs = options?.pollIntervalMs ?? 1600
-  const maxAttempts = options?.maxAttempts ?? 190
+  const maxAttempts = options?.maxAttempts ?? 375
 
   let consecutiveConflictRetries = 0
 
