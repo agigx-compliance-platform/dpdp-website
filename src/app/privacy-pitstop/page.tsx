@@ -143,33 +143,40 @@ export default function PrivacyPitstopPage() {
       if (!res.ok) return
 
       const data = await res.json()
-      if (data?.riskScore !== undefined) {
-        const analysisData = data as AnalysisResult
-        const scoreVal = Math.round(analysisData.riskScore)
-
-        setLeaderboardFullResults(prev => ({ ...prev, [cleanDomain]: analysisData }))
-        setLeaderboardScores(prev => ({ ...prev, [cleanDomain]: scoreVal }))
-
-        setTopLeaderboard(prev => {
-          const existingIndex = prev.findIndex(item => item.domain.toLowerCase() === cleanDomain)
-          let updated = [...prev]
-
-          if (existingIndex !== -1) {
-            updated[existingIndex] = { ...updated[existingIndex], score: scoreVal }
-          } else {
-            updated.push({ domain: cleanDomain, score: scoreVal })
-          }
-
-          updated.sort((a, b) => b.score - a.score)
-          const top3 = updated.slice(0, 3)
-
-          try {
-            localStorage.setItem('dpdp_privacy_top3_leaderboard', JSON.stringify(top3))
-          } catch (err) {}
-
-          return top3
-        })
+      let analysisData: AnalysisResult
+      if (data?.scanId) {
+        const { pollUntilPitstopReport } = await import('@/lib/website-scan')
+        analysisData = await pollUntilPitstopReport(data.scanId)
+      } else if (data?.riskScore !== undefined) {
+        analysisData = data as AnalysisResult
+      } else {
+        return
       }
+
+      const scoreVal = Math.round(analysisData.riskScore)
+
+      setLeaderboardFullResults(prev => ({ ...prev, [cleanDomain]: analysisData }))
+      setLeaderboardScores(prev => ({ ...prev, [cleanDomain]: scoreVal }))
+
+      setTopLeaderboard(prev => {
+        const existingIndex = prev.findIndex(item => item.domain.toLowerCase() === cleanDomain)
+        let updated = [...prev]
+
+        if (existingIndex !== -1) {
+          updated[existingIndex] = { ...updated[existingIndex], score: scoreVal }
+        } else {
+          updated.push({ domain: cleanDomain, score: scoreVal })
+        }
+
+        updated.sort((a, b) => b.score - a.score)
+        const top3 = updated.slice(0, 3)
+
+        try {
+          localStorage.setItem('dpdp_privacy_top3_leaderboard', JSON.stringify(top3))
+        } catch (err) {}
+
+        return top3
+      })
     } catch (err) {
       // Quietly absorb background scan errors
     } finally {
@@ -235,7 +242,16 @@ export default function PrivacyPitstopPage() {
         throw new Error(data.error || `Analysis failed (${res.status})`)
       }
 
-      const analysisData = data as AnalysisResult
+      let analysisData: AnalysisResult
+      if (data?.scanId) {
+        const { pollUntilPitstopReport } = await import('@/lib/website-scan')
+        analysisData = await pollUntilPitstopReport(data.scanId)
+      } else if (data?.riskScore !== undefined) {
+        analysisData = data as AnalysisResult
+      } else {
+        throw new Error('Invalid response from scan service')
+      }
+
       const scoreVal = Math.round(analysisData.riskScore)
       const cleanDomain = targetDomain.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '')
 
