@@ -48,7 +48,7 @@ export function HeroSection() {
       <div className="absolute inset-0">
         <Image
           src={HERO_IMAGES.dark}
-          alt=""
+          alt="DPDP Compliance Intelligence Platform Dashboard"
           fill
           priority
           sizes="100vw"
@@ -56,11 +56,10 @@ export function HeroSection() {
             "object-cover object-center transition-opacity duration-700",
             showLightHero ? "opacity-0" : "opacity-100",
           )}
-          aria-hidden
         />
         <Image
           src={HERO_IMAGES.light}
-          alt=""
+          alt="DPDP Compliance Intelligence Platform Dashboard - Light Mode"
           fill
           priority
           sizes="100vw"
@@ -68,7 +67,6 @@ export function HeroSection() {
             "object-cover object-center transition-opacity duration-700",
             showLightHero ? "opacity-100" : "opacity-0",
           )}
-          aria-hidden
         />
       </div>
 

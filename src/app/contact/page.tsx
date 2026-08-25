@@ -2,13 +2,15 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Mail, MapPin, Send, ArrowRight, BookOpen } from "lucide-react";
+import { Mail, MapPin, Send, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SectionWrapper } from "@/components/ui/SectionWrapper";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card, CardContent } from "@/components/ui/Card";
 import { submitEnquiry } from "@/lib/api";
+import { FaqSection } from "@/components/seo/FaqSection";
+import { CONTACT_FAQS } from "@/lib/dpdp-faqs";
 
 const ROLES = [
   "DPO / Privacy Officer",
@@ -18,34 +20,6 @@ const ROLES = [
   "CEO / Founder",
   "Consultant / Advisor",
   "Other",
-];
-
-const FAQ_ITEMS = [
-  {
-    question: "When does DPDP 2023 come into effect?",
-    answer:
-      "The Digital Personal Data Protection Act 2023 received Presidential assent in August 2023. The implementation rules were notified in November 2025, with phased enforcement timelines for different provisions. Organizations should begin compliance preparation immediately to avoid penalties.",
-  },
-  {
-    question: "What are the maximum penalties under DPDP?",
-    answer:
-      "DPDP 2023 prescribes penalties up to ₹250 Crore for non-compliance with specific provisions. Different violations carry different penalty amounts, from ₹50 Crore for failure to implement security safeguards to ₹250 Crore for non-compliance with provisions relating to children's data or Data Protection Board orders.",
-  },
-  {
-    question: "How long does a typical DPDP compliance engagement take?",
-    answer:
-      "Timeline varies based on organizational complexity and current maturity. A readiness assessment typically takes 2-4 weeks. Full compliance implementation ranges from 3-9 months depending on scope, number of data systems, cross-border considerations, and whether SDF classification applies.",
-  },
-  {
-    question: "Do we need a Data Protection Officer?",
-    answer:
-      "Under DPDP 2023, DPO appointment is mandatory for Significant Data Fiduciaries (Section 10(2)(b)). Even if not classified as SDF, having a designated privacy lead is strongly recommended. Consent Cockpit offers Virtual DPO services for organizations that need expert coverage without full-time hiring.",
-  },
-  {
-    question: 'Is Consent Cockpit focused on DPDP?',
-    answer:
-      'Yes. Our platform and methodologies are built around the Digital Personal Data Protection Act 2023 and the 2025 Rules, from consent capture and privacy notices to Data Principal rights, grievance handling, and regulator-ready evidence for Indian enterprises.',
-  },
 ];
 
 interface FormState {
@@ -78,9 +52,6 @@ export default function ContactPage() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // State to track the currently open FAQ item
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   function validate(): boolean {
     const newErrors: FormErrors = {};
@@ -132,10 +103,6 @@ export default function ContactPage() {
     }
   }
 
-  function toggleFaq(idx: number) {
-    setOpenFaq(openFaq === idx ? null : idx);
-  }
-
   return (
     <div className="min-h-screen bg-background">
       <SectionWrapper className="pt-32 md:pt-40 pb-12">
@@ -146,7 +113,7 @@ export default function ContactPage() {
           className="text-center max-w-4xl mx-auto"
         >
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-            <span className="gradient-text">Get in Touch</span>
+            <span className="gradient-text">Contact DPDP Consultancy</span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
             Ready to start your DPDP compliance journey? Our team of experts is
@@ -325,90 +292,7 @@ export default function ContactPage() {
         </div>
       </SectionWrapper>
 
-      <SectionWrapper className="py-16">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
-          <h2 className="text-3xl font-bold text-center mb-8">
-            <span className="gradient-text">Frequently Asked Questions</span>
-          </h2>
-
-          <div className="max-w-2xl mx-auto">
-            <ul className="m-0 list-none p-0">
-              {FAQ_ITEMS.map((faq, idx) => {
-                const isOpen = openFaq === idx;
-                return (
-                  <li
-                    key={idx}
-                    className="w-full border-b border-border dark:border-neutral-700 list-none last:border-none"
-                    data-open={isOpen ? "" : undefined}
-                  >
-                    <button
-                      type="button"
-                      aria-expanded={isOpen}
-                      onClick={() => toggleFaq(idx)}
-                      className="w-full flex select-none justify-between items-center font-semibold text-foreground cursor-pointer py-5 group"
-                    >
-                      <span className="flex items-center gap-4 flex-1 text-left">
-                        <span className="flex items-center justify-center w-5 h-5 text-muted-foreground opacity-70">
-                          <BookOpen className="w-5 h-5" />
-                        </span>
-                        <span className="text-lg">{faq.question}</span>
-                      </span>
-                      <svg
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth="1.5"
-                        stroke="currentColor"
-                        className={cn(
-                          "w-5 h-5 shrink-0 transition-all duration-300 ease-[cubic-bezier(0.215,0.61,0.355,1)]",
-                          isOpen
-                            ? "rotate-[225deg] opacity-100"
-                            : "opacity-30 group-hover:opacity-100",
-                        )}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M12 4.5v15m7.5-7.5h-15"
-                        />
-                      </svg>
-                    </button>
-
-                    <div
-                      className={cn(
-                        "grid transition-[grid-template-rows] duration-300 ease-[cubic-bezier(0.215,0.61,0.355,1)]",
-                        isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
-                      )}
-                    >
-                      <div className="overflow-hidden min-h-0">
-                        <div
-                          className={cn(
-                            "pb-5 transition-all duration-300 ease-[cubic-bezier(0.215,0.61,0.355,1)] flex gap-4",
-                            isOpen
-                              ? "translate-y-0 opacity-100"
-                              : "translate-y-2 opacity-0",
-                          )}
-                        >
-                          <span className="w-5 shrink-0" />
-                          <p className="text-muted-foreground leading-relaxed m-0 flex-1">
-                            {faq.answer}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        </motion.div>
-      </SectionWrapper>
+      <FaqSection faqs={CONTACT_FAQS} />
     </div>
   );
 }

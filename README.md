@@ -47,7 +47,7 @@ Never commit passwords. Rotate any credential that was pasted into git history o
 
 Output: `public/images/products/agigx-ui/*.png`.
 
-Optional: **`NEXT_PUBLIC_SITE_URL`** for Open Graph image URLs in production.
+Optional: **`NEXT_PUBLIC_SITE_URL`** (`https://dpdpconsultancy.in`) for sitemap, canonical URLs, Open Graph, and JSON-LD. Also set this in Netlify environment variables for production builds.
 
 ## Project Structure
 

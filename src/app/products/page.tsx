@@ -19,7 +19,7 @@ export default function ProductsPage() {
           className="text-center max-w-4xl mx-auto"
         >
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-            <span className="gradient-text">AI-Powered Compliance Products</span>
+            <span className="gradient-text">AI-Powered DPDP Compliance Products</span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
             Purpose-built technology products that automate DPDP compliance,

@@ -85,6 +85,11 @@ export default function PrivacyPitstopPage() {
 
   const [topLeaderboard, setTopLeaderboard] = useState<{ domain: string; score: number }[]>(INITIAL_TOP_LEADERBOARD)
 
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search).get('q')?.trim()
+    if (q) setDomain(q)
+  }, [])
+
   // Rehydrate persisted leaderboard state after client hydration
   useEffect(() => {
     try {
@@ -311,19 +316,19 @@ export default function PrivacyPitstopPage() {
   /* ─── score color mapping ────────────────────────────────── */
   function getScoreColor(score: number) {
     if (score === 0) return 'text-muted-foreground stroke-muted-foreground'
-    if (score >= 80) return 'text-emerald-400 stroke-emerald-400'
-    if (score >= 60) return 'text-green-400 stroke-green-400'
-    if (score >= 40) return 'text-yellow-400 stroke-yellow-400'
-    if (score >= 20) return 'text-orange-400 stroke-orange-400'
+    if (score >= 80) return 'text-primary stroke-primary'
+    if (score >= 60) return 'text-green-500 stroke-green-500'
+    if (score >= 40) return 'text-yellow-500 stroke-yellow-500'
+    if (score >= 20) return 'text-orange-500 stroke-orange-500'
     return 'text-red-500 stroke-red-500'
   }
 
   function getBarBgColor(score: number) {
-    if (score === 0) return 'bg-cyan-500/10'
-    if (score >= 80) return 'bg-emerald-400'
-    if (score >= 60) return 'bg-green-400'
-    if (score >= 40) return 'bg-yellow-400'
-    if (score >= 20) return 'bg-orange-400'
+    if (score === 0) return 'bg-primary/10'
+    if (score >= 80) return 'bg-primary'
+    if (score >= 60) return 'bg-green-500'
+    if (score >= 40) return 'bg-yellow-500'
+    if (score >= 20) return 'bg-orange-500'
     return 'bg-red-500'
   }
 
@@ -477,7 +482,7 @@ export default function PrivacyPitstopPage() {
     return (
       <button
         onClick={() => setRevealed(!revealed)}
-        className="w-full text-left p-4 rounded-xl border border-cyan-500/15 bg-cyan-950/5 hover:border-cyan-500/30 transition-all duration-300 group cursor-pointer relative overflow-hidden"
+        className="glass-card w-full text-left p-4 hover:border-primary/30 transition-all duration-300 group cursor-pointer relative overflow-hidden"
       >
         <div className="grid">
           {/* Front / Myth layer */}
@@ -492,12 +497,12 @@ export default function PrivacyPitstopPage() {
             }}
             transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
           >
-            <Icon className="w-5 h-5 text-cyan-400" />
+            <Icon className="w-5 h-5 text-primary" />
             <div>
-              <h4 className="text-[10px] font-bold text-foreground leading-tight">{title}</h4>
-              <p className="text-[9px] text-muted-foreground mt-1 leading-snug">{desc}</p>
+              <h4 className="text-sm font-semibold text-foreground leading-tight">{title}</h4>
+              <p className="text-xs text-muted-foreground mt-1 leading-snug">{desc}</p>
             </div>
-            <span className="text-[8px] text-cyan-400/70 font-semibold uppercase tracking-wider block pt-1">
+            <span className="text-xs text-primary/70 font-medium uppercase tracking-wider block pt-1">
               Click to inspect &rarr;
             </span>
           </motion.div>
@@ -514,12 +519,12 @@ export default function PrivacyPitstopPage() {
             }}
             transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
           >
-            <ShieldCheck className="w-5 h-5 text-emerald-400" />
+            <ShieldCheck className="w-5 h-5 text-primary" />
             <div>
-              <h4 className="text-[9px] font-bold text-emerald-400 uppercase tracking-wider">{title}</h4>
-              <p className="text-[9px] text-foreground mt-1 leading-snug font-medium">{backText}</p>
+              <h4 className="text-xs font-semibold text-primary uppercase tracking-wider">{title}</h4>
+              <p className="text-xs text-foreground mt-1 leading-snug font-medium">{backText}</p>
             </div>
-            <span className="text-[8px] text-muted-foreground uppercase tracking-wider block pt-1">
+            <span className="text-xs text-muted-foreground uppercase tracking-wider block pt-1">
               &larr; Click to flip back
             </span>
           </motion.div>
@@ -529,40 +534,8 @@ export default function PrivacyPitstopPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#060814] text-foreground font-sans">
-      <SectionWrapper className="pt-24 pb-12">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row items-center justify-between border-b border-cyan-500/10 pb-6 mb-8 gap-4">
-          <div className="flex items-center gap-3">
-            <Shield className="w-10 h-10 text-cyan-400" />
-            <div>
-              <h2 className="text-xl font-bold tracking-wider leading-none">DPDP</h2>
-              <span className="text-[10px] text-cyan-500/80 tracking-widest uppercase">Consultancy</span>
-            </div>
-            <div className="hidden md:block w-px h-6 bg-cyan-500/20 mx-2" />
-            <div className="hidden md:block text-[11px] text-muted-foreground leading-tight">
-              <div>Privacy by Design.</div>
-              <div>Trust by Default.</div>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-3 justify-center">
-            {[
-              { title: '100% PUBLIC SCAN', sub: 'Transparent. Independent.', icon: Search },
-              { title: 'NO SIGN-UP', sub: 'Free for everyone', icon: ShieldCheck },
-              { title: 'YOUR DATA', sub: 'Your rights. Your voice.', icon: Globe },
-            ].map(({ title, sub, icon: Icon }) => (
-              <div key={title} className="flex items-center gap-2.5 px-3.5 py-1.5 rounded-lg bg-cyan-950/20 border border-cyan-500/20">
-                <Icon className="w-4 h-4 text-cyan-400" />
-                <div className="text-left">
-                  <div className="text-[9px] font-bold tracking-wider text-foreground leading-none">{title}</div>
-                  <div className="text-[8px] text-muted-foreground mt-0.5 leading-none">{sub}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
+    <div className="min-h-screen bg-background">
+      <SectionWrapper className="pt-32 md:pt-40 pb-12">
         {/* View: Leaderboard */}
         {view === 'leaderboard' ? (
           <motion.div
@@ -572,14 +545,14 @@ export default function PrivacyPitstopPage() {
             exit={{ opacity: 0 }}
             className="space-y-6"
           >
-            <div className="flex items-center justify-between border-b border-cyan-500/10 pb-4">
+            <div className="flex items-center justify-between border-b border-border pb-4">
               <div className="text-left">
-                <h1 className="text-2xl font-extrabold text-white">Privacy Leaderboard - Detailed Analysis</h1>
-                <p className="text-xs text-cyan-400 mt-1">Full scan details and compliance breakdowns for leaderboard domains</p>
+                <h1 className="text-2xl font-bold text-foreground">Privacy Leaderboard - Detailed Analysis</h1>
+                <p className="text-xs text-primary mt-1">Full scan details and compliance breakdowns for leaderboard domains</p>
               </div>
               <button
                 onClick={() => setView('landing')}
-                className="flex items-center gap-2 px-4 py-2 rounded-full border border-cyan-500/30 text-xs font-semibold hover:bg-cyan-950/20 text-cyan-400 cursor-pointer transition-all"
+                className="flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 text-xs font-semibold hover:bg-muted text-primary cursor-pointer transition-all"
               >
                 <ArrowLeft className="w-3.5 h-3.5" /> Back to Scanner
               </button>
@@ -621,19 +594,19 @@ export default function PrivacyPitstopPage() {
                       .slice(0, 3)
 
                 return (
-                  <div key={item.domain} className="border border-cyan-500/15 rounded-2xl bg-cyan-950/5 p-6 flex flex-col justify-between space-y-4 hover:border-cyan-500/30 transition-all">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-cyan-500/10 pb-4">
+                  <div key={item.domain} className="glass-card p-6 flex flex-col justify-between space-y-4 hover:border-primary/30 transition-all">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-4">
                       <div className="flex items-center gap-3">
-                        <span className={`text-[10px] font-bold px-2.5 py-1 rounded border ${
+                        <span className={`text-xs font-bold px-2.5 py-1 rounded border ${
                           item.category === 'Top Gainers'
-                            ? 'text-emerald-400 bg-emerald-950/30 border-emerald-500/30'
-                            : 'text-red-400 bg-red-950/30 border-red-500/30'
+                            ? 'text-primary bg-emerald-500/10 border-emerald-500/30'
+                            : 'text-red-400 bg-red-500/10 border-red-500/30'
                         }`}>
                           {item.category}
                         </span>
-                        <h3 className="text-lg font-bold text-white">{item.domain}</h3>
+                        <h3 className="text-lg font-bold text-foreground">{item.domain}</h3>
                         {isScanning && (
-                          <div className="flex items-center gap-1.5 text-xs text-cyan-400">
+                          <div className="flex items-center gap-1.5 text-xs text-primary">
                             <Loader2 className="w-3.5 h-3.5 animate-spin" />
                             <span>Scanning...</span>
                           </div>
@@ -642,16 +615,16 @@ export default function PrivacyPitstopPage() {
 
                       <div className="flex items-center gap-4">
                         <div className="text-right">
-                          <span className="text-[10px] text-muted-foreground block">Overall Privacy Score</span>
+                          <span className="text-xs text-muted-foreground block">Overall Privacy Score</span>
                           <div className="flex items-center gap-2 justify-end">
-                            <span className={`text-xl font-extrabold ${getScoreColor(score)}`}>{score}/100</span>
-                            <span className="text-xs font-semibold text-cyan-400">({getRatingText(score)})</span>
+                            <span className={`text-xl font-bold ${getScoreColor(score)}`}>{score}/100</span>
+                            <span className="text-xs font-semibold text-primary">({getRatingText(score)})</span>
                           </div>
                         </div>
 
                         <button
                           onClick={() => setExpandedDomain(isExpanded ? null : cleanDomain)}
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-cyan-500/30 text-xs font-medium hover:bg-cyan-950/20 text-cyan-400 transition-all"
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-primary/30 text-xs font-medium hover:bg-muted text-primary transition-all"
                         >
                           <Eye className="w-3.5 h-3.5" />
                           {isExpanded ? 'Hide Details' : 'View Full Report'}
@@ -664,12 +637,12 @@ export default function PrivacyPitstopPage() {
                       {categoryList.map((cat) => {
                         const catScore = getRealCategoryScore(cat.name, cat.id)
                         return (
-                          <div key={cat.id} className="bg-cyan-950/20 p-2.5 rounded-xl border border-cyan-500/10 text-left space-y-1">
-                            <div className="flex items-center justify-between text-[11px]">
+                          <div key={cat.id} className="bg-muted p-2.5 rounded-xl border border-border text-left space-y-1">
+                            <div className="flex items-center justify-between text-sm">
                               <span className="text-muted-foreground truncate">{cat.name}</span>
                               <span className="text-foreground font-bold ml-1">{catScore}</span>
                             </div>
-                            <div className="h-1.5 w-full bg-[#0e1329] rounded-full overflow-hidden">
+                            <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
                               <div className={`h-full rounded-full ${getBarBgColor(catScore)}`} style={{ width: `${catScore}%` }} />
                             </div>
                           </div>
@@ -679,14 +652,14 @@ export default function PrivacyPitstopPage() {
 
                     {/* Gap Summary / Key Concerns if available */}
                     {itemGapReasons.length > 0 && (
-                      <div className="bg-cyan-950/10 rounded-xl p-3.5 border border-cyan-500/10 text-left space-y-2">
-                        <h4 className="text-xs font-bold text-cyan-400 flex items-center gap-2">
+                      <div className="bg-muted/60 rounded-xl p-3.5 border border-border text-left space-y-2">
+                        <h4 className="text-xs font-bold text-primary flex items-center gap-2">
                           <AlertTriangle className="w-3.5 h-3.5 text-yellow-400" /> Key Privacy Concerns
                         </h4>
                         <ul className="space-y-1 text-xs text-muted-foreground">
                           {itemGapReasons.map((reason, idx) => (
                             <li key={idx} className="flex items-start gap-2">
-                              <span className="text-cyan-500 font-bold">•</span>
+                              <span className="text-primary font-bold">•</span>
                               <span>{reason}</span>
                             </li>
                           ))}
@@ -700,52 +673,52 @@ export default function PrivacyPitstopPage() {
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="pt-4 border-t border-cyan-500/15 text-left space-y-4"
+                        className="pt-4 border-t border-border text-left space-y-4"
                       >
                         {fullRes ? (
                           <>
-                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-cyan-950/20 p-3 rounded-xl border border-cyan-500/10 text-center">
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-muted p-3 rounded-xl border border-border text-center">
                               <div>
-                                <span className="text-[10px] text-muted-foreground block">Confidence Score</span>
-                                <span className="text-sm font-bold text-cyan-400">{fullRes.confidenceScore || 85}%</span>
+                                <span className="text-xs text-muted-foreground block">Confidence Score</span>
+                                <span className="text-sm font-bold text-primary">{fullRes.confidenceScore || 85}%</span>
                               </div>
                               <div>
-                                <span className="text-[10px] text-muted-foreground block">Coverage Score</span>
-                                <span className="text-sm font-bold text-cyan-400">{fullRes.coverageScore || 90}%</span>
+                                <span className="text-xs text-muted-foreground block">Coverage Score</span>
+                                <span className="text-sm font-bold text-primary">{fullRes.coverageScore || 90}%</span>
                               </div>
                               <div>
-                                <span className="text-[10px] text-muted-foreground block">Pages Analyzed</span>
-                                <span className="text-sm font-bold text-white">{fullRes.pagesAnalyzed || 1}</span>
+                                <span className="text-xs text-muted-foreground block">Pages Analyzed</span>
+                                <span className="text-sm font-bold text-foreground">{fullRes.pagesAnalyzed || 1}</span>
                               </div>
                               <div>
-                                <span className="text-[10px] text-muted-foreground block">Total Findings</span>
+                                <span className="text-xs text-muted-foreground block">Total Findings</span>
                                 <span className="text-sm font-bold text-yellow-400">{domainFindings.length}</span>
                               </div>
                             </div>
 
                             {/* Detailed Findings List */}
                             <div className="space-y-3">
-                              <h4 className="text-xs font-bold text-white tracking-wider uppercase">Full Scan Findings</h4>
+                              <h4 className="text-xs font-bold text-foreground tracking-wider uppercase">Full Scan Findings</h4>
                               {domainFindings.length === 0 ? (
                                 <p className="text-xs text-muted-foreground italic">No compliance flags or issues detected for this domain.</p>
                               ) : (
                                 <div className="space-y-2.5 max-h-96 overflow-y-auto pr-1">
                                   {domainFindings.map((finding, idx) => (
-                                    <div key={finding.id || idx} className="p-3 rounded-xl bg-cyan-950/20 border border-cyan-500/10 text-xs space-y-1">
+                                    <div key={finding.id || idx} className="p-3 rounded-xl bg-muted border border-border text-xs space-y-1">
                                       <div className="flex items-center justify-between">
-                                        <span className="font-bold text-white">{finding.title}</span>
-                                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${
-                                          finding.severity === 'critical' ? 'bg-red-950/50 text-red-400 border border-red-500/30' :
-                                          finding.severity === 'high' ? 'bg-orange-950/50 text-orange-400 border border-orange-500/30' :
-                                          finding.severity === 'medium' ? 'bg-yellow-950/50 text-yellow-400 border border-yellow-500/30' :
-                                          'bg-cyan-950/50 text-cyan-400 border border-cyan-500/30'
+                                        <span className="font-bold text-foreground">{finding.title}</span>
+                                        <span className={`text-xs font-bold px-2 py-0.5 rounded uppercase ${
+                                          finding.severity === 'critical' ? 'bg-red-500/10 text-red-400 border border-red-500/30' :
+                                          finding.severity === 'high' ? 'bg-orange-500/10 text-orange-400 border border-orange-500/30' :
+                                          finding.severity === 'medium' ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/30' :
+                                          'bg-primary/10 text-primary border border-primary/30'
                                         }`}>
                                           {finding.severity}
                                         </span>
                                       </div>
                                       {finding.description && <p className="text-muted-foreground">{finding.description}</p>}
                                       {finding.recommendation && (
-                                        <p className="text-cyan-400/90 font-medium pt-0.5">Recommendation: {finding.recommendation}</p>
+                                        <p className="text-primary/90 font-medium pt-0.5">Recommendation: {finding.recommendation}</p>
                                       )}
                                     </div>
                                   ))}
@@ -754,16 +727,16 @@ export default function PrivacyPitstopPage() {
                             </div>
                           </>
                         ) : isScanning ? (
-                          <div className="flex items-center justify-center py-6 gap-3 text-cyan-400 text-xs font-medium">
+                          <div className="flex items-center justify-center py-6 gap-3 text-primary text-xs font-medium">
                             <Loader2 className="w-5 h-5 animate-spin" />
                             <span>Performing full compliance scan for {item.domain}...</span>
                           </div>
                         ) : (
-                          <div className="flex items-center justify-between py-3 px-4 bg-cyan-950/20 rounded-xl border border-cyan-500/10 text-xs">
+                          <div className="flex items-center justify-between py-3 px-4 bg-muted rounded-xl border border-border text-xs">
                             <span className="text-muted-foreground">Full scan details not yet loaded for {item.domain}.</span>
                             <button
                               onClick={() => fetchFullScanForDomain(cleanDomain)}
-                              className="px-3 py-1 rounded bg-cyan-500/20 text-cyan-400 font-bold hover:bg-cyan-500/30 transition-all cursor-pointer"
+                              className="px-3 py-1 rounded bg-primary/20 text-primary font-bold hover:bg-primary/30 transition-all cursor-pointer"
                             >
                               Scan Now
                             </button>
@@ -781,36 +754,43 @@ export default function PrivacyPitstopPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             <div className={`${view === 'results' ? 'lg:col-span-6' : 'lg:col-span-8'} space-y-6`}>
               {/* Title Block */}
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full border border-cyan-500/30 flex items-center justify-center bg-cyan-950/10">
-                  <Loader2 className="w-6 h-6 text-cyan-400" />
+              <div className="text-center lg:text-left max-w-3xl space-y-4">
+                <div className="inline-flex items-center gap-2 rounded-full border border-border bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
+                  <ShieldCheck className="w-3.5 h-3.5 text-primary" />
+                  Free public privacy scan · No signup
                 </div>
-                <div className="text-left">
-                  <h1 className="text-3xl font-extrabold text-white leading-tight">Privacy Pitstop</h1>
-                  <p className="text-sm font-semibold text-cyan-400 leading-none">Scan. Understand. Question. Grieve. Track. Escalate.</p>
-                  <p className="text-xs text-muted-foreground mt-1">A free public privacy capability by DPDP Consultancy</p>
-                </div>
+                <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
+                  <span className="gradient-text">Privacy Pitstop</span>
+                </h1>
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  Scan. Understand. Question. Grieve. Track. Escalate.
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  A free public privacy capability by DPDP Consultancy
+                </p>
               </div>
 
               {/* Form Input Section */}
-              <div className="p-1 rounded-full border border-cyan-500/30 bg-black/40 shadow-[0_0_15px_rgba(6,182,212,0.1)] flex items-center gap-2">
-                <div className="pl-4 text-muted-foreground">
+              <div className="glass-card p-2 sm:p-2.5 flex items-center gap-2 rounded-2xl">
+                <div className="pl-3 text-muted-foreground">
                   <Globe className="w-4 h-4" />
                 </div>
-                <form onSubmit={handleSubmit} className="flex-1 flex items-center">
+                <form onSubmit={handleSubmit} className="flex-1 flex items-center gap-2">
                   <input
                     ref={inputRef}
                     type="text"
                     placeholder="Enter a website URL"
                     value={domain}
                     onChange={(e) => setDomain(e.target.value)}
-                    className="w-full bg-transparent border-0 focus:ring-0 text-sm py-2 px-1 focus:outline-none placeholder-muted-foreground"
+                    className="w-full bg-transparent border-0 focus:ring-0 text-sm py-2.5 px-1 focus:outline-none placeholder-muted-foreground text-foreground"
                     autoFocus
                   />
-                  <button
+                  <Button
                     type="submit"
+                    variant="primary"
+                    size="sm"
                     disabled={!domain.trim() || view === 'analyzing'}
-                    className="bg-gradient-to-r from-cyan-400 to-emerald-400 hover:opacity-95 text-black font-bold text-xs py-2 px-6 rounded-full flex items-center gap-1.5 transition-all cursor-pointer shrink-0"
+                    className="shrink-0"
                   >
                     {view === 'analyzing' ? (
                       <>
@@ -818,21 +798,21 @@ export default function PrivacyPitstopPage() {
                         Scanning...
                       </>
                     ) : (
-                      'Start Free Scan >'
+                      'Start Free Scan'
                     )}
-                  </button>
+                  </Button>
                 </form>
               </div>
 
               {/* Try Examples */}
-              <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
                 <span>Try examples:</span>
                 <div className="flex flex-wrap gap-2">
                   {EXAMPLE_DOMAINS.map((d) => (
                     <button
                       key={d}
                       onClick={() => { setDomain(d); startAnalysis(d) }}
-                      className="px-3 py-1 rounded-md border border-cyan-500/10 hover:border-cyan-500/30 hover:bg-cyan-950/10 text-muted-foreground hover:text-cyan-400 transition-all cursor-pointer text-xs"
+                      className="px-3 py-1.5 rounded-lg border border-border bg-card hover:border-primary/30 hover:bg-muted text-muted-foreground hover:text-foreground transition-all cursor-pointer text-xs"
                     >
                       {d}
                     </button>
@@ -861,7 +841,7 @@ export default function PrivacyPitstopPage() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="border border-red-500/20 rounded-2xl bg-red-950/5 p-8 text-center"
+                    className="border border-red-500/20 rounded-2xl bg-destructive/5 p-8 text-center"
                   >
                     <AlertTriangle className="w-8 h-8 text-red-500 mx-auto mb-3" />
                     <p className="text-sm font-bold text-foreground">Analysis Failed</p>
@@ -878,27 +858,27 @@ export default function PrivacyPitstopPage() {
                     className="space-y-6"
                   >
                     {/* ── Scan Result Header ──────────────────────────── */}
-                    <div className="border border-cyan-500/20 rounded-2xl bg-cyan-950/5 p-5">
-                      <p className="text-[9px] font-bold tracking-widest text-cyan-400/60 uppercase mb-3">SCAN RESULT</p>
+                    <div className="glass-card p-5">
+                      <p className="text-xs font-semibold tracking-widest text-muted-foreground uppercase mb-3">Scan result</p>
                       <div className="flex items-center justify-between flex-wrap gap-3">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-white/10 border border-cyan-500/20 flex items-center justify-center">
-                            <Globe className="w-5 h-5 text-cyan-400" />
+                          <div className="w-10 h-10 rounded-lg bg-muted border border-border flex items-center justify-center">
+                            <Globe className="w-5 h-5 text-primary" />
                           </div>
                           <div>
                             <div className="flex items-center gap-1.5">
-                              <h3 className="text-sm font-bold text-white">{result.domain}</h3>
-                              <a href={`https://${result.domain}`} target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:text-cyan-300">
+                              <h3 className="text-sm font-bold text-foreground">{result.domain}</h3>
+                              <a href={`https://${result.domain}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary">
                                 <ArrowUpRight className="w-3.5 h-3.5" />
                               </a>
                             </div>
                             <div className="flex items-center gap-2 mt-0.5">
-                              <span className="text-[9px] px-2 py-0.5 rounded border border-cyan-500/20 text-muted-foreground">Website</span>
+                              <span className="text-xs px-2 py-0.5 rounded border border-border text-muted-foreground">Website</span>
                             </div>
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="text-[10px] text-muted-foreground">
+                          <p className="text-xs text-muted-foreground">
                             Scanned on {new Date(result.analyzedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} · India 🇮🇳
                           </p>
                         </div>
@@ -906,14 +886,14 @@ export default function PrivacyPitstopPage() {
                     </div>
 
                     {/* ── Section 1: Privacy Score Summary ──────────── */}
-                    <div className="border border-cyan-500/20 rounded-2xl bg-cyan-950/5 p-6 md:p-8">
-                      <p className="text-[9px] font-bold tracking-widest text-cyan-400/60 uppercase mb-5">OVERALL PRIVACY SCORE</p>
+                    <div className="glass-card p-6 md:p-8">
+                      <p className="text-xs font-semibold tracking-widest text-muted-foreground uppercase mb-5">Overall privacy score</p>
                       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
                         {/* Score Ring */}
-                        <div className="md:col-span-5 text-center flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-cyan-500/10 pb-6 md:pb-0 pr-0 md:pr-8">
+                        <div className="md:col-span-5 text-center flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-border pb-6 md:pb-0 pr-0 md:pr-8">
                           <div className="relative w-36 h-36">
                             <svg viewBox="0 0 120 120" className="w-full h-full -rotate-90">
-                              <circle cx="60" cy="60" r="54" fill="none" stroke="#0e1329" strokeWidth="6" />
+                              <circle cx="60" cy="60" r="54" fill="none" stroke="hsl(var(--muted))" strokeWidth="6" />
                               <circle
                                 cx="60" cy="60" r="54" fill="none" strokeWidth="6" strokeLinecap="round"
                                 strokeDasharray={2 * Math.PI * 54}
@@ -923,15 +903,15 @@ export default function PrivacyPitstopPage() {
                             </svg>
                             <div className="absolute inset-0 flex flex-col items-center justify-center">
                               <ShieldCheck className={`w-5 h-5 mb-1 ${getScoreColor(displayScore)}`} />
-                              <div className="text-3xl font-extrabold text-foreground leading-none">{displayScore}</div>
-                              <div className="text-[10px] text-muted-foreground mt-0.5">/100</div>
+                              <div className="text-3xl font-bold text-foreground leading-none">{displayScore}</div>
+                              <div className="text-xs text-muted-foreground mt-0.5">/100</div>
                             </div>
                           </div>
                           <div className="mt-4">
                             <div className={`text-base font-bold uppercase tracking-wider ${getScoreColor(displayScore)}`}>
                               {displayRating}
                             </div>
-                            <p className="text-[9px] text-muted-foreground mt-1">Privacy is a right. Transparency is respect.</p>
+                            <p className="text-xs text-muted-foreground mt-1">Privacy is a right. Transparency is respect.</p>
                           </div>
                         </div>
 
@@ -959,14 +939,14 @@ export default function PrivacyPitstopPage() {
                             const score = Math.round(cat.score)
                             return (
                               <div key={cat.name} className="space-y-1">
-                                <div className="flex justify-between items-center text-[10px] font-semibold text-muted-foreground">
+                                <div className="flex justify-between items-center text-xs font-semibold text-muted-foreground">
                                   <div className="flex items-center gap-1.5">
-                                    <IconComp className="w-3 h-3 text-cyan-400/60" />
+                                    <IconComp className="w-3 h-3 text-primary/60" />
                                     <span>{cat.name}</span>
                                   </div>
                                   <span className="text-foreground font-bold">{score}/100</span>
                                 </div>
-                                <div className="h-1.5 w-full bg-[#0e1329] rounded-full overflow-hidden">
+                                <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
                                   <div className={`h-full rounded-full ${getBarBgColor(score)}`} style={{ width: `${score}%` }} />
                                 </div>
                               </div>
@@ -984,22 +964,22 @@ export default function PrivacyPitstopPage() {
                       className="w-full"
                     >
                       {/* GAP SUMMARY */}
-                      <div className="border border-cyan-500/20 rounded-2xl bg-cyan-950/5 p-5">
-                        <p className="text-[9px] font-bold tracking-widest text-cyan-400/60 uppercase mb-3">GAP SUMMARY</p>
+                      <div className="glass-card p-5">
+                        <p className="text-xs font-semibold tracking-widest text-muted-foreground uppercase mb-3">Gap summary</p>
                         <div className="space-y-2.5">
                           {gapSummary.length > 0 ? (
                             <ul className="space-y-2">
                               {gapSummary.map((gap, idx) => (
                                 <li key={idx} className="flex items-start gap-2">
                                   <AlertTriangle className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
-                                  <span className="text-[10px] text-muted-foreground leading-snug">{gap}</span>
+                                  <span className="text-xs text-muted-foreground leading-snug">{gap}</span>
                                 </li>
                               ))}
                             </ul>
                           ) : (
                             <div className="flex items-center gap-2 py-1">
-                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                              <span className="text-[10px] text-muted-foreground leading-snug">No compliance gaps identified.</span>
+                              <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0" />
+                              <span className="text-xs text-muted-foreground leading-snug">No compliance gaps identified.</span>
                             </div>
                           )}
                         </div>
@@ -1015,13 +995,14 @@ export default function PrivacyPitstopPage() {
                       transition={{ delay: 0.55 }}
                       className="pt-2"
                     >
-                      <button
+                      <Button
                         onClick={resetToLanding}
-                        className="w-full bg-gradient-to-r from-cyan-400 to-emerald-400 hover:opacity-95 text-black font-bold text-xs py-3 px-6 rounded-full flex items-center justify-center gap-2 transition-all cursor-pointer"
+                        variant="primary"
+                        className="w-full"
                       >
                         <Search className="w-4 h-4" />
                         Scan Another Website
-                      </button>
+                      </Button>
                     </motion.div>
                   </motion.div>
                 ) : null}
@@ -1068,20 +1049,20 @@ export default function PrivacyPitstopPage() {
 
             {/* Middle Column: Your Privacy Action Journey (only on results) */}
             {view === 'results' && result && (
-            <div className="lg:col-span-3 border border-cyan-500/20 rounded-2xl bg-cyan-950/5 p-5 space-y-0">
-              <div className="flex items-center gap-2 mb-5 border-b border-cyan-500/10 pb-3">
-                <Shield className="w-4 h-4 text-cyan-400" />
-                <h3 className="text-xs font-bold text-white uppercase tracking-wider">Your Privacy Action Journey</h3>
+            <div className="lg:col-span-3 glass-card p-5 space-y-0">
+              <div className="flex items-center gap-2 mb-5 border-b border-border pb-3">
+                <Shield className="w-4 h-4 text-primary" />
+                <h3 className="text-sm font-semibold text-foreground tracking-wide">Your Privacy Action Journey</h3>
               </div>
 
               {/* Journey Steps */}
               <div className="relative">
                 {/* Vertical connecting line */}
-                <div className="absolute left-[15px] top-4 bottom-4 w-px bg-gradient-to-b from-cyan-400/40 via-cyan-400/20 to-cyan-400/40" />
+                <div className="absolute left-[15px] top-4 bottom-4 w-px bg-gradient-to-b from-primary/40 via-primary/20 to-primary/40" />
 
                 <div className="space-y-4">
                   {[
-                    { step: 1, icon: Search, title: 'Scan', desc: 'Check any company website or app', color: 'from-cyan-500 to-cyan-600' },
+                    { step: 1, icon: Search, title: 'Scan', desc: 'Check any company website or app', color: 'from-primary to-[hsl(var(--gradient-end))]' },
                     { step: 2, icon: Eye, title: 'Understand', desc: 'See privacy score, gaps, and plain-language insights', color: 'from-emerald-500 to-emerald-600' },
                     { step: 3, icon: HelpCircle, title: 'Question', desc: 'Ask the fiduciary about your data, consent, retention, and AI use', color: 'from-blue-500 to-blue-600' },
                     { step: 4, icon: AlertTriangle, title: 'Grieve', desc: 'Raise a privacy grievance using guided templates', color: 'from-amber-500 to-amber-600' },
@@ -1089,15 +1070,15 @@ export default function PrivacyPitstopPage() {
                     { step: 6, icon: ArrowUpRight, title: 'Escalate', desc: 'Build a complaint pack for formal escalation', color: 'from-rose-500 to-rose-600' },
                   ].map((item) => (
                     <div key={item.step} className="flex items-start gap-3 relative">
-                      <div className={`w-[30px] h-[30px] rounded-full bg-gradient-to-br ${item.color} flex items-center justify-center shrink-0 z-10 shadow-lg shadow-cyan-900/20`}>
-                        <span className="text-[10px] font-extrabold text-white">{item.step}</span>
+                      <div className={`w-[30px] h-[30px] rounded-full bg-gradient-to-br ${item.color} flex items-center justify-center shrink-0 z-10 shadow-lg shadow-primary/20`}>
+                        <span className="text-xs font-bold text-white">{item.step}</span>
                       </div>
                       <div className="pt-0.5">
                         <div className="flex items-center gap-1.5">
-                          <item.icon className="w-3.5 h-3.5 text-cyan-400" />
-                          <h4 className="text-[11px] font-bold text-white">{item.title}</h4>
+                          <item.icon className="w-3.5 h-3.5 text-primary" />
+                          <h4 className="text-sm font-bold text-foreground">{item.title}</h4>
                         </div>
-                        <p className="text-[9px] text-muted-foreground leading-snug mt-0.5">{item.desc}</p>
+                        <p className="text-xs text-muted-foreground leading-snug mt-0.5">{item.desc}</p>
                       </div>
                     </div>
                   ))}
@@ -1105,12 +1086,12 @@ export default function PrivacyPitstopPage() {
               </div>
 
               {/* Bottom CTA */}
-              <div className="mt-5 pt-3 border-t border-cyan-500/10">
-                <div className="flex items-start gap-2 px-3 py-2.5 rounded-lg bg-cyan-500/5 border border-cyan-500/15">
-                  <Megaphone className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+              <div className="mt-5 pt-3 border-t border-border">
+                <div className="flex items-start gap-2 px-3 py-2.5 rounded-lg bg-primary/5 border border-border">
+                  <Megaphone className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-[10px] font-bold text-cyan-400 leading-tight">Your voice creates accountability.</p>
-                    <p className="text-[9px] text-muted-foreground leading-snug mt-0.5">Together, we build a privacy-respectful India.</p>
+                    <p className="text-xs font-bold text-primary leading-tight">Your voice creates accountability.</p>
+                    <p className="text-xs text-muted-foreground leading-snug mt-0.5">Together, we build a privacy-respectful India.</p>
                   </div>
                 </div>
               </div>
@@ -1118,24 +1099,24 @@ export default function PrivacyPitstopPage() {
             )}
 
             {/* Right Column */}
-            <div className={`${view === 'results' ? 'lg:col-span-3' : 'lg:col-span-4'} border border-cyan-500/20 rounded-2xl bg-cyan-950/5 p-5 space-y-5`}>
-              <div className="flex items-center justify-between border-b border-cyan-500/10 pb-4">
+            <div className={`${view === 'results' ? 'lg:col-span-3' : 'lg:col-span-4'} glass-card p-5 space-y-5`}>
+              <div className="flex items-center justify-between border-b border-border pb-4">
                 <div className="text-left">
-                  <h3 className="text-base font-bold text-white leading-none">Privacy Market Watch</h3>
-                  <span className="text-[9px] text-muted-foreground tracking-tight mt-1 inline-block">
+                  <h3 className="text-base font-semibold text-foreground leading-none">Privacy Market Watch</h3>
+                  <span className="text-xs text-muted-foreground tracking-tight mt-1 inline-block">
                     Illustrative public leaderboard based on public scans
                   </span>
                 </div>
-                <div className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-emerald-500/15 border border-emerald-500/35">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="text-[9px] font-bold text-emerald-400 tracking-wider">LIVE</span>
+                <div className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-primary/10 border border-primary/30">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                  <span className="text-xs font-bold text-primary tracking-wider">LIVE</span>
                 </div>
               </div>
 
               {[
                 {
                   title: 'Top Gainers (Top 3)',
-                  color: 'text-emerald-400',
+                  color: 'text-primary',
                   items: topLeaderboard.map(item => ({ name: item.domain, domain: item.domain, score: item.score }))
                 },
                 {
@@ -1166,16 +1147,16 @@ export default function PrivacyPitstopPage() {
                       const displayVal = (item as any).score !== undefined ? (item as any).score : (score !== undefined ? score : (defaultScores[item.domain] ?? 70))
 
                       return (
-                        <div key={item.domain} className="flex items-center justify-between text-xs py-1 hover:bg-cyan-950/20 px-2 rounded-md transition-all">
+                        <div key={item.domain} className="flex items-center justify-between text-xs py-1 hover:bg-muted px-2 rounded-md transition-all">
                           <div className="flex items-center gap-3">
-                            <span className="text-muted-foreground w-4 text-[10px]">{idx + 1}</span>
+                            <span className="text-muted-foreground w-4 text-xs">{idx + 1}</span>
                             <span className="font-semibold text-muted-foreground hover:text-foreground transition-colors">
                               {item.name}
                             </span>
                           </div>
                           <div className="flex items-center gap-2">
-                            {isScanning && <Loader2 className="w-3.5 h-3.5 animate-spin text-cyan-400" />}
-                            <span className="font-bold text-foreground text-[11px]">{displayVal}</span>
+                            {isScanning && <Loader2 className="w-3.5 h-3.5 animate-spin text-primary" />}
+                            <span className="font-bold text-foreground text-sm">{displayVal}</span>
                           </div>
                         </div>
                       )
@@ -1187,7 +1168,7 @@ export default function PrivacyPitstopPage() {
               <div className="pt-2 text-center">
                 <button
                   onClick={() => setView('leaderboard')}
-                  className="text-[10px] text-cyan-400 hover:underline cursor-pointer bg-transparent border-0 outline-none focus:outline-none"
+                  className="text-xs text-primary hover:underline cursor-pointer bg-transparent border-0 outline-none focus:outline-none"
                 >
                   View full leaderboard on dpdpconsultancy.in/pitstop &gt;
                 </button>

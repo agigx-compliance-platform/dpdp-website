@@ -1,15 +1,22 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { SectionWrapper } from '@/components/ui/SectionWrapper'
+import { BreadcrumbJsonLd } from '@/components/seo/BreadcrumbJsonLd'
+import { pageSeo } from '@/lib/page-metadata'
 
-export const metadata: Metadata = {
-  title: 'Terms of Service',
-  description: 'Terms of service for Consent Cockpit and dpdpconsultancy.in',
-}
+export const metadata: Metadata = pageSeo({
+  title: 'Terms of Service — DPDP Consultancy',
+  description:
+    'Terms of service for DPDP Consultancy, Consent Cockpit, and dpdpconsultancy.in.',
+  path: '/terms',
+  keywords: ['DPDP Consultancy terms of service'],
+})
 
 export default function TermsPage() {
   return (
-    <SectionWrapper className="pt-32 md:pt-40 pb-20 max-w-3xl mx-auto prose prose-invert prose-headings:text-foreground prose-p:text-muted-foreground">
+    <>
+      <BreadcrumbJsonLd items={[{ name: 'Terms of Service', href: '/terms' }]} />
+      <SectionWrapper className="pt-32 md:pt-40 pb-20 max-w-3xl mx-auto prose prose-invert prose-headings:text-foreground prose-p:text-muted-foreground">
       <h1>Terms of Service</h1>
       <p className="lead text-muted-foreground not-prose">
         Last updated: July 2026
@@ -41,6 +48,7 @@ export default function TermsPage() {
           ← Back to home
         </Link>
       </p>
-    </SectionWrapper>
+      </SectionWrapper>
+    </>
   )
 }

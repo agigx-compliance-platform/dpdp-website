@@ -104,7 +104,7 @@ export default function PartnershipPage() {
           className="text-center max-w-4xl mx-auto"
         >
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-            <span className="gradient-text">Partner With Consent Cockpit</span>
+            <span className="gradient-text">Partner With DPDP Consultancy</span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
             Join our partner ecosystem to deliver DPDP compliance services at

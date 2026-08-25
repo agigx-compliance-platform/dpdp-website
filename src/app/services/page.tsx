@@ -13,6 +13,8 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import { ServicesPlatformStrip } from "@/components/services/ServicesPlatformStrip";
+import { FaqSection } from "@/components/seo/FaqSection";
+import { SERVICE_FAQS } from "@/lib/dpdp-faqs";
 
 const SERVICE_CATEGORIES = [
   {
@@ -458,7 +460,7 @@ function HeroSection() {
       >
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
           <span className="gradient-text">
-            Expert-Led Compliance Services
+            Expert-Led DPDP Compliance Services
           </span>
         </h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
@@ -1098,6 +1100,7 @@ export default function ServicesPage() {
         </div>
       </section>
 
+      <FaqSection title="DPDP Compliance FAQs" faqs={SERVICE_FAQS} />
       <ClosingCTASection />
     </div>
   );

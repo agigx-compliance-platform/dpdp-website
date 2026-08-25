@@ -51,7 +51,7 @@ export default function AboutPage() {
           className="text-center max-w-4xl mx-auto"
         >
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-            <span className="gradient-text">About dpdpconsultancy</span>
+            <span className="gradient-text">About DPDP Consultancy</span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
             We&apos;re building the compliance infrastructure India needs where
