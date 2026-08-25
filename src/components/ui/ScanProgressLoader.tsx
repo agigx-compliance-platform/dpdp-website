@@ -418,9 +418,9 @@ export function ScanProgressLoader({
                   DPDP ACT 2023 STATUTORY RISK AWARENESS
                 </span>
               </div>
-              <p className="text-xs sm:text-sm text-amber-100/90 font-medium leading-snug">
+              <p className="text-xs sm:text-sm text-foreground font-medium leading-snug">
                 DPDP fines in India can be up to{' '}
-                <span className="font-bold text-amber-400 underline decoration-amber-500/40 underline-offset-2">
+                <span className="font-bold text-amber-500 underline decoration-amber-500/40 underline-offset-2">
                   ₹250 Crore
                 </span>{' '}
                 per violation instance.
