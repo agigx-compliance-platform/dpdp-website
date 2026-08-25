@@ -27,6 +27,7 @@ import {
 import { SectionWrapper } from '@/components/ui/SectionWrapper'
 import { Button } from '@/components/ui/Button'
 import type { AnalysisResult } from '@/lib/privacy-pitstop/types'
+import { ScanProgressLoader } from '@/components/ui/ScanProgressLoader'
 
 /* ─── constants ────────────────────────────────────────────── */
 
@@ -847,96 +848,12 @@ export default function PrivacyPitstopPage() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
-                    className="border border-cyan-500/20 rounded-2xl bg-cyan-950/5 p-6 sm:p-8 space-y-6 text-left"
                   >
-                    {/* Header + Live Scanning Indicator */}
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-cyan-500/10 pb-4">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="relative flex h-2.5 w-2.5">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-cyan-500"></span>
-                          </span>
-                          <span className="text-[10px] font-extrabold tracking-widest text-cyan-400 uppercase">Live Compliance Scan</span>
-                        </div>
-                        <h3 className="text-base font-bold text-white mt-1">Analyzing <span className="text-cyan-300 font-mono">{domain}</span></h3>
-                      </div>
-                      <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-cyan-500/20 bg-cyan-950/30 text-xs text-cyan-400 font-medium self-start sm:self-auto">
-                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                        <span>In Progress...</span>
-                      </div>
-                    </div>
-
-                    {/* Step Breakdown */}
-                    <div className="space-y-3">
-                      {ANALYSIS_STEPS.map((step, i) => {
-                        const Icon = step.icon
-                        const isActive = i <= activeStep
-                        const isComplete = i < activeStep
-                        return (
-                          <div key={step.label} className="flex items-center gap-3">
-                            {isComplete ? (
-                              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                            ) : isActive ? (
-                              <Loader2 className="w-4 h-4 text-cyan-400 animate-spin shrink-0" />
-                            ) : (
-                              <Icon className="w-4 h-4 text-muted-foreground/30 shrink-0" />
-                            )}
-                            <span className={`text-xs font-medium transition-colors ${isActive ? 'text-foreground font-semibold' : 'text-muted-foreground/40'}`}>
-                              {step.label}
-                            </span>
-                          </div>
-                        )
-                      })}
-                    </div>
-
-                    {/* Progress Bar */}
-                    <div className="space-y-1.5">
-                      <div className="flex justify-between text-[10px] text-muted-foreground font-mono">
-                        <span>Scan Progress</span>
-                        <span>{Math.min(100, Math.round(((Math.max(0, activeStep) + 1) / ANALYSIS_STEPS.length) * 100))}%</span>
-                      </div>
-                      <div className="h-1.5 w-full bg-cyan-950/40 rounded-full overflow-hidden border border-cyan-500/10">
-                        <motion.div
-                          className="h-full bg-gradient-to-r from-cyan-500 to-emerald-400 rounded-full"
-                          initial={{ width: '0%' }}
-                          animate={{ width: `${Math.min(100, Math.round(((Math.max(0, activeStep) + 1) / ANALYSIS_STEPS.length) * 100))}%` }}
-                          transition={{ duration: 0.5 }}
-                        />
-                      </div>
-                    </div>
-
-                    {/* ₹250 Crore Fine Stat Card */}
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.98 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ delay: 0.2, duration: 0.4 }}
-                      className="relative overflow-hidden rounded-xl border border-amber-500/25 bg-gradient-to-r from-amber-950/20 via-amber-950/10 to-red-950/20 p-4 sm:p-5"
-                    >
-                      <div className="absolute top-0 right-0 -mt-2 -mr-2 w-24 h-24 bg-amber-500/5 rounded-full blur-xl pointer-events-none" />
-                      <div className="flex items-start gap-3.5 relative z-10">
-                        <div className="p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/30 shrink-0 text-amber-400">
-                          <AlertTriangle className="w-5 h-5" />
-                        </div>
-                        <div className="space-y-1 text-left">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-[9px] font-bold uppercase tracking-wider text-amber-400 bg-amber-950/50 px-2 py-0.5 rounded border border-amber-500/30">
-                              DPDP ACT 2023 STATUTORY RISK
-                            </span>
-                          </div>
-                          <p className="text-xs sm:text-sm text-amber-100/90 font-medium leading-snug">
-                            DPDP fines in India can be up to{' '}
-                            <span className="font-extrabold text-amber-400 underline decoration-amber-500/40 underline-offset-2">
-                              ₹250 Crore
-                            </span>{' '}
-                            per violation instance.
-                          </p>
-                          <p className="text-[11px] text-muted-foreground leading-relaxed pt-0.5">
-                            Our scanner evaluates notice disclosures, tracker consent, user grievance redressal, and security posture against statutory DPDP requirements.
-                          </p>
-                        </div>
-                      </div>
-                    </motion.div>
+                    <ScanProgressLoader
+                      domain={domain}
+                      activeStep={activeStep}
+                      steps={ANALYSIS_STEPS}
+                    />
                   </motion.div>
                 ) : view === 'error' ? (
                   <motion.div
