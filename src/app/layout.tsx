@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     template: '%s | DPDP Consultancy — DPDP Compliance India',
   },
   description:
-    'India\'s leading DPDP compliance intelligence platform. Transform DPDP Act 2023 and AI governance into a living, enforceable compliance engine. Automated privacy assessments, consent management, DSAR automation, and AI-powered governance for Indian enterprises. Avoid penalties up to ₹250 Crore.',
+    'India\'s DPDP compliance platform: automated privacy assessments, consent management, DSAR automation, and AI governance. Avoid penalties up to ₹250 Crore.',
   keywords: [
     'DPDP',
     'DPDP compliance',
@@ -79,7 +79,7 @@ export const metadata: Metadata = {
     siteName: 'DPDP Consultancy',
     title: 'DPDP Consultancy · India\'s DPDP Compliance Intelligence Platform',
     description:
-      'India\'s leading DPDP compliance platform. Automated privacy assessments, consent management, DSAR automation, and AI governance. Avoid penalties up to ₹250 Crore.',
+      'India\'s DPDP compliance platform: privacy assessments, consent management, DSAR automation, and AI governance. Avoid ₹250 Crore penalties.',
     images: [
       {
         url: '/images/brand/social-icon-1024.png',

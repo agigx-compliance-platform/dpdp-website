@@ -41,7 +41,7 @@ export function BrandMark({
       />
       <Image
         src={LOGO_WHITE}
-        alt=""
+        alt="DPDP Consultancy"
         aria-hidden
         width={width}
         height={height}

@@ -109,7 +109,10 @@ export function ProductsOverview() {
                     productPreviewThumbs[i]?.light ??
                     productPreviewThumbs[0].light
                   }
-                  alt={productPreviewThumbs[i]?.alt ?? ""}
+                  alt={
+                    productPreviewThumbs[i]?.alt ??
+                    `${prod.name} product screenshot`
+                  }
                   className="object-contain object-top"
                   priority={i === 0}
                   sizes="(max-width: 640px) 100vw, 33vw"
