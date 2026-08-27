@@ -112,6 +112,23 @@ export interface ReportSection {
   findings: ReportFinding[]
 }
 
+export interface ScoreBasisEntry {
+  categoryId: ScanCategoryId
+  categoryName: string
+  score: number
+  explanation: string
+  evidenceSummary?: string[]
+}
+
+export interface FindingAnalysis {
+  findingId: string
+  title: string
+  severity: Severity
+  detailedExplanation?: string
+  regulatoryImplication?: string
+  evidenceReferences?: string[]
+}
+
 export interface ReportFinding {
   title: string
   description: string
@@ -121,6 +138,8 @@ export interface ReportFinding {
   scoreImpact: string
   recommendation?: string
   publicWording: string
+  detailedExplanation?: string
+  regulatoryImplication?: string
 }
 
 export interface ScanReport {
@@ -137,6 +156,8 @@ export interface ScanReport {
   totalFindings: number
   pagesAnalyzed: number
   recommendations: string[]
+  detailedReport?: string
+  scoreBasis?: ScoreBasisEntry[]
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -205,6 +226,11 @@ export interface AnalysisResult {
   citizenActions?: CitizenActions
   /** Specific reasons describing missing/failed criteria that reduced score */
   gapReasons?: string[]
+  scoreBasis?: ScoreBasisEntry[]
+  findingAnalyses?: FindingAnalysis[]
+  detailedReport?: string
+  consentBannerPresent?: boolean
+  consentRejectOption?: boolean
 }
 
 export interface FetchedPage {
