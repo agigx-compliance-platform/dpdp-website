@@ -360,23 +360,48 @@ export default function PrivacyPitstopPage() {
           .filter(Boolean)
       )).slice(0, 5)
 
-  const fullLeaderboardItems = useMemo(() => {
-    const items: { domain: string; category: string; score?: number }[] = []
+  // Deduplicate and validate user-scanned domain records
+  const uniqueScannedDomains = useMemo(() => {
+    const map = new Map<string, { domain: string; score: number }>()
+    for (const item of scannedUserDomains) {
+      if (!item || !item.domain || item.score == null || typeof item.score !== 'number' || isNaN(item.score)) {
+        continue
+      }
+      const clean = item.domain.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '')
+      if (clean) {
+        map.set(clean, { domain: clean, score: Math.round(item.score) })
+      }
+    }
+    return Array.from(map.values())
+  }, [scannedUserDomains])
 
-    const topGainers = [...scannedUserDomains].sort((a, b) => b.score - a.score).slice(0, 5)
+  // Top Gainers: score > 60, ordered by highest score first (descending)
+  const topGainers = useMemo(() => {
+    return uniqueScannedDomains
+      .filter(item => item.score > 60)
+      .sort((a, b) => b.score - a.score)
+  }, [uniqueScannedDomains])
+
+  // Top Losers: score < 60, ordered by lowest score first (ascending)
+  const topLosers = useMemo(() => {
+    return uniqueScannedDomains
+      .filter(item => item.score < 60)
+      .sort((a, b) => a.score - b.score)
+  }, [uniqueScannedDomains])
+
+  const fullLeaderboardItems = useMemo(() => {
+    const items: { domain: string; category: string; score: number }[] = []
+
     for (const item of topGainers) {
       items.push({ domain: item.domain, category: 'Top Gainers', score: item.score })
     }
 
-    const topLosers = [...scannedUserDomains].sort((a, b) => a.score - b.score).slice(0, 5)
     for (const item of topLosers) {
-      if (!items.some(i => i.domain === item.domain)) {
-        items.push({ domain: item.domain, category: 'Top Losers', score: item.score })
-      }
+      items.push({ domain: item.domain, category: 'Top Losers', score: item.score })
     }
 
     return items
-  }, [scannedUserDomains])
+  }, [topGainers, topLosers])
 
   const getCategoryScore = (catName: string, baseScore: number = displayScore) => {
     if (!result && baseScore === 0) return 0
@@ -477,8 +502,17 @@ export default function PrivacyPitstopPage() {
               </button>
             </div>
 
-            <div className="grid grid-cols-1 gap-6">
-              {fullLeaderboardItems.map((item: { domain: string; category: string; score?: number }) => {
+            {fullLeaderboardItems.length === 0 ? (
+              <div className="glass-card p-12 text-center space-y-2">
+                <ShieldCheck className="w-8 h-8 text-primary mx-auto opacity-60" />
+                <h3 className="text-base font-bold text-foreground">No Qualifying Domains Scanned Yet</h3>
+                <p className="text-xs text-muted-foreground max-w-md mx-auto">
+                  Enter a domain in Policy Pitstop to perform a live scan and populate the privacy leaderboard. Domains with score &gt; 60 rank under Top Gainers, and score &lt; 60 rank under Top Losers.
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-6">
+                {fullLeaderboardItems.map((item: { domain: string; category: string; score?: number }) => {
                 const cleanDomain = item.domain.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '')
                 const fullRes = leaderboardFullResults[cleanDomain]
                 const isScanning = scanningLeaderboard[cleanDomain]
@@ -667,6 +701,7 @@ export default function PrivacyPitstopPage() {
                 )
               })}
             </div>
+            )}
           </motion.div>
         ) : (
           /* View: Scanner */
@@ -1134,24 +1169,24 @@ export default function PrivacyPitstopPage() {
                 </div>
               </div>
 
-              {scannedUserDomains.length === 0 ? (
+              {topGainers.length === 0 && topLosers.length === 0 ? (
                 <div className="py-4 text-center space-y-1">
-                  <p className="text-xs text-muted-foreground italic">No domains scanned yet.</p>
+                  <p className="text-xs text-muted-foreground italic">No qualifying domains scanned yet.</p>
                   <p className="text-[11px] text-muted-foreground/80">Enter a domain above to populate live rankings.</p>
                 </div>
               ) : (
                 [
                   {
-                    title: 'Top Gainers (Highest Scores)',
+                    title: 'Top Gainers (Score > 60)',
                     color: 'text-primary',
-                    items: [...scannedUserDomains].sort((a, b) => b.score - a.score).slice(0, 5)
+                    items: topGainers.slice(0, 5)
                   },
                   {
-                    title: 'Top Losers (Lowest Scores)',
+                    title: 'Top Losers (Score < 60)',
                     color: 'text-red-400',
-                    items: [...scannedUserDomains].sort((a, b) => a.score - b.score).slice(0, 5)
+                    items: topLosers.slice(0, 5)
                   }
-                ].map((section) => (
+                ].filter(section => section.items.length > 0).map((section) => (
                   <div key={section.title} className="space-y-2 text-left">
                     <h4 className={`text-xs font-bold ${section.color}`}>{section.title}</h4>
                     <div className="space-y-1.5">
