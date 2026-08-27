@@ -83,15 +83,16 @@ export default function PrivacyPitstopPage() {
     const q = new URLSearchParams(window.location.search).get('q')?.trim()
     if (q) setDomain(q)
 
+    // Clear all existing stored leaderboard records to start with a clean state
     try {
-      const saved = localStorage.getItem('dpdp_privacy_live_searched_domains')
-      if (saved) {
-        const parsed = JSON.parse(saved)
-        if (Array.isArray(parsed)) {
-          setScannedUserDomains(parsed)
-        }
-      }
+      localStorage.removeItem('dpdp_privacy_live_searched_domains')
+      localStorage.removeItem('dpdp_privacy_top3_leaderboard')
+      localStorage.removeItem('dpdp_privacy_user_searched_domains')
+      localStorage.removeItem('dpdp_scanned_domains_history')
+      localStorage.removeItem('dpdp_pitstop_user_searched_domains')
     } catch (err) {}
+
+    setScannedUserDomains([])
   }, [])
 
   const [scanningLeaderboard, setScanningLeaderboard] = useState<Record<string, boolean>>({})
@@ -514,7 +515,8 @@ export default function PrivacyPitstopPage() {
               <div className="grid grid-cols-1 gap-6">
                 {fullLeaderboardItems.map((item: { domain: string; category: string; score?: number }) => {
                 const cleanDomain = item.domain.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '')
-                const fullRes = leaderboardFullResults[cleanDomain]
+                const activeResultDomain = result?.domain ? result.domain.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '') : ''
+                const fullRes = leaderboardFullResults[cleanDomain] || (activeResultDomain === cleanDomain ? result : null)
                 const isScanning = scanningLeaderboard[cleanDomain]
                 const score = fullRes ? Math.round(fullRes.riskScore) : (item.score ?? 70)
                 const isExpanded = expandedDomain === cleanDomain
