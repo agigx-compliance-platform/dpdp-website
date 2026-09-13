@@ -1,0 +1,42 @@
+---
+description: Fix causes, never hardcode a case or bend a test
+alwaysApply: true
+---
+
+# Fix the cause, not the case in front of you
+
+Never make one specific input work. Make the rule that input follows work.
+
+- **No literals from one environment in product code**: database names, secret
+  paths, tenant or project ids, hostnames, ports, emails, service-account names.
+  They belong in config, in discovery output, or in data the caller passed.
+- **No branch that exists so one known case passes** (`if name == "demowebappdb"`).
+  Such a branch works for the estate it was written against and silently
+  mis-handles every other one. If the rule cannot be stated generally, the design
+  is not ready — say so instead of encoding the example.
+- **Never bend a test to make it pass**: no rewritten assertion, no loosened
+  matcher, no `skip`/`xfail`, no `sleep` or retry to paper over a race, no
+  widening a type to swallow the value that broke it. A failing test is a
+  finding. Fix the code, or explain why the expectation itself is wrong and
+  change it deliberately.
+- **No fallback that hides a failure**: empty catch, silent default, `or 0`,
+  `?? []` over an error path. Failing loudly beats a wrong answer that looks
+  right.
+- **Derive from what the system reports at run time** — list the store, ask the
+  cloud API, read the schema — rather than from a name this repo expects to find.
+- **When several values are plausible, refuse and surface the ambiguity.** A
+  guess that points a credential at the wrong database is worse than a blocked
+  task.
+
+```python
+# BAD - resolves the one estate this was written for, mis-resolves the rest
+if "demowebapp" in database:
+    return "gcpsm://proj/db-password?user=postgres"
+
+# GOOD - matched against what the store actually holds; ambiguity blocks
+matches = [path for path in store.list_paths() if names_match(path, database)]
+return matches[0] if len(matches) == 1 else None
+```
+
+If a shortcut is genuinely the only option, leave it out and report the gap to
+the user instead of shipping it quietly.
