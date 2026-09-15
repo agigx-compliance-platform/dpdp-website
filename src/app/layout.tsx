@@ -17,12 +17,16 @@ import { SITE_URL } from '@/lib/site-url'
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'DPDP Consultancy · DPDP Compliance Intelligence Platform India',
-    template: '%s | DPDP Consultancy — DPDP Compliance India',
+    default: 'DPDP Consultancy (dpdpconsultancy) — DPDP Compliance Platform India',
+    template: '%s | DPDP Consultancy',
   },
   description:
-    'India\'s DPDP compliance platform: automated privacy assessments, consent management, DSAR automation, and AI governance. Avoid penalties up to ₹250 Crore.',
+    'DPDP Consultancy (dpdpconsultancy.in) — India\'s DPDP compliance platform for privacy assessments, consent management, DSAR automation, and AI governance.',
   keywords: [
+    'DPDP Consultancy',
+    'dpdpconsultancy',
+    'dpdpconsultancy.in',
+    'DPDP consultancy',
     'DPDP',
     'DPDP compliance',
     'DPDP Act',
@@ -30,7 +34,6 @@ export const metadata: Metadata = {
     'Digital Personal Data Protection',
     'Digital Personal Data Protection Act',
     'DPDP compliance India',
-    'DPDP consultancy',
     'DPDP consultant',
     'DPDP consulting',
     'DPDP compliance platform',
@@ -77,9 +80,9 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_IN',
     siteName: 'DPDP Consultancy',
-    title: 'DPDP Consultancy · India\'s DPDP Compliance Intelligence Platform',
+    title: 'DPDP Consultancy (dpdpconsultancy) — DPDP Compliance Platform India',
     description:
-      'India\'s DPDP compliance platform: privacy assessments, consent management, DSAR automation, and AI governance. Avoid ₹250 Crore penalties.',
+      'DPDP Consultancy (dpdpconsultancy.in): privacy assessments, consent management, DSAR automation, and AI governance for Indian enterprises.',
     images: [
       {
         url: '/images/brand/social-icon-1024.png',
@@ -91,9 +94,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'DPDP Consultancy · India\'s DPDP Compliance Intelligence Platform',
+    title: 'DPDP Consultancy (dpdpconsultancy) — DPDP Compliance Platform India',
     description:
-      'India\'s leading DPDP compliance platform. Automated assessments, consent management, DSAR automation & AI governance. Avoid ₹250 Crore penalties.',
+      'DPDP Consultancy (dpdpconsultancy.in): assessments, consent management, DSAR automation & AI governance. Avoid ₹250 Crore penalties.',
     images: ['/images/brand/social-icon-1024.png'],
   },
   robots: {

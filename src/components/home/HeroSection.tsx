@@ -48,7 +48,7 @@ export function HeroSection() {
       <div className="absolute inset-0">
         <Image
           src={HERO_IMAGES.dark}
-          alt="DPDP Compliance Intelligence Platform Dashboard"
+          alt="DPDP Consultancy Compliance Intelligence Platform Dashboard"
           fill
           priority
           sizes="100vw"
@@ -59,7 +59,7 @@ export function HeroSection() {
         />
         <Image
           src={HERO_IMAGES.light}
-          alt="DPDP Compliance Intelligence Platform Dashboard - Light Mode"
+          alt="DPDP Consultancy Compliance Intelligence Platform Dashboard - Light Mode"
           fill
           priority
           sizes="100vw"
@@ -107,7 +107,7 @@ export function HeroSection() {
             isLight ? "text-foreground/55" : "text-muted-foreground/60",
           )}
         >
-          DPDP · AI Governance
+          DPDP Consultancy · AI Governance
         </motion.p>
 
         <motion.p
@@ -125,7 +125,7 @@ export function HeroSection() {
           {...fadeUp(d(1.0), 28)}
           className="text-4xl font-bold tracking-tight sm:text-5xl md:text-7xl text-foreground"
         >
-          DPDP Continuous{" "}
+          DPDP Consultancy — Continuous{" "}
           <span
             className={cn(
               "gradient-text",

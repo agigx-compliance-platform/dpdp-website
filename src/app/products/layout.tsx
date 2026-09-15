@@ -3,19 +3,19 @@ import { BreadcrumbJsonLd } from '@/components/seo/BreadcrumbJsonLd'
 import { pageSeo } from '@/lib/page-metadata'
 
 export const metadata: Metadata = pageSeo({
-  title: 'DPDP Compliance Products — Consent Management, Scanner & DSAR Tools',
+  title: 'DPDP Consultancy Products — Consent, Scanner & DSAR Tools',
   description:
-    'AI-powered DPDP compliance products: Consent Management Platform, TrustScope Privacy Scanner, DSAR Management, Infrastructure Scanner, AI Compliance Assistant, and Adaptive Compliance Engine for Indian enterprises.',
+    'DPDP Consultancy products: consent management, TrustScope scanner, DSAR automation, and AI compliance tools for India.',
   path: '/products',
-  keywords: ['DPDP compliance products', 'consent management platform India', 'DPDP scanner', 'DSAR management tool', 'privacy scanner', 'AI compliance assistant', 'DPDP compliance software India'],
-  ogTitle: 'DPDP Compliance Products — AI-powered Privacy Tools',
-  ogDescription: 'AI-powered DPDP compliance products: Consent Management, TrustScope Scanner, DSAR Management, and more.',
+  keywords: ['DPDP Consultancy products', 'dpdpconsultancy', 'DPDP compliance products', 'consent management platform India', 'DPDP scanner', 'DSAR management tool'],
+  ogTitle: 'DPDP Consultancy Products — AI-powered Privacy Tools',
+  ogDescription: 'DPDP Consultancy products: consent management, TrustScope scanner, DSAR automation, and more.',
 })
 
 export default function ProductsLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <BreadcrumbJsonLd items={[{ name: 'DPDP Compliance Products', href: '/products' }]} />
+      <BreadcrumbJsonLd items={[{ name: 'DPDP Consultancy Products', href: '/products' }]} />
       {children}
     </>
   )

@@ -4,19 +4,19 @@ const footerSections = [
   {
     title: 'Company',
     links: [
-      { label: 'About', href: '/about' },
-      { label: 'Careers', href: '/contact' },
+      { label: 'About DPDP Consultancy', href: '/about' },
       { label: 'Contact', href: '/contact' },
+      { label: 'Partnership', href: '/partnership' },
     ],
   },
   {
     title: 'Products',
     links: [
       { label: 'All Products', href: '/products' },
+      { label: 'Privacy Pitstop', href: '/privacy-pitstop' },
       { label: 'Consent Platform', href: '/products#consent-platform' },
       { label: 'Compliance Scanner', href: '/products#trustscope' },
       { label: 'DSAR Platform', href: '/products#dsar-platform' },
-      { label: 'AI Assistant', href: '/products#ai-assistant' },
     ],
   },
   {
@@ -24,7 +24,7 @@ const footerSections = [
     links: [
       { label: 'All Services', href: '/services' },
       { label: 'Solutions by Industry', href: '/solutions' },
-      { label: 'Partnership', href: '/partnership' },
+      { label: 'What is DPDP?', href: '/what-is-dpdp' },
       { label: 'Start Assessment', href: '/questionnaire' },
     ],
   },
@@ -39,6 +39,16 @@ export function Footer() {
   return (
     <footer className="bg-background-secondary border-t border-border">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+        <div className="mb-12 max-w-2xl">
+          <Link href="/" className="text-lg font-semibold text-foreground hover:text-primary transition-colors">
+            DPDP Consultancy
+          </Link>
+          <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+            DPDP Consultancy (dpdpconsultancy.in) helps Indian enterprises turn
+            DPDP Act 2023 obligations into enforceable privacy, consent, and AI
+            governance controls.
+          </p>
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
           {footerSections.map((section) => (
             <div key={section.title}>
@@ -73,7 +83,7 @@ export function Footer() {
       <div className="border-t border-border">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
           <p className="text-sm text-muted-foreground text-center sm:text-left">
-            Copyright © 2026 dpdpconsultancy, india. All rights reserved.
+            Copyright © 2026 DPDP Consultancy (dpdpconsultancy.in), India. All rights reserved.
           </p>
         </div>
       </div>

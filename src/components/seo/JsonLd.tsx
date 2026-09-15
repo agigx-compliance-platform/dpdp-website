@@ -1,6 +1,7 @@
 import { SITE_URL } from '@/lib/site-url'
 
 const BASE_URL = SITE_URL
+const ORG_ID = `${BASE_URL}/#organization`
 
 /**
  * Organization + WebSite + ProfessionalService structured data.
@@ -10,11 +11,18 @@ export function JsonLd() {
   const organizationSchema = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
+    '@id': ORG_ID,
     name: 'DPDP Consultancy',
+    alternateName: [
+      'dpdpconsultancy',
+      'dpdpconsultancy.in',
+      'DPDP Consultancy Pvt Ltd',
+    ],
+    legalName: 'DPDP Consultancy Pvt Ltd',
     url: BASE_URL,
     logo: `${BASE_URL}/images/brand/social-icon-1024.png`,
     description:
-      'Transform DPDP and AI governance into a living, enforceable compliance engine. Automated assessments, consent management, and AI-powered governance for Indian enterprises.',
+      'DPDP Consultancy (dpdpconsultancy.in) is India\'s DPDP compliance intelligence platform — automated assessments, consent management, DSAR automation, and AI-powered governance for Indian enterprises.',
     foundingDate: '2024',
     areaServed: {
       '@type': 'Country',
@@ -33,7 +41,6 @@ export function JsonLd() {
       availableLanguage: ['English', 'Hindi'],
     },
     sameAs: [
-      'https://www.facebook.com/profile.php?id=61576',
       'https://www.instagram.com/dpdpoperations',
       'https://x.com/DPDPConsultancy',
       'https://www.linkedin.com/company/dpdp-consultancy-pvt-ltd',
@@ -43,10 +50,13 @@ export function JsonLd() {
   const websiteSchema = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
+    '@id': `${BASE_URL}/#website`,
     name: 'DPDP Consultancy',
+    alternateName: ['dpdpconsultancy', 'dpdpconsultancy.in'],
     url: BASE_URL,
+    publisher: { '@id': ORG_ID },
     description:
-      'India\'s DPDP compliance intelligence platform — automated privacy assessments, consent management, DSAR automation, and AI governance.',
+      'Official website of DPDP Consultancy (dpdpconsultancy.in) — DPDP Act 2023 compliance platform for Indian enterprises.',
     potentialAction: {
       '@type': 'SearchAction',
       target: {
@@ -60,11 +70,14 @@ export function JsonLd() {
   const professionalServiceSchema = {
     '@context': 'https://schema.org',
     '@type': 'ProfessionalService',
+    '@id': `${BASE_URL}/#service`,
     name: 'DPDP Consultancy',
+    alternateName: 'dpdpconsultancy',
     url: BASE_URL,
     image: `${BASE_URL}/images/brand/social-icon-1024.png`,
+    parentOrganization: { '@id': ORG_ID },
     description:
-      'Expert DPDP compliance services: privacy advisory, consent management platform, DSAR automation, infrastructure scanning, AI governance, and managed compliance services for Indian enterprises.',
+      'DPDP Consultancy provides expert DPDP compliance services: privacy advisory, consent management, DSAR automation, infrastructure scanning, AI governance, and managed compliance for Indian enterprises.',
     areaServed: {
       '@type': 'Country',
       name: 'India',
@@ -83,6 +96,7 @@ export function JsonLd() {
       'Digital Personal Data Protection Act 2023',
       'DPDP Act',
       'DPDP Compliance',
+      'DPDP Consultancy',
       'Data Privacy India',
       'Consent Management',
       'DSAR',

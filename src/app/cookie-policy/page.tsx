@@ -4,7 +4,7 @@ import { BreadcrumbJsonLd } from '@/components/seo/BreadcrumbJsonLd'
 import { pageSeo } from '@/lib/page-metadata'
 
 export const metadata: Metadata = pageSeo({
-  title: 'Cookie Policy — DPDP Consultancy',
+  title: 'Cookie Policy',
   description:
     'Cookie policy for DPDP Consultancy and dpdpconsultancy.in. How we use cookies and similar technologies under DPDP Act 2023.',
   path: '/cookie-policy',

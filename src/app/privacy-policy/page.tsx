@@ -4,7 +4,7 @@ import { BreadcrumbJsonLd } from '@/components/seo/BreadcrumbJsonLd'
 import { pageSeo } from '@/lib/page-metadata'
 
 export const metadata: Metadata = pageSeo({
-  title: 'Privacy Policy — DPDP Consultancy',
+  title: 'Privacy Policy',
   description:
     'Privacy policy for DPDP Consultancy and dpdpconsultancy.in. How we collect, use, and protect personal data under the Digital Personal Data Protection Act 2023.',
   path: '/privacy-policy',

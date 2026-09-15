@@ -5,19 +5,19 @@ import { SERVICE_FAQS } from '@/lib/dpdp-faqs'
 import { pageSeo } from '@/lib/page-metadata'
 
 export const metadata: Metadata = pageSeo({
-  title: 'DPDP Compliance Services — Advisory, Privacy Operations & AI Governance',
+  title: 'DPDP Consultancy Services — Advisory, Privacy Ops & AI Governance',
   description:
-    'Expert-led DPDP compliance services: privacy advisory, data protection operations, AI governance, technical implementation, compliance assurance, and managed services for Indian enterprises. Avoid penalties up to ₹250 Crore.',
+    'DPDP Consultancy services: privacy advisory, operations, AI governance, and managed DPDP compliance for Indian enterprises.',
   path: '/services',
-  keywords: ['DPDP compliance services', 'DPDP advisory', 'DPDP consulting services', 'privacy operations India', 'AI governance services', 'DPDP implementation', 'data protection services India'],
-  ogTitle: 'DPDP Compliance Services — Advisory, Privacy Ops & AI Governance',
-  ogDescription: 'Expert DPDP compliance services: advisory, privacy operations, AI governance, and managed compliance for Indian enterprises.',
+  keywords: ['DPDP Consultancy services', 'dpdpconsultancy', 'DPDP compliance services', 'DPDP advisory', 'DPDP consulting services', 'privacy operations India', 'AI governance services'],
+  ogTitle: 'DPDP Consultancy Services — Advisory, Privacy Ops & AI Governance',
+  ogDescription: 'DPDP Consultancy: advisory, privacy operations, AI governance, and managed DPDP compliance for Indian enterprises.',
 })
 
 export default function ServicesLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <BreadcrumbJsonLd items={[{ name: 'DPDP Compliance Services', href: '/services' }]} />
+      <BreadcrumbJsonLd items={[{ name: 'DPDP Consultancy Services', href: '/services' }]} />
       <FaqJsonLd faqs={SERVICE_FAQS} />
       {children}
     </>

@@ -5,7 +5,7 @@ import { BreadcrumbJsonLd } from '@/components/seo/BreadcrumbJsonLd'
 import { pageSeo } from '@/lib/page-metadata'
 
 export const metadata: Metadata = pageSeo({
-  title: 'Terms of Service — DPDP Consultancy',
+  title: 'Terms of Service',
   description:
     'Terms of service for DPDP Consultancy, Consent Cockpit, and dpdpconsultancy.in.',
   path: '/terms',

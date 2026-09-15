@@ -3,18 +3,18 @@ import { BreadcrumbJsonLd } from '@/components/seo/BreadcrumbJsonLd'
 import { pageSeo } from '@/lib/page-metadata'
 
 export const metadata: Metadata = pageSeo({
-  title: 'Privacy Pitstop — Free Website Privacy Policy Analyzer',
+  title: 'Privacy Pitstop by DPDP Consultancy — Free Website Privacy Scan',
   description:
-    'Analyze any website\'s privacy policy in 10 seconds — free, no signup required. Powered by DPDP Consultancy. Check DPDP compliance, data collection practices, and privacy risks instantly.',
+    'Privacy Pitstop by DPDP Consultancy: free website privacy scan for DPDP compliance, cookies, and data collection risks.',
   path: '/privacy-pitstop',
-  keywords: ['privacy policy analyzer', 'website privacy scan', 'free privacy scan', 'DPDP compliance check', 'privacy policy checker India', 'website data collection analyzer'],
+  keywords: ['Privacy Pitstop', 'DPDP Consultancy', 'dpdpconsultancy', 'free privacy scan', 'DPDP compliance check', 'privacy policy checker India'],
   ogDescription: 'Analyze any website\'s privacy policy in 10 seconds — free, no signup. Check DPDP compliance instantly.',
 })
 
 export default function PrivacyPitstopLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <BreadcrumbJsonLd items={[{ name: 'Privacy Pitstop', href: '/privacy-pitstop' }]} />
+      <BreadcrumbJsonLd items={[{ name: 'Privacy Pitstop by DPDP Consultancy', href: '/privacy-pitstop' }]} />
       {children}
     </>
   )

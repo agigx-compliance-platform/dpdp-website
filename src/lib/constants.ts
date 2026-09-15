@@ -13,6 +13,7 @@ export const NAV_LINKS = [
   { label: 'Services', href: '/services' },
   { label: 'Products', href: '/products' },
   { label: 'Solutions', href: '/solutions' },
+  { label: 'What is DPDP', href: '/what-is-dpdp' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
   { label: 'Partnership', href: '/partnership' },

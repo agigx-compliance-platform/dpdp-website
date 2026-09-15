@@ -13,6 +13,7 @@ const navLinks = [
   { href: '/services', label: 'Services' },
   { href: '/products', label: 'Products' },
   { href: '/solutions', label: 'Solutions' },
+  { href: '/what-is-dpdp', label: 'What is DPDP' },
   { href: '/about', label: 'About' },
   { href: '/contact', label: 'Contact' },
 ]

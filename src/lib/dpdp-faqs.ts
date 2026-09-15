@@ -7,7 +7,7 @@ export const HOME_FAQS: DpdpFaqItem[] = [
   {
     question: 'What is DPDP?',
     answer:
-      'DPDP is the Digital Personal Data Protection Act 2023, India\'s comprehensive data protection law. It governs how organisations collect, use, store, and share digital personal data of individuals in India. Every Data Fiduciary processing personal data of Indian Data Principals must comply, with penalties up to ₹250 Crore per violation.',
+      'DPDP is the Digital Personal Data Protection Act 2023, India\'s comprehensive data protection law. DPDP Consultancy (dpdpconsultancy.in) helps Data Fiduciaries comply when processing personal data of Indian Data Principals, with penalties up to ₹250 Crore per violation.',
   },
   {
     question: 'What does DPDP stand for?',
@@ -96,3 +96,32 @@ export const CONTACT_FAQS: DpdpFaqItem[] = [
       'Yes. Our platform and methodologies are built around the Digital Personal Data Protection Act 2023 and the 2025 Rules, from consent capture and privacy notices to Data Principal rights, grievance handling, and regulator-ready evidence for Indian enterprises.',
   },
 ]
+
+export const WHAT_IS_DPDP_FAQS: DpdpFaqItem[] = [
+  {
+    question: 'What is DPDP?',
+    answer:
+      'DPDP is the Digital Personal Data Protection Act 2023. DPDP Consultancy (dpdpconsultancy.in) explains and operationalises this law for Indian enterprises: how personal data is collected, used, stored, shared, and deleted, with penalties up to ₹250 Crore per violation.',
+  },
+  {
+    question: 'Who is DPDP Consultancy?',
+    answer:
+      'DPDP Consultancy (also searched as dpdpconsultancy) is an Indian DPDP Act 2023 compliance firm based in Chennai. We provide advisory services, a consent and DSAR platform, Privacy Pitstop website scans, and managed privacy operations at dpdpconsultancy.in.',
+  },
+  {
+    question: 'What does DPDP stand for?',
+    answer:
+      'DPDP stands for Digital Personal Data Protection. The statute is the Digital Personal Data Protection Act, 2023 (DPDPA). The implementing rules were notified in November 2025.',
+  },
+  {
+    question: 'Who does the DPDP Act apply to?',
+    answer:
+      'The DPDP Act applies to organisations that process digital personal data of people in India — including Indian companies and foreign companies offering goods or services in India. DPDP Consultancy helps Data Fiduciaries map which obligations apply.',
+  },
+  {
+    question: 'How can DPDP Consultancy help with DPDP compliance?',
+    answer:
+      'DPDP Consultancy provides a free Privacy Pitstop scan, a 10-question readiness assessment, DPDP advisory, consent management, DSAR automation, AI governance, and managed services so compliance is continuous rather than a one-time project.',
+  },
+]
+

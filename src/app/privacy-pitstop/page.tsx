@@ -716,7 +716,7 @@ export default function PrivacyPitstopPage() {
                   Free public privacy scan · No signup
                 </div>
                 <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
-                  <span className="gradient-text">Privacy Pitstop</span>
+                  <span className="gradient-text">Privacy Pitstop by DPDP Consultancy</span>
                 </h1>
                 <p className="text-lg text-muted-foreground leading-relaxed">
                   Scan. Understand. Question. Grieve. Track. Escalate.

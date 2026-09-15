@@ -9,6 +9,13 @@ type PageSeoInput = {
   ogDescription?: string
 }
 
+const OG_IMAGE = {
+  url: '/images/brand/social-icon-1024.png',
+  width: 1024,
+  height: 1024,
+  alt: 'DPDP Consultancy — DPDP Compliance Platform for India',
+}
+
 export function pageSeo({
   title,
   description,
@@ -28,13 +35,19 @@ export function pageSeo({
       canonical: path,
     },
     openGraph: {
+      type: 'website',
+      locale: 'en_IN',
+      siteName: 'DPDP Consultancy',
       title: socialTitle,
       description: socialDescription,
       url: path,
+      images: [OG_IMAGE],
     },
     twitter: {
+      card: 'summary_large_image',
       title: socialTitle,
       description: socialDescription,
+      images: [OG_IMAGE.url],
     },
   }
 }

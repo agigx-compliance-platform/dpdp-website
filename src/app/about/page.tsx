@@ -76,7 +76,7 @@ export default function AboutPage() {
           </p>
           <p className="text-muted-foreground mt-6 leading-relaxed max-w-3xl mx-auto">
             DPDP 2023 represents a fundamental shift in how Indian organisations
-            must treat personal data. dpdpconsultancy exists to make that transition
+            must treat personal data. DPDP Consultancy (dpdpconsultancy) exists to make that transition
             achievable through technology that automates controls, services
             that build capability, and products that provide continuous assurance.
           </p>
@@ -140,7 +140,7 @@ export default function AboutPage() {
         >
           <h3 className="text-xl font-bold text-foreground mb-3">Advisory Board</h3>
           <p className="text-muted-foreground leading-relaxed">
-            dpdpconsultancy is guided by an advisory board comprising former regulators,
+            DPDP Consultancy (dpdpconsultancy) is guided by an advisory board comprising former regulators,
             senior privacy practitioners, and technology leaders with decades
             of combined experience across Indian and international data protection
             frameworks.
