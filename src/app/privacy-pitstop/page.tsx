@@ -83,16 +83,20 @@ export default function PrivacyPitstopPage() {
     const q = new URLSearchParams(window.location.search).get('q')?.trim()
     if (q) setDomain(q)
 
-    // Clear all existing stored leaderboard records to start with a clean state
-    try {
-      localStorage.removeItem('dpdp_privacy_live_searched_domains')
-      localStorage.removeItem('dpdp_privacy_top3_leaderboard')
-      localStorage.removeItem('dpdp_privacy_user_searched_domains')
-      localStorage.removeItem('dpdp_scanned_domains_history')
-      localStorage.removeItem('dpdp_pitstop_user_searched_domains')
-    } catch (err) {}
-
-    setScannedUserDomains([])
+    // Fetch server-side leaderboard to seed the Privacy Market Watch
+    fetch('/api/privacy-pitstop/leaderboard')
+      .then(res => res.json())
+      .then(data => {
+        const serverDomains: { domain: string; score: number }[] = []
+        for (const item of (data?.topGainers || [])) {
+          if (item?.domain) serverDomains.push({ domain: item.domain, score: item.score })
+        }
+        for (const item of (data?.topLosers || [])) {
+          if (item?.domain) serverDomains.push({ domain: item.domain, score: item.score })
+        }
+        setScannedUserDomains(serverDomains)
+      })
+      .catch(() => setScannedUserDomains([]))
   }, [])
 
   const [scanningLeaderboard, setScanningLeaderboard] = useState<Record<string, boolean>>({})
