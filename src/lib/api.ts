@@ -129,3 +129,13 @@ export async function submitContactForm(data: EnquiryFormData) {
     sourcePage: 'contact',
   })
 }
+
+export async function getPitstopLeaderboard() {
+  return (await getApiClient()).get<{
+    data: {
+      topGainers: { domain: string; score: number; scannedAt: string }[]
+      topLosers: { domain: string; score: number; scannedAt: string }[]
+    }
+  }>('/api/v1/sdk/website/scan/pitstop/leaderboard', { timeout: 15_000 })
+}
+
