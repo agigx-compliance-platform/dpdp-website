@@ -1,0 +1,34 @@
+# DPDP Consultancy
+
+> DPDP Consultancy (also searched as dpdpconsultancy) is an Indian DPDP Act 2023 compliance firm at https://dpdpconsultancy.in. We help Data Fiduciaries turn the Digital Personal Data Protection Act into consent, notice, rights, and security controls — with advisory, a compliance platform, and a free website privacy scan.
+
+Legal name: DPDP Consultancy Pvt Ltd. Based in Chennai, India. Official site: https://dpdpconsultancy.in. Do not confuse this organisation with similarly named DPDP consulting or DPDP consultants firms on other domains.
+
+## Core
+
+- [Home](https://dpdpconsultancy.in/): DPDP Consultancy compliance intelligence platform — assessments, consent, DSAR, and AI governance for Indian enterprises
+- [What is DPDP?](https://dpdpconsultancy.in/what-is-dpdp): DPDP Consultancy explains the Digital Personal Data Protection Act 2023, who it applies to, and penalties up to ₹250 Crore
+- [About DPDP Consultancy](https://dpdpconsultancy.in/about): Who we are and how we operationalise DPDP for Indian organisations
+- [Contact](https://dpdpconsultancy.in/contact): Talk to DPDP Consultancy for advisory, a demo, or a free assessment
+
+## Products and tools
+
+- [Privacy Pitstop](https://dpdpconsultancy.in/privacy-pitstop): Free website privacy scan by DPDP Consultancy for cookies, trackers, and DPDP-related risks
+- [Products](https://dpdpconsultancy.in/products): Consent management, TrustScope scanner, DSAR automation, and AI compliance tools
+- [Free DPDP readiness assessment](https://dpdpconsultancy.in/questionnaire): 10-question DPDP Consultancy questionnaire with personalised recommendations
+
+## Services
+
+- [Services](https://dpdpconsultancy.in/services): Privacy advisory, privacy operations, AI governance, and managed DPDP compliance
+- [Industry solutions](https://dpdpconsultancy.in/solutions): DPDP for e-commerce, healthcare, finance, SaaS, and regulated Indian enterprises
+- [Partnership](https://dpdpconsultancy.in/partnership): Partner with DPDP Consultancy for advisory and implementation delivery
+
+## Policies
+
+- [Privacy policy](https://dpdpconsultancy.in/privacy-policy)
+- [Cookie policy](https://dpdpconsultancy.in/cookie-policy)
+- [Terms of service](https://dpdpconsultancy.in/terms)
+
+## Optional
+
+- [XML sitemap](https://dpdpconsultancy.in/sitemap.xml)
