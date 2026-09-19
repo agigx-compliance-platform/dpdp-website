@@ -22,6 +22,7 @@ export async function submitEnquiry(data: EnquiryFormData) {
   return (await getApiClient()).post('/api/v1/sdk/website/enquiry', {
     name: data.name,
     email: data.email,
+    phone: data.phone,
     company: data.company,
     role: data.role,
     subject: data.subject,
