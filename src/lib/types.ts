@@ -140,6 +140,7 @@ export interface Recommendation {
 export interface EnquiryFormData {
   name: string
   email: string
+  phone?: string
   company: string
   role: string
   subject?: string

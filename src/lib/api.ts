@@ -22,6 +22,7 @@ export async function submitEnquiry(data: EnquiryFormData) {
   return (await getApiClient()).post('/api/v1/sdk/website/enquiry', {
     name: data.name,
     email: data.email,
+    phone: data.phone,
     company: data.company,
     role: data.role,
     subject: data.subject,
@@ -129,3 +130,13 @@ export async function submitContactForm(data: EnquiryFormData) {
     sourcePage: 'contact',
   })
 }
+
+export async function getPitstopLeaderboard() {
+  return (await getApiClient()).get<{
+    data: {
+      topGainers: { domain: string; score: number; scannedAt: string }[]
+      topLosers: { domain: string; score: number; scannedAt: string }[]
+    }
+  }>('/api/v1/sdk/website/scan/pitstop/leaderboard', { timeout: 15_000 })
+}
+

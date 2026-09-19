@@ -22,9 +22,38 @@ const ROLES = [
   "Other",
 ];
 
+const FREE_EMAIL_DOMAINS = new Set([
+  "gmail.com",
+  "yahoo.com",
+  "yahoo.co.in",
+  "yahoo.in",
+  "outlook.com",
+  "hotmail.com",
+  "live.com",
+  "aol.com",
+  "icloud.com",
+  "mail.com",
+  "protonmail.com",
+  "zoho.com",
+  "yandex.com",
+  "gmx.com",
+  "rediffmail.com",
+]);
+
+function isCorporateEmail(email: string): boolean {
+  const domain = email.split("@")[1]?.toLowerCase();
+  return !!domain && !FREE_EMAIL_DOMAINS.has(domain);
+}
+
+function isValidIndianPhone(phone: string): boolean {
+  // Accepts: +91XXXXXXXXXX, 91XXXXXXXXXX, 0XXXXXXXXXX, XXXXXXXXXX
+  return /^(?:\+?91|0)?[6-9]\d{9}$/.test(phone.replace(/[\s-]/g, ""));
+}
+
 interface FormState {
   name: string;
   email: string;
+  phone: string;
   company: string;
   role: string;
   subject: string;
@@ -34,6 +63,7 @@ interface FormState {
 interface FormErrors {
   name?: string;
   email?: string;
+  phone?: string;
   company?: string;
   role?: string;
   subject?: string;
@@ -44,6 +74,7 @@ export default function ContactPage() {
   const [form, setForm] = useState<FormState>({
     name: "",
     email: "",
+    phone: "",
     company: "",
     role: "",
     subject: "",
@@ -60,6 +91,13 @@ export default function ContactPage() {
       newErrors.email = "Email is required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
       newErrors.email = "Invalid email address";
+    } else if (!isCorporateEmail(form.email)) {
+      newErrors.email = "Please use your corporate email address";
+    }
+    if (!form.phone.trim()) {
+      newErrors.phone = "Phone number is required";
+    } else if (!isValidIndianPhone(form.phone)) {
+      newErrors.phone = "Enter a valid Indian phone number";
     }
     if (!form.company.trim()) newErrors.company = "Company is required";
     if (!form.role) newErrors.role = "Please select a role";
@@ -78,6 +116,7 @@ export default function ContactPage() {
       await submitEnquiry({
         name: form.name,
         email: form.email,
+        phone: form.phone,
         company: form.company,
         role: form.role,
         subject: form.subject,
@@ -158,7 +197,7 @@ export default function ContactPage() {
                     placeholder="Your name"
                   />
                   <Input
-                    label="Email Address"
+                    label="Corporate Email"
                     name="email"
                     type="email"
                     value={form.email}
@@ -169,6 +208,15 @@ export default function ContactPage() {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                   <Input
+                    label="Phone Number"
+                    name="phone"
+                    type="tel"
+                    value={form.phone}
+                    onChange={handleChange}
+                    error={errors.phone}
+                    placeholder="+91 98765 43210"
+                  />
+                  <Input
                     label="Company"
                     name="company"
                     value={form.company}
@@ -176,6 +224,8 @@ export default function ContactPage() {
                     error={errors.company}
                     placeholder="Your organization"
                   />
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                   <div className="w-full">
                     <label className="mb-2 block text-sm font-medium text-foreground">
                       Role
@@ -203,8 +253,6 @@ export default function ContactPage() {
                       </p>
                     )}
                   </div>
-                </div>
-                <div className="mb-4">
                   <Input
                     label="Subject"
                     name="subject"
