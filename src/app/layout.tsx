@@ -85,9 +85,9 @@ export const metadata: Metadata = {
       'DPDP Consultancy (dpdpconsultancy.in): privacy assessments, consent management, DSAR automation, and AI governance for Indian enterprises.',
     images: [
       {
-        url: '/images/brand/social-icon-1024.png',
-        width: 1024,
-        height: 1024,
+        url: '/images/brand/og-1200x630.png',
+        width: 1200,
+        height: 630,
         alt: 'DPDP Consultancy — DPDP Compliance Intelligence Platform for India',
       },
     ],
@@ -97,7 +97,7 @@ export const metadata: Metadata = {
     title: 'DPDP Consultancy (dpdpconsultancy) — DPDP Compliance Platform India',
     description:
       'DPDP Consultancy (dpdpconsultancy.in): assessments, consent management, DSAR automation & AI governance. Avoid ₹250 Crore penalties.',
-    images: ['/images/brand/social-icon-1024.png'],
+    images: ['/images/brand/og-1200x630.png'],
   },
   robots: {
     index: true,

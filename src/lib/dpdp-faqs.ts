@@ -125,3 +125,87 @@ export const WHAT_IS_DPDP_FAQS: DpdpFaqItem[] = [
   },
 ]
 
+export const DPDP_COMPLIANCE_FAQS: DpdpFaqItem[] = [
+  {
+    question: 'What is DPDP compliance?',
+    answer:
+      'DPDP compliance means a Data Fiduciary can demonstrate that digital personal data of people in India is processed lawfully under the Digital Personal Data Protection Act 2023: valid notices and consent, Data Principal rights, reasonable security, vendor oversight, and evidence the Data Protection Board can inspect.',
+  },
+  {
+    question: 'Who needs DPDP compliance in India?',
+    answer:
+      'Any organisation that processes digital personal data of individuals in India — including Indian companies and foreign companies offering goods or services here. Employers, SaaS platforms, hospitals, banks, marketplaces, and public-facing websites are typically in scope. DPDP Consultancy maps which obligation domains apply to your processing.',
+  },
+  {
+    question: 'What are the main DPDP compliance requirements?',
+    answer:
+      'The operational requirements cluster into six domains: consent and notice, Data Principal rights, data minimisation and retention, security and breach, vendors and processors, and governance (including SDF duties such as a DPO, DPIAs, and audits where designated).',
+  },
+  {
+    question: 'How long does DPDP compliance take?',
+    answer:
+      'A typical DPDP Consultancy engagement is assessment in weeks 1–2, control design in weeks 3–6, implementation over months 2–3, and ongoing governance after that. Timeline depends on data systems, vendors, and whether Significant Data Fiduciary duties apply.',
+  },
+  {
+    question: 'How do I start a DPDP compliance programme?',
+    answer:
+      'Start with a public-surface scan and a gap assessment, then implement consent, notice, and rights workflows before expanding to vendors, retention, and security evidence. DPDP Consultancy offers a free Privacy Pitstop scan and a 10-question readiness assessment as the first step.',
+  },
+]
+
+export const CONSENT_MANAGEMENT_FAQS: DpdpFaqItem[] = [
+  {
+    question: 'What is consent management under the DPDP Act?',
+    answer:
+      'Consent management is the system that collects, records, updates, and proves consent for each purpose of processing. Under DPDP Section 6, consent must be free, specific, informed, unambiguous, and as easy to withdraw as it is to give. A banner alone is not consent management.',
+  },
+  {
+    question: 'Does DPDP require a consent management platform?',
+    answer:
+      'The Act does not name a product category, but it does require purpose-level consent, notice, withdrawal, and the ability to demonstrate compliance. For any organisation with cookies, SDKs, or multiple processing purposes, a consent management platform is the practical way to meet those duties at scale.',
+  },
+  {
+    question: 'How is DPDP consent different from GDPR consent?',
+    answer:
+      'DPDP does not treat legitimate interest as a general lawful basis the way GDPR does. Notices and consent are the default path for most processing. Withdrawal must be as easy as giving consent, and purpose must be specific — bundled “accept all” without purpose choice is a compliance risk.',
+  },
+  {
+    question: 'What proof of consent does DPDP expect?',
+    answer:
+      'You should be able to show who consented, to which purposes, on which notice version, at what time, and whether they later withdrew. DPDP Consultancy’s consent platform keeps an immutable audit trail so that proof is available for grievance handling and Board inquiries.',
+  },
+  {
+    question: 'Can I use a global CMP for DPDP consent management?',
+    answer:
+      'A GDPR-oriented CMP can cover cookies, but it often misses DPDP notice content, purpose granularity, children’s data, and Indian-language or Data Principal rights hooks. DPDP Consultancy implements consent management against the DPDP Act 2023 and the 2025 Rules, not a European template.',
+  },
+]
+
+export const DPDP_PLATFORM_FAQS: DpdpFaqItem[] = [
+  {
+    question: 'What is a DPDP compliance platform?',
+    answer:
+      'A DPDP compliance platform is software that runs the controls the Act requires day to day: consent and notices, website and tracker scanning, Data Principal rights (DSAR), vendor/processor propagation, and evidence for audits. DPDP Consultancy’s platform is built for Indian Data Fiduciaries, not as a GDPR add-on.',
+  },
+  {
+    question: 'How is a DPDP platform different from a consultancy engagement?',
+    answer:
+      'Advisory designs the programme. The platform is where consent, scans, rights requests, and vendor actions actually run after the workshop ends. DPDP Consultancy provides both so compliance does not stall as a slide deck.',
+  },
+  {
+    question: 'What modules are in the DPDP Consultancy platform?',
+    answer:
+      'Consent Cockpit for Section 6 consent, TrustScope and Privacy Pitstop for public-surface scanning, DSAR workflows for Sections 11–13, processor governance, infrastructure scanning, and an AI compliance assistant trained on the DPDP Act and 2025 Rules.',
+  },
+  {
+    question: 'Who should use a DPDP compliance platform?',
+    answer:
+      'DPOs, privacy leads, CISOs, and legal teams at organisations that collect data through websites, apps, or vendors — especially if they cannot prove consent, meet rights timelines, or see what trackers fire on their properties. Start with a free Privacy Pitstop scan, then scope the platform.',
+  },
+  {
+    question: 'Is the DPDP Consultancy platform only for large enterprises?',
+    answer:
+      'No. Mid-size Indian companies, SaaS products, and regulated firms use the same modules with a narrower footprint. Significant Data Fiduciaries add DPO, DPIA, and audit workflows; smaller fiduciaries typically start with consent, scanning, and DSAR.',
+  },
+]
+

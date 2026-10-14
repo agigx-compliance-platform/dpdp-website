@@ -62,6 +62,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.95,
     },
     {
+      url: `${BASE_URL}/dpdp-compliance`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.95,
+    },
+    {
+      url: `${BASE_URL}/consent-management`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.95,
+    },
+    {
+      url: `${BASE_URL}/dpdp-platform`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.95,
+    },
+    {
       url: `${BASE_URL}/questionnaire`,
       lastModified: now,
       changeFrequency: 'monthly',

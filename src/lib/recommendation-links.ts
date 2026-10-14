@@ -1,17 +1,10 @@
 import type { Recommendation } from './types'
+import { PRODUCTS } from './products-data'
 
-const RECOMMENDATION_HREFS: Record<string, string> = {
-  'consent-platform': '/products',
-  'consent-sdk': '/products',
-  'dsar-platform': '/products',
-  'infra-scanner': '/products',
-  trustscope: '/products',
-  'ai-governance': '/products',
-  'adaptive-engine': '/products',
-  'ai-assistant': '/products',
-  'cyber-privacy': '/products',
-  'data-sovereignty': '/products',
-  'processor-governance': '/products#processor-governance',
+/** Recommendations with their own page. Anything listed on /products links to its anchor there. */
+const DEDICATED_PAGES: Record<string, string> = {
+  'consent-platform': '/consent-management',
+  'consent-sdk': '/consent-management',
   advisory: '/services',
   assurance: '/services',
   'technical-implementation': '/services',
@@ -22,9 +15,12 @@ const RECOMMENDATION_HREFS: Record<string, string> = {
   'priority-fix': '/contact',
 }
 
+const PRODUCT_ANCHORS = new Set<string>(PRODUCTS.map(product => product.id))
+
 export function getRecommendationHref(rec: Recommendation): string {
-  const mapped = RECOMMENDATION_HREFS[rec.id]
-  if (mapped) return mapped
+  const page = DEDICATED_PAGES[rec.id]
+  if (page) return page
+  if (PRODUCT_ANCHORS.has(rec.id)) return `/products#${rec.id}`
 
   if (rec.type === 'service') return '/services'
   if (rec.type === 'package') return '/contact'

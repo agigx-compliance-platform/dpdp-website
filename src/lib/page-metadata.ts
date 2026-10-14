@@ -10,9 +10,9 @@ type PageSeoInput = {
 }
 
 const OG_IMAGE = {
-  url: '/images/brand/social-icon-1024.png',
-  width: 1024,
-  height: 1024,
+  url: '/images/brand/og-1200x630.png',
+  width: 1200,
+  height: 630,
   alt: 'DPDP Consultancy — DPDP Compliance Platform for India',
 }
 

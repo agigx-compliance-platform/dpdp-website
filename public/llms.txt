@@ -8,6 +8,9 @@ Legal name: DPDP Consultancy Pvt Ltd. Based in Chennai, India. Official site: ht
 
 - [Home](https://dpdpconsultancy.in/): DPDP Consultancy compliance intelligence platform — assessments, consent, DSAR, and AI governance for Indian enterprises
 - [What is DPDP?](https://dpdpconsultancy.in/what-is-dpdp): DPDP Consultancy explains the Digital Personal Data Protection Act 2023, who it applies to, and penalties up to ₹250 Crore
+- [DPDP compliance](https://dpdpconsultancy.in/dpdp-compliance): How Indian Data Fiduciaries operationalise DPDP Act 2023 obligations, domains, and a practical compliance path
+- [Consent management](https://dpdpconsultancy.in/consent-management): DPDP Section 6 consent, notices, withdrawal, and audit-ready proof
+- [DPDP platform](https://dpdpconsultancy.in/dpdp-platform): Consent, scanning, DSAR automation, and AI governance in the DPDP Consultancy platform
 - [About DPDP Consultancy](https://dpdpconsultancy.in/about): Who we are and how we operationalise DPDP for Indian organisations
 - [Contact](https://dpdpconsultancy.in/contact): Talk to DPDP Consultancy for advisory, a demo, or a free assessment
 

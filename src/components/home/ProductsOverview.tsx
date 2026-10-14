@@ -13,6 +13,7 @@ const products = [
     icon: Fingerprint,
     name: "Consent Platform",
     tagline: "Lawful data collection, automated.",
+    href: "/consent-management",
     features: [
       "Geo-aware consent banners",
       "Pre-consent cookie blocking",
@@ -23,6 +24,7 @@ const products = [
     icon: ScanSearch,
     name: "Compliance Scanner",
     tagline: "Find violations before regulators do.",
+    href: "/privacy-pitstop",
     features: [
       "Automated website crawling",
       "Cookie & tracker detection",
@@ -33,6 +35,7 @@ const products = [
     icon: FileKey,
     name: "DSAR Platform",
     tagline: "Subject requests, handled end-to-end.",
+    href: "/dpdp-platform",
     features: [
       "Intake portal for data subjects",
       "Identity verification workflows",
@@ -165,7 +168,7 @@ export function ProductsOverview() {
 
                 {/* Explore: lives in the un-clipped body, fully visible */}
                 <Link
-                  href="/products"
+                  href={prod.href}
                   className="mt-5 inline-flex items-center gap-1.5 text-sm text-primary font-medium w-fit relative"
                 >
                   <span className="transition-transform duration-300 group-hover:-translate-x-0.5">

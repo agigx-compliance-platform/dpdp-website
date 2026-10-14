@@ -14,7 +14,8 @@ const footerSections = [
     links: [
       { label: 'All Products', href: '/products' },
       { label: 'Privacy Pitstop', href: '/privacy-pitstop' },
-      { label: 'Consent Platform', href: '/products#consent-platform' },
+      { label: 'Consent Management', href: '/consent-management' },
+      { label: 'DPDP Platform', href: '/dpdp-platform' },
       { label: 'Compliance Scanner', href: '/products#trustscope' },
       { label: 'DSAR Platform', href: '/products#dsar-platform' },
     ],
@@ -25,6 +26,7 @@ const footerSections = [
       { label: 'All Services', href: '/services' },
       { label: 'Solutions by Industry', href: '/solutions' },
       { label: 'What is DPDP?', href: '/what-is-dpdp' },
+      { label: 'DPDP Compliance', href: '/dpdp-compliance' },
       { label: 'Start Assessment', href: '/questionnaire' },
     ],
   },

@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import { SectionWrapper } from '@/components/ui/SectionWrapper'
-import { Button } from '@/components/ui/Button'
 import { FaqSection } from '@/components/seo/FaqSection'
+import { GuideCtas } from '@/components/seo/GuideCtas'
+import { RelatedGuides } from '@/components/seo/RelatedGuides'
 import { WHAT_IS_DPDP_FAQS } from '@/lib/dpdp-faqs'
 
 export default function WhatIsDpdpPage() {
@@ -54,23 +55,26 @@ export default function WhatIsDpdpPage() {
             DPDP Consultancy, at dpdpconsultancy.in, combines advisory and
             software: a free Privacy Pitstop website scan, a 10-question readiness
             assessment, consent management, DSAR automation, AI governance, and
-            managed privacy operations for Indian enterprises.
+            managed privacy operations for Indian enterprises. See the guides on{' '}
+            <Link href="/dpdp-compliance" className="text-foreground underline-offset-4 hover:underline">
+              DPDP compliance
+            </Link>
+            ,{' '}
+            <Link href="/consent-management" className="text-foreground underline-offset-4 hover:underline">
+              consent management
+            </Link>
+            , and the{' '}
+            <Link href="/dpdp-platform" className="text-foreground underline-offset-4 hover:underline">
+              DPDP platform
+            </Link>{' '}
+            for how those pieces fit together.
           </p>
-          <div className="flex flex-col items-center gap-3 pt-4 sm:flex-row sm:justify-center">
-            <Link href="/privacy-pitstop">
-              <Button variant="primary">Scan a website free</Button>
-            </Link>
-            <Link href="/questionnaire">
-              <Button variant="outline">Take the DPDP assessment</Button>
-            </Link>
-            <Link href="/contact">
-              <Button variant="ghost">Talk to DPDP Consultancy</Button>
-            </Link>
-          </div>
+          <GuideCtas />
         </article>
       </SectionWrapper>
 
       <FaqSection title="DPDP questions answered by DPDP Consultancy" faqs={WHAT_IS_DPDP_FAQS} />
+      <RelatedGuides current="/what-is-dpdp" />
     </div>
   )
 }
