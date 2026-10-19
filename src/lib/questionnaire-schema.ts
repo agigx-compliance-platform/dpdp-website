@@ -27,22 +27,29 @@ export const step6Schema = z.object({
   supportType: z.array(z.string()).min(1, 'Select at least one support type'),
 })
 
-export const step7Schema = z.object({
-  wantsScan: z.boolean(),
-})
-
-export const step8Schema = z.object({
+/** Live wizard: 0 = launch (URL/contact), 1–6 = questions, 7 = consent. */
+export const launchStepSchema = z.object({
   websiteUrl: z.string().url('Please enter a valid URL'),
   email: z.string().email('Please enter a valid email'),
   name: z.string().min(1, 'Name is required'),
   company: z.string().min(1, 'Company name is required'),
 })
 
-export const step9Schema = z.object({
+export const step7Schema = z.object({
+  wantsScan: z.boolean(),
+})
+
+/** @deprecated Use launchStepSchema — wizard launch is step 0, not step 8. */
+export const step8Schema = launchStepSchema
+
+export const consentStepSchema = z.object({
   consentGiven: z.literal(true, {
     errorMap: () => ({ message: 'You must consent to proceed' }),
   }),
 })
+
+/** @deprecated Use consentStepSchema — wizard consent is step 7. */
+export const step9Schema = consentStepSchema
 
 export const questionnaireSchema = z.object({
   role: z.string().min(1),

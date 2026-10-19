@@ -10,9 +10,51 @@ import { Card, CardContent } from "@/components/ui/Card";
 import { ThemeScreenshot } from "@/components/ui/ThemeScreenshot";
 import { productScreenshots, type ProductScreenshotKey } from "@/lib/agigx-ui-screenshots";
 import { PRODUCTS, productIconMap } from "@/lib/products-data";
+import { ConnectorCanvas } from "@/components/workflow";
+import {
+  consentCenter,
+  consentEdges,
+  consentNodes,
+  cookieCenter,
+  cookieEdges,
+  cookieNodes,
+  discoveryCenter,
+  discoveryEdges,
+  discoveryNodes,
+  dsarCenter,
+  dsarEdges,
+  dsarNodes,
+  infraCenter,
+  infraEdges,
+  infraNodes,
+  lineageCenter,
+  lineageEdges,
+  lineageNodes,
+  noticeCenter,
+  noticeEdges,
+  noticeNodes,
+  processorCenter,
+  processorEdges,
+  processorNodes,
+} from "@/lib/workflows";
+
+const WORKFLOWS: Record<
+  string,
+  { nodes: typeof consentNodes; edges: typeof consentEdges; center: typeof consentCenter }
+> = {
+  "consent-platform": { nodes: consentNodes, edges: consentEdges, center: consentCenter },
+  "cookie-consent": { nodes: cookieNodes, edges: cookieEdges, center: cookieCenter },
+  "policy-notice": { nodes: noticeNodes, edges: noticeEdges, center: noticeCenter },
+  "data-discovery": { nodes: discoveryNodes, edges: discoveryEdges, center: discoveryCenter },
+  "data-lineage": { nodes: lineageNodes, edges: lineageEdges, center: lineageCenter },
+  "dsar-platform": { nodes: dsarNodes, edges: dsarEdges, center: dsarCenter },
+  "processor-governance": { nodes: processorNodes, edges: processorEdges, center: processorCenter },
+  "infra-scanner": { nodes: infraNodes, edges: infraEdges, center: infraCenter },
+};
 
 export function ProductsExplorer() {
   const [active, setActive] = useState(0);
+  const [showLive, setShowLive] = useState(false);
   const product = PRODUCTS[active];
   const Icon = productIconMap[product.icon] ?? Fingerprint;
   const shot =
@@ -28,6 +70,7 @@ export function ProductsExplorer() {
   }, []);
 
   const selectProduct = (index: number) => {
+    setShowLive(false);
     setActive(index);
     const id = PRODUCTS[index]?.id;
     if (id) {
@@ -107,50 +150,42 @@ export function ProductsExplorer() {
               ))}
             </div>
 
-            {shot && (
+            {WORKFLOWS[product.id] && (
               <div className="mb-6">
-                <div className="relative aspect-[16/10] w-full rounded-2xl overflow-hidden border border-border/60 shadow-card bg-muted/15">
-                  <ThemeScreenshot
-                    dark={shot.dark}
-                    light={shot.light}
-                    alt={product.name}
-                    className="object-contain object-top"
-                    priority
-                    sizes="(max-width: 1024px) 100vw, 900px"
-                  />
-                </div>
-                <p className="mt-3 text-sm text-muted-foreground leading-relaxed max-w-3xl">
-                  {shot.caption}
-                </p>
+                <ConnectorCanvas
+                  variant="steps"
+                  nodes={WORKFLOWS[product.id].nodes}
+                  edges={WORKFLOWS[product.id].edges}
+                  center={WORKFLOWS[product.id].center}
+                />
               </div>
             )}
 
-            {shot?.highlights && shot.highlights.length > 0 && (
-              <div className="mb-8">
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
-                  In the platform
-                </p>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {shot.highlights.map((h) => (
-                    <div
-                      key={h.label}
-                      className="rounded-xl overflow-hidden border border-border/50 bg-card/50"
-                    >
-                      <div className="relative aspect-[4/3] bg-muted/20">
-                        <ThemeScreenshot
-                          dark={h.dark}
-                          light={h.light}
-                          alt={h.label}
-                          className="object-cover object-top"
-                          sizes="200px"
-                        />
-                      </div>
-                      <p className="px-2 py-1.5 text-[11px] font-medium text-center truncate">
-                        {h.label}
-                      </p>
+            {shot && (
+              <div className="mb-6">
+                <button
+                  type="button"
+                  className="mb-3 text-xs font-medium text-primary hover:underline"
+                  onClick={() => setShowLive((v) => !v)}
+                >
+                  {showLive ? "Hide live screen" : "See it live"}
+                </button>
+                {showLive && (
+                  <>
+                    <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl border border-border bg-muted/15">
+                      <ThemeScreenshot
+                        dark={shot.dark}
+                        light={shot.light}
+                        alt={product.name}
+                        className="object-contain object-top"
+                        sizes="(max-width: 1024px) 100vw, 900px"
+                      />
                     </div>
-                  ))}
-                </div>
+                    <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted-foreground">
+                      {shot.caption}
+                    </p>
+                  </>
+                )}
               </div>
             )}
 

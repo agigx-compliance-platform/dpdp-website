@@ -5,7 +5,7 @@ import { CONTACT_FAQS } from '@/lib/dpdp-faqs'
 import { pageSeo } from '@/lib/page-metadata'
 
 export const metadata: Metadata = pageSeo({
-  title: 'Contact DPDP Consultancy — Free DPDP Compliance Assessment',
+  title: 'Contact DPDP Consultancy: Free DPDP Compliance Assessment',
   description:
     'Contact DPDP Consultancy (dpdpconsultancy.in) for DPDP advisory, a free privacy scan, product demos, and partnership enquiries.',
   path: '/contact',

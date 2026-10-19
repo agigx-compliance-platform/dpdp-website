@@ -3,7 +3,7 @@ import { BreadcrumbJsonLd } from '@/components/seo/BreadcrumbJsonLd'
 import { pageSeo } from '@/lib/page-metadata'
 
 export const metadata: Metadata = pageSeo({
-  title: 'Free DPDP Consultancy Assessment — Check Your Readiness',
+  title: 'Free DPDP Consultancy Assessment: Check Your Readiness',
   description:
     'Free DPDP Consultancy assessment: 10 questions, optional website scan, and personalised DPDP compliance recommendations.',
   path: '/questionnaire',

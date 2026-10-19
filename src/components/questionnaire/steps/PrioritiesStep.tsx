@@ -37,7 +37,7 @@ export function PrioritiesStep({ value, onChange, error }: PrioritiesStepProps) 
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-foreground">
+          <h2 className="text-2xl font-semibold tracking-tight text-foreground">
             What are your top 3 compliance priorities?
           </h2>
           <p className="mt-2 text-muted-foreground">

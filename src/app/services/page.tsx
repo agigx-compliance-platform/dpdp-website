@@ -258,7 +258,7 @@ const SERVICE_CATEGORIES = [
       {
         title: "Continuous Compliance and AI Enablement",
         description:
-          "Continuous monitoring via Playwright-powered scanning. AI workflow governance. DevSecOps integration with automated compliance gates.",
+          "Continuous monitoring of public sites. AI workflow governance. Checks in the delivery path so privacy work is not a weekend project.",
         dpdpSections: ["8", "10"],
         penalties: ["₹250 Crore"],
         whoIsThisFor: "Organizations seeking continuous compliance",
@@ -418,7 +418,7 @@ const RISK_STATS = [
   { value: "₹250Cr", label: "Maximum penalty per violation", icon: AlertTriangle },
   { value: "72hrs", label: "Breach notification window", icon: Clock },
   { value: "8+", label: "Domains of DPDP obligation", icon: Layers },
-  { value: "2025", label: "Rules enforcement deadline", icon: TrendingUp },
+  { value: "Phased", label: "DPDP Rules enforcement (see timeline)", icon: TrendingUp },
 ];
 
 const COMPANY_TYPES = [
@@ -657,7 +657,7 @@ function PenaltyMeterSection() {
                       color: selectedDomains.includes(domain.id) ? "hsl(var(--primary))" : "hsl(var(--muted-foreground))",
                     }}
                   >
-                    <span className="block font-medium text-[11px] mb-0.5">§ {domain.section}</span>
+                    <span className="block font-medium text-[11px] mb-0.5">Section {domain.section}</span>
                     {domain.label}
                   </button>
                 ))}
@@ -945,7 +945,7 @@ function ServiceStoryBlock({ category }: { category: (typeof SERVICE_CATEGORIES)
                                   color: "hsl(var(--primary))",
                                 }}
                               >
-                                §{s}
+                                Section {s}
                               </span>
                             ))}
                           </div>

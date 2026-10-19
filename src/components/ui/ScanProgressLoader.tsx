@@ -53,10 +53,10 @@ const INFO_CARDS: InfoCard[] = [
   {
     id: 'privacy-runway',
     badge: 'FRAMEWORK',
-    title: 'Privacy Runway',
-    tagline: 'A Guided Path from Obligations to Privacy Maturity',
+    title: 'Readiness path',
+    tagline: 'From obligations to a working programme',
     content:
-      'Privacy Runway is a structured framework that guides organisations on a step-by-step journey—from understanding compliance obligations to achieving audit-ready privacy readiness.',
+      'A sequenced path from what the Act requires to the daily work of notice, consent, rights, and safeguards.',
     icon: Sparkles,
   },
   {
@@ -227,7 +227,7 @@ export function ScanProgressLoader({
             <strong className="text-primary font-semibold">
               Hang on while we complete the scan
             </strong>{' '}
-            — meanwhile, here’s a quick introduction to who we are and how we help.
+            Meanwhile, here is a quick introduction to who we are and how we help.
           </p>
         </div>
 

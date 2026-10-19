@@ -5,6 +5,7 @@ import { AlertTriangle, CheckCircle2, ArrowRight, Activity, ListTodo } from 'luc
 import { useQuestionnaireStore } from '@/store/questionnaireStore'
 import { usePersistedQuestionnaireState } from '@/hooks/usePersistedQuestionnaireState'
 import { cn } from '@/lib/utils'
+import { safeHostname } from '@/lib/safe-url'
 import { useEffect, useState, useRef, useSyncExternalStore } from 'react'
 
 const emptySubscribe = () => () => {}
@@ -56,7 +57,7 @@ export function FloatingBlob() {
 
   if (isModalOpen || !hasStarted) return null
 
-  const domain = formData.websiteUrl ? new URL(formData.websiteUrl).hostname : 'yoursite.com'
+  const domain = safeHostname(formData.websiteUrl) ?? 'yoursite.com'
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 640
 
   let state: 'A' | 'B' | 'C' | 'D' = 'C'
@@ -74,9 +75,9 @@ export function FloatingBlob() {
   const circumference = 2 * Math.PI * 16 // reduced radius for small mode (was 20)
   const offset = circumference - (scanProgress / 100) * circumference
 
-  let ringColor = 'stroke-green-500'
-  if (scanProgress > 50) ringColor = 'stroke-yellow-500'
-  if (scanProgress > 75) ringColor = 'stroke-red-500'
+  let ringColor = 'stroke-success'
+  if (scanProgress > 50) ringColor = 'stroke-warning'
+  if (scanProgress > 75) ringColor = 'stroke-destructive'
 
   const iconElement = (
     <div className="relative flex h-10 w-10 items-center justify-center shrink-0">
@@ -102,8 +103,8 @@ export function FloatingBlob() {
       )}
       
       {state === 'B' && (
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-500/20">
-          <CheckCircle2 className="h-5 w-5 text-green-500" />
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-success/20">
+          <CheckCircle2 className="h-5 w-5 text-success" />
         </div>
       )}
 
@@ -129,9 +130,9 @@ export function FloatingBlob() {
         exit={{ y: 100, opacity: 0, scale: 0.9 }}
         transition={{ type: 'spring', damping: 20, stiffness: 300 }}
         className={cn(
-          "fixed bottom-6 right-6 z-40 bg-background border border-border/50 rounded-xl shadow-2xl overflow-hidden cursor-pointer transition-colors hover:border-primary/50",
-          state === 'A' ? "shadow-[0_0_0_2px_hsl(var(--primary)/0.4)]" : "",
-          (state === 'B' || state === 'D') ? "shadow-[0_0_0_2px_hsl(var(--warning)/0.4)]" : ""
+          "fixed bottom-6 right-6 z-40 overflow-hidden rounded-xl border border-border bg-card shadow-[var(--shadow-md)] cursor-pointer transition-colors hover:border-primary/50",
+          state === 'A' ? "border-primary/50" : "",
+          (state === 'B' || state === 'D') ? "border-warning/50" : ""
         )}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -178,7 +179,7 @@ export function FloatingBlob() {
                   )}
 
                   {state === 'B' && (
-                    <div className="flex items-center gap-2 text-xs text-red-500 font-medium">
+                    <div className="flex items-center gap-2 text-xs text-destructive font-medium">
                       <AlertTriangle className="h-3.5 w-3.5" />
                       {issuesFound} issues found
                     </div>

@@ -12,9 +12,9 @@ export function ConsentStep({ value, onChange, error }: ConsentStepProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-foreground">One last step</h2>
+        <h2 className="text-2xl font-semibold tracking-tight text-foreground">Consent to store this assessment</h2>
         <p className="mt-2 text-muted-foreground">
-          Please review and consent before we finish.
+          Required even if you skipped the scan. Contact details are not submitted without it.
         </p>
       </div>
 

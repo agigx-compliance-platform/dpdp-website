@@ -28,8 +28,8 @@ export function FaqSection({
         viewport={{ once: true }}
         transition={{ duration: 0.5 }}
       >
-        <h2 className="mb-8 text-center text-3xl font-bold sm:text-4xl">
-          <span className="gradient-text">{title}</span>
+        <h2 className="mb-8 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+          {title}
         </h2>
 
         <div className="mx-auto max-w-2xl">

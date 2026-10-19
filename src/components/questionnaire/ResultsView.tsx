@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useCallback, useEffect, useRef } from 'react'
+import { useMemo, useCallback, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { Download, Calendar, Star, Package, Wrench, AlertTriangle, BarChart3, Mail } from 'lucide-react'
@@ -8,6 +8,8 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/Button'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card'
 import { Badge } from '@/components/ui/Badge'
+import { EvidenceCard } from '@/components/ui/EvidenceCard'
+import { SectionMark } from '@/components/ui/SectionMark'
 import { generateRecommendations } from '@/lib/recommendation-logic'
 import { getConsultationHref, getRecommendationHref } from '@/lib/recommendation-links'
 import { downloadReportPdfUrl, deliverScanReport } from '@/lib/api'
@@ -25,11 +27,11 @@ function ScoreRing({ score, grade }: { score: number; grade: string }) {
 
   const gradeColor =
     {
-      A: "text-green-500",
-      B: "text-emerald-500",
-      C: "text-yellow-500",
-      D: "text-orange-500",
-      F: "text-red-500",
+      A: "text-success",
+      B: "text-primary",
+      C: "text-warning",
+      D: "text-warning",
+      F: "text-destructive",
     }[grade] || "text-muted-foreground";
 
   return (
@@ -79,7 +81,7 @@ function RecommendationCard({
   const TypeIcon = typeIcon;
 
   return (
-    <Card className="h-full">
+    <Card variant="outline" className="h-full hover:translate-y-0">
       <CardHeader>
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-center gap-2">
@@ -117,11 +119,15 @@ function RecommendationCard({
 
         {rec.dpdpSections.length > 0 && (
           <div className="flex flex-wrap gap-1">
-            {rec.dpdpSections.map((s) => (
-              <Badge key={s} variant="outline" className="text-[10px]">
-                {s}
-              </Badge>
-            ))}
+            {rec.dpdpSections.map((s) =>
+              s === 'All' || s === 'All sections' ? (
+                <Badge key={s} variant="outline" className="text-[10px]">
+                  {s}
+                </Badge>
+              ) : (
+                <SectionMark key={s} section={s} />
+              ),
+            )}
           </div>
         )}
 
@@ -139,10 +145,10 @@ function RecommendationCard({
 }
 
 const SEVERITY_META = {
-  critical: { label: 'Critical', color: 'bg-red-500', text: 'text-red-400' },
-  high: { label: 'High', color: 'bg-amber-500', text: 'text-amber-400' },
-  medium: { label: 'Medium', color: 'bg-sky-500', text: 'text-sky-400' },
-  low: { label: 'Low', color: 'bg-slate-500', text: 'text-slate-400' },
+  critical: { label: 'Critical', color: 'bg-destructive', text: 'text-destructive' },
+  high: { label: 'High', color: 'bg-warning', text: 'text-warning' },
+  medium: { label: 'Medium', color: 'bg-primary', text: 'text-primary' },
+  low: { label: 'Low', color: 'bg-muted-foreground', text: 'text-muted-foreground' },
 } as const
 
 function IssueMixStackedBar({ summary }: { summary: ScanResult['summary'] }) {
@@ -150,10 +156,10 @@ function IssueMixStackedBar({ summary }: { summary: ScanResult['summary'] }) {
   const total = criticalIssues + highIssues + warnings + passed || 1
 
   const segments = [
-    { key: 'crit', pct: (criticalIssues / total) * 100, color: 'bg-red-500', label: 'Critical' },
-    { key: 'high', pct: (highIssues / total) * 100, color: 'bg-amber-500', label: 'High' },
-    { key: 'warn', pct: (warnings / total) * 100, color: 'bg-blue-500', label: 'Warnings' },
-    { key: 'pass', pct: (passed / total) * 100, color: 'bg-emerald-500', label: 'Passed' },
+    { key: 'crit', pct: (criticalIssues / total) * 100, color: 'bg-destructive', label: 'Critical' },
+    { key: 'high', pct: (highIssues / total) * 100, color: 'bg-warning', label: 'High' },
+    { key: 'warn', pct: (warnings / total) * 100, color: 'bg-primary', label: 'Warnings' },
+    { key: 'pass', pct: (passed / total) * 100, color: 'bg-success', label: 'Passed' },
   ].filter((s) => s.pct > 0)
 
   return (
@@ -173,16 +179,16 @@ function IssueMixStackedBar({ summary }: { summary: ScanResult['summary'] }) {
       </div>
       <div className="flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-muted-foreground">
         <span className="flex items-center gap-1">
-          <span className="inline-block h-2 w-2 rounded-sm bg-red-500" /> Critical {criticalIssues}
+          <span className="inline-block h-2 w-2 rounded-sm bg-destructive" /> Critical {criticalIssues}
         </span>
         <span className="flex items-center gap-1">
-          <span className="inline-block h-2 w-2 rounded-sm bg-amber-500" /> High {highIssues}
+          <span className="inline-block h-2 w-2 rounded-sm bg-warning" /> High {highIssues}
         </span>
         <span className="flex items-center gap-1">
-          <span className="inline-block h-2 w-2 rounded-sm bg-blue-500" /> Warnings {warnings}
+          <span className="inline-block h-2 w-2 rounded-sm bg-primary" /> Warnings {warnings}
         </span>
         <span className="flex items-center gap-1">
-          <span className="inline-block h-2 w-2 rounded-sm bg-emerald-500" /> Passed {passed}
+          <span className="inline-block h-2 w-2 rounded-sm bg-success" /> Passed {passed}
         </span>
       </div>
     </div>
@@ -292,6 +298,7 @@ export function ResultsView({ responses, scanResult }: ResultsViewProps) {
   );
 
   const deliverAttempted = useRef(false)
+  const [deliveryState, setDeliveryState] = useState<'idle' | 'sent' | 'failed'>('idle')
 
   useEffect(() => {
     if (
@@ -304,6 +311,7 @@ export function ResultsView({ responses, scanResult }: ResultsViewProps) {
     }
 
     deliverAttempted.current = true
+    setDeliveryState('idle')
 
     deliverScanReport(scanResult.scanId, {
       role: responses.role,
@@ -319,9 +327,12 @@ export function ResultsView({ responses, scanResult }: ResultsViewProps) {
         reason: rec.reason,
         relevanceScore: rec.relevanceScore,
       })),
-    }).catch(() => {
-      deliverAttempted.current = false
     })
+      .then(() => setDeliveryState('sent'))
+      .catch(() => {
+        deliverAttempted.current = false
+        setDeliveryState('failed')
+      })
   }, [scanResult, responses, recommendations])
 
   const products = recommendations.filter((r) => r.type === "product");
@@ -334,10 +345,9 @@ export function ResultsView({ responses, scanResult }: ResultsViewProps) {
 
   const hasScan = !!scanResult;
 
-  // Base delays adjusted based on presence of scanResult
-  const p2Delay = hasScan ? 1.5 : 0;
-  const p3Delay = hasScan ? 2.5 : 0.5;
-  const p4Delay = hasScan ? 3.5 : 1.0;
+  const p2Delay = 0.05
+  const p3Delay = 0.1
+  const p4Delay = 0.15
 
   const failedFlags = useMemo(
     () => (scanResult?.complianceFlags ? scanResult.complianceFlags.filter((f) => !f.passed) : []),
@@ -351,32 +361,32 @@ export function ResultsView({ responses, scanResult }: ResultsViewProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-background p-8 rounded-2xl min-h-[40vh]"
+          className="space-y-8"
         >
-          <h2 className="mb-6 text-2xl font-bold text-foreground">Scan Results</h2>
+          <h2 className="text-2xl font-semibold tracking-tight text-foreground">Scan ledger</h2>
           <div className="flex flex-col items-center gap-8 sm:flex-row sm:items-start">
             <ScoreRing score={scanResult.overallScore} grade={scanResult.grade} />
             <div className="flex-1 space-y-4">
               <h3 className="font-semibold text-foreground">{scanResult.scannedUrl}</h3>
               <p className="text-sm text-muted-foreground">
-                Penalty Exposure: <span className="font-medium text-destructive">{scanResult.penaltyExposure}</span>
+                Penalty exposure: <span className="font-medium text-destructive">{scanResult.penaltyExposure}</span>
               </p>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                <div className="rounded-lg bg-red-500/10 p-3 text-center">
-                  <div className="text-xl font-bold text-red-400">{scanResult.summary.criticalIssues}</div>
-                  <div className="text-[10px] uppercase text-red-400/80">Critical</div>
+                <div className="rounded-lg border border-border bg-muted p-3 text-center">
+                  <div className="text-xl font-semibold text-destructive">{scanResult.summary.criticalIssues}</div>
+                  <div className="text-[10px] uppercase tracking-wide text-muted-foreground">Critical</div>
                 </div>
-                <div className="rounded-lg bg-yellow-500/10 p-3 text-center">
-                  <div className="text-xl font-bold text-yellow-400">{scanResult.summary.highIssues}</div>
-                  <div className="text-[10px] uppercase text-yellow-400/80">High</div>
+                <div className="rounded-lg border border-border bg-muted p-3 text-center">
+                  <div className="text-xl font-semibold text-warning">{scanResult.summary.highIssues}</div>
+                  <div className="text-[10px] uppercase tracking-wide text-muted-foreground">High</div>
                 </div>
-                <div className="rounded-lg bg-blue-500/10 p-3 text-center">
-                  <div className="text-xl font-bold text-blue-400">{scanResult.summary.warnings}</div>
-                  <div className="text-[10px] uppercase text-blue-400/80">Warnings</div>
+                <div className="rounded-lg border border-border bg-muted p-3 text-center">
+                  <div className="text-xl font-semibold text-primary">{scanResult.summary.warnings}</div>
+                  <div className="text-[10px] uppercase tracking-wide text-muted-foreground">Warnings</div>
                 </div>
-                <div className="rounded-lg bg-green-500/10 p-3 text-center">
-                  <div className="text-xl font-bold text-green-400">{scanResult.summary.passed}</div>
-                  <div className="text-[10px] uppercase text-green-400/80">Passed</div>
+                <div className="rounded-lg border border-border bg-muted p-3 text-center">
+                  <div className="text-xl font-semibold text-success">{scanResult.summary.passed}</div>
+                  <div className="text-[10px] uppercase tracking-wide text-muted-foreground">Passed</div>
                 </div>
               </div>
               <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
@@ -391,7 +401,7 @@ export function ResultsView({ responses, scanResult }: ResultsViewProps) {
             </div>
           </div>
 
-          <div className="mt-8 border-t border-border/40 pt-8">
+          <div className="border-t border-border pt-8">
             <div className="mb-4 flex items-center gap-2">
               <BarChart3 className="h-5 w-5 text-primary" />
               <h3 className="text-lg font-semibold text-foreground">Visual report</h3>
@@ -407,28 +417,14 @@ export function ResultsView({ responses, scanResult }: ResultsViewProps) {
                 </p>
                 <ul className="grid gap-2 sm:grid-cols-2">
                   {failedFlags.slice(0, 8).map((f) => (
-                    <li
-                      key={f.id}
-                      className="rounded-lg border border-border/50 bg-muted/20 px-3 py-2 text-sm"
-                    >
-                      <div className="flex items-start justify-between gap-2">
-                        <span className="font-medium leading-snug text-foreground">{f.title}</span>
-                        <Badge
-                          variant={
-                            f.severity === 'critical'
-                              ? 'destructive'
-                              : f.severity === 'high'
-                                ? 'warning'
-                                : 'outline'
-                          }
-                          className="shrink-0 text-[10px] uppercase"
-                        >
-                          {f.severity}
-                        </Badge>
-                      </div>
-                      {f.description && (
-                        <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{f.description}</p>
-                      )}
+                    <li key={f.id}>
+                      <EvidenceCard
+                        title={f.title}
+                        severity={f.severity}
+                        recordId={f.id}
+                      >
+                        {f.description ? <span className="line-clamp-2">{f.description}</span> : null}
+                      </EvidenceCard>
                     </li>
                   ))}
                 </ul>
@@ -440,18 +436,13 @@ export function ResultsView({ responses, scanResult }: ResultsViewProps) {
 
       {/* Phase 2: Context Slide */}
       <motion.div
-        initial={{ opacity: 0, y: 100 }}
+        initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{
-          duration: 0.8,
-          delay: p2Delay,
-          type: "spring",
-          damping: 20,
-        }}
-        className="glass-card rounded-xl p-6 sm:p-8 border-l-4 border-l-primary"
+        transition={{ duration: 0.3, delay: p2Delay }}
+        className="rounded-xl border border-border bg-muted/40 p-6 sm:p-8"
       >
-        <h3 className="text-xl font-bold text-foreground">
-          Personalized Risk Summary
+        <h3 className="text-xl font-semibold tracking-tight text-foreground">
+          Assessment summary
         </h3>
         <p className="mt-3 text-base leading-relaxed text-muted-foreground">
           {summary}
@@ -468,8 +459,8 @@ export function ResultsView({ responses, scanResult }: ResultsViewProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: p3Delay }}
           >
-            <h2 className="mb-6 text-2xl font-bold text-foreground flex items-center gap-2">
-              <Star className="h-6 w-6 text-primary" /> Recommended Products
+            <h2 className="mb-6 text-2xl font-semibold tracking-tight text-foreground flex items-center gap-2">
+              <Star className="h-6 w-6 text-primary" /> Recommended products
             </h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {products.map((rec) => (
@@ -485,8 +476,8 @@ export function ResultsView({ responses, scanResult }: ResultsViewProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: p3Delay + 0.15 }}
           >
-            <h2 className="mb-6 text-2xl font-bold text-foreground flex items-center gap-2">
-              <Wrench className="h-6 w-6 text-primary" /> Recommended Services
+            <h2 className="mb-6 text-2xl font-semibold tracking-tight text-foreground flex items-center gap-2">
+              <Wrench className="h-6 w-6 text-primary" /> Recommended services
             </h2>
             <div className="grid gap-6 sm:grid-cols-2">
               {services.map((rec) => (
@@ -502,8 +493,8 @@ export function ResultsView({ responses, scanResult }: ResultsViewProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: p3Delay + 0.3 }}
           >
-            <h2 className="mb-6 text-2xl font-bold text-foreground flex items-center gap-2">
-              <Package className="h-6 w-6 text-primary" /> Package Offers
+            <h2 className="mb-6 text-2xl font-semibold tracking-tight text-foreground flex items-center gap-2">
+              <Package className="h-6 w-6 text-primary" /> Package offers
             </h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {packages.map((rec) => (
@@ -514,35 +505,38 @@ export function ResultsView({ responses, scanResult }: ResultsViewProps) {
         )}
       </div>
 
-      {hasScan && responses.email && responses.consentGiven && (
+      {hasScan && responses.email && responses.consentGiven && deliveryState !== 'idle' && (
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: p4Delay - 0.2 }}
-          className="glass-card rounded-xl border border-primary/20 bg-primary/5 p-6 sm:p-8"
+          className="rounded-xl border border-border bg-card p-6 shadow-[var(--shadow-sm)] sm:p-8"
         >
           <div className="flex items-start gap-4">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
               <Mail className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-foreground">Report sent to your mailbox</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                A detailed review of your application has been assessed, and your current standing
-                score based on our <strong className="text-foreground">External Privacy Scan Engine</strong>{' '}
-                has been sent to <strong className="text-foreground">{responses.email}</strong>.
-                The email includes your compliance score, recommended products and services, and a
-                PDF report. Our sales team will get in touch with you shortly.
-              </p>
-              <p className="mt-3 text-sm text-muted-foreground">
-                Questions? Contact us at{' '}
-                <a
-                  href="mailto:operations@dpdpconsultancy.in"
-                  className="text-primary hover:underline"
-                >
-                  operations@dpdpconsultancy.in
-                </a>
-              </p>
+              {deliveryState === 'sent' ? (
+                <>
+                  <h3 className="text-lg font-semibold text-foreground">Report sent to your mailbox</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                    The scan report was sent to{' '}
+                    <strong className="text-foreground">{responses.email}</strong>.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <h3 className="text-lg font-semibold text-foreground">Report was not sent</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                    The mailbox delivery failed. Download the report on this page or email{' '}
+                    <a href="mailto:operations@dpdpconsultancy.in" className="text-primary hover:underline">
+                      operations@dpdpconsultancy.in
+                    </a>
+                    .
+                  </p>
+                </>
+              )}
             </div>
           </div>
         </motion.div>

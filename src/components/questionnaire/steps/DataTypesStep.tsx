@@ -31,7 +31,7 @@ export function DataTypesStep({ value, onChange, error }: DataTypesStepProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-foreground">
+        <h2 className="text-2xl font-semibold tracking-tight text-foreground">
           What types of personal data do you handle?
         </h2>
         <p className="mt-2 text-muted-foreground">

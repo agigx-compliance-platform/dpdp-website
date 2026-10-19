@@ -35,14 +35,17 @@ const DialogContent = React.forwardRef<
       ref={ref}
       className={cn(
         'fixed left-1/2 top-1/2 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2',
-        'glass-card p-6',
+        'ledger-panel p-6',
         'data-[state=open]:animate-slide-up data-[state=closed]:animate-[slideUp_200ms_ease-out_reverse]',
         className
       )}
       {...props}
     >
       {children}
-      <DialogPrimitive.Close className="absolute right-4 top-4 rounded-md p-1 text-muted-foreground transition-colors hover:text-foreground">
+      <DialogPrimitive.Close
+        className="absolute right-4 top-4 rounded-md p-1 text-muted-foreground transition-colors hover:text-foreground"
+        aria-label="Close"
+      >
         <X className="h-4 w-4" />
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>

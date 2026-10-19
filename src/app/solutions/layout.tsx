@@ -3,7 +3,7 @@ import { BreadcrumbJsonLd } from '@/components/seo/BreadcrumbJsonLd'
 import { pageSeo } from '@/lib/page-metadata'
 
 export const metadata: Metadata = pageSeo({
-  title: 'DPDP Consultancy Industry Solutions — E-commerce, Healthcare & Finance',
+  title: 'DPDP Consultancy Industry Solutions: E-commerce, Healthcare & Finance',
   description:
     'DPDP Consultancy industry solutions for e-commerce, healthcare, finance, SaaS, and regulated Indian enterprises.',
   path: '/solutions',

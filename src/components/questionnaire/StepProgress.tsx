@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils'
 const STEP_LABELS = [
   'Launch',
   'Role',
-  'Org Type',
+  'Organisation',
   'Journey',
   'Data',
   'Priorities',
@@ -25,11 +25,11 @@ export function StepProgress({ currentStep, totalSteps }: StepProgressProps) {
   const progress = (currentStep / (totalSteps - 1)) * 100
 
   return (
-    <div className="glass-card rounded-xl p-4 sm:p-6 bg-secondary/20">
+    <div className="rounded-xl border border-border bg-card p-4 shadow-[var(--shadow-sm)] sm:p-6">
       <div className="relative mb-3">
         <div className="h-2 w-full overflow-hidden rounded-full bg-secondary">
           <motion.div
-            className="h-full rounded-full bg-gradient-to-r from-primary to-[hsl(var(--gradient-end))]"
+            className="h-full rounded-full bg-primary"
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.4, ease: 'easeInOut' }}

@@ -12,6 +12,7 @@ export function FinalCTA() {
   const [form, setForm] = useState({ name: '', email: '', company: '', message: '' })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState('')
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
@@ -20,6 +21,7 @@ export function FinalCTA() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setError('')
     try {
       await submitEnquiry({
         name: form.name,
@@ -31,7 +33,7 @@ export function FinalCTA() {
       })
       setSubmitted(true)
     } catch {
-      // Silently handle - user can retry
+      setError('Message was not sent. Try again or email operations@dpdpconsultancy.in.')
     } finally {
       setIsSubmitting(false)
     }
@@ -42,7 +44,7 @@ export function FinalCTA() {
       id="final-cta"
       className="relative py-14 md:py-20 px-4 sm:px-6 lg:px-8 overflow-hidden"
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-[hsl(var(--gradient-end)/0.05)]" />
+      <div className="absolute inset-0 bg-muted/30" />
 
       <div className="relative z-10 max-w-5xl mx-auto">
         <div className="text-center mb-12">
@@ -54,7 +56,7 @@ export function FinalCTA() {
             transition={{ duration: 0.6 }}
             className="text-3xl sm:text-4xl font-bold"
           >
-            Don&apos;t Wait for the First <span className="gradient-text">Penalty</span>
+            Don&apos;t wait for the first penalty
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 12 }}
@@ -63,8 +65,8 @@ export function FinalCTA() {
             transition={{ duration: 0.6, delay: 0.15 }}
             className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto"
           >
-            Get ahead of DPDP enforcement with a compliance engine built for your
-            organization.
+            Start with a public-site scan or a 10-question assessment. Remediation
+            for consent, inventory, and rights typically takes months, not a weekend.
           </motion.p>
         </div>
 
@@ -90,7 +92,7 @@ export function FinalCTA() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="glass-card p-6 sm:p-8 max-w-2xl mx-auto"
+          className="mx-auto max-w-2xl rounded-xl border border-border bg-card p-6 shadow-[var(--shadow-sm)] sm:p-8"
         >
           {submitted ? (
             <div className="text-center py-6">
@@ -143,6 +145,7 @@ export function FinalCTA() {
                 className="input-field mb-6 w-full resize-none"
               />
               <div className="text-center">
+                {error ? <p className="mb-3 text-sm text-destructive">{error}</p> : null}
                 <Button type="submit" variant="primary" size="lg" disabled={isSubmitting}>
                   {isSubmitting ? 'Sending...' : 'Send Message'}
                 </Button>

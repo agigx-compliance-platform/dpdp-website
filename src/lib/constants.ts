@@ -237,7 +237,7 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
       },
       {
         title: 'Continuous Compliance and AI Workflow Enablement',
-        description: 'Continuous compliance monitoring via automated Playwright-powered headless browser scanning for cookies, trackers, policies, and DSAR mechanisms. AI workflow governance controls and SDLC/DevSecOps integration ensuring privacy is embedded in development pipelines.',
+        description: 'Continuous monitoring of cookies, trackers, policies, and rights paths on public sites. Governance on AI workflows. Checks in the delivery path so privacy is part of how software ships.',
         dpdpSections: ['5', '6', '8(5)', '10'],
         penalties: ['₹250 Crore'],
         whoIsThisFor: 'Organisations seeking always-on compliance monitoring and DevSecOps privacy integration',
@@ -388,7 +388,7 @@ export const PRODUCTS: Product[] = [
       },
       {
         title: 'Cookie Discovery and Classification',
-        description: 'Playwright-powered headless browser scanning discovers all cookies including HTTP and JavaScript-set variants. Auto-classification against a 500+ known cookie database covering Google, Meta, Microsoft, HubSpot, and more with categorisation into analytics, marketing, functional, and preferences, flagging cookies set before consent as critical DPDP violations.',
+        description: 'Discovers cookies on the live property, including those set by scripts. Classifies them into analytics, marketing, functional, and preferences, and flags cookies set before a choice as a consent failure.',
       },
       {
         title: 'Immutable Consent Audit Trail',
@@ -414,7 +414,7 @@ export const PRODUCTS: Product[] = [
     id: 'compliance-scanner',
     name: 'TrustScope Compliance Scanner',
     tagline: 'See your privacy posture the way a regulator would',
-    description: 'Automated website privacy compliance scanner built on Playwright and headless Chromium. Performs a non-invasive, five-phase scan of publicly accessible website surfaces to generate a compliance health score, identify regulatory gaps, and produce actionable remediation guidance.',
+    description: 'Public-site privacy scan. Walks the pages a visitor can reach, scores notice, consent, cookies, and rights paths, and produces findings a fiduciary can act on.',
     features: [
       {
         title: '5-Phase Automated Scan',
@@ -474,7 +474,7 @@ export const PRODUCTS: Product[] = [
     id: 'processor-governance',
     name: 'Vendor & Processor Governance',
     tagline: 'Section 8(2) processor oversight from registry to downstream action',
-    description: 'Register third-party processors and vendors, map them to processing purposes, orchestrate consent and DSAR propagation via webhooks, and monitor integration delivery health — with vendor risk visibility on the organisation dashboard.',
+    description: 'Register third-party processors and vendors, map them to processing purposes, orchestrate consent and DSAR propagation via webhooks, and monitor integration delivery health, with vendor risk visibility on the organisation dashboard.',
     features: [
       {
         title: 'Processor and Vendor Registry',
@@ -486,7 +486,7 @@ export const PRODUCTS: Product[] = [
       },
       {
         title: 'Integration Delivery Monitoring',
-        description: 'Real-time visibility into processor webhook delivery status, failures, retries, and alert history — linked from the processor registry for operational accountability.',
+        description: 'Real-time visibility into processor webhook delivery status, failures, retries, and alert history, linked from the processor registry for operational accountability.',
       },
       {
         title: 'Vendor Risk Classification',
@@ -512,7 +512,7 @@ export const PRODUCTS: Product[] = [
     features: [
       {
         title: 'Cloud Security Scanning',
-        description: 'AWS, Azure, and GCP misconfiguration detection using Prowler-style security assessment. Maps infrastructure findings to DPDP Section 8(5) reasonable security safeguard requirements, prioritising remediation by compliance impact and data exposure risk.',
+        description: 'AWS, Azure, and GCP findings that put personal data in reach. Prioritised by privacy duty and exposure, not a generic security score.',
       },
       {
         title: 'Code Repository Scanning',

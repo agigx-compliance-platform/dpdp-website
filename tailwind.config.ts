@@ -10,7 +10,8 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        sans: ['var(--font-sans)', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        mono: ['var(--font-mono)', 'JetBrains Mono', 'ui-monospace', 'Cascadia Code', 'Fira Code', 'monospace'],
       },
       colors: {
         border: 'hsl(var(--border))',
@@ -104,12 +105,17 @@ const config: Config = {
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         shimmer: 'skeleton-shimmer 1.5s ease-in-out infinite',
         marquee: 'marquee 30s linear infinite',
+        'marquee-ltr': 'marqueeLtr 36s linear infinite',
         'ken-burns': 'kenBurns 22s ease-in-out infinite alternate',
       },
       keyframes: {
         marquee: {
           '0%': { transform: 'translateX(0%)' },
           '100%': { transform: 'translateX(-50%)' },
+        },
+        marqueeLtr: {
+          '0%': { transform: 'translateX(-50%)' },
+          '100%': { transform: 'translateX(0%)' },
         },
         kenBurns: {
           '0%': { transform: 'scale(1.06) translate(0, 0)' },

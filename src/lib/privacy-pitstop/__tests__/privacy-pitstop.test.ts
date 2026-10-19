@@ -67,6 +67,7 @@ async function runTests() {
     ],
     successfulPages: [],
   }
+  mockContext.successfulPages = mockContext.pages.filter((p) => p.status === 200)
 
   // ── 3. Notice Detector Tests ──────────────────────────────
   {

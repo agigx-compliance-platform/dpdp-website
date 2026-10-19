@@ -37,7 +37,7 @@ export default function WhatIsDpdpPage() {
           <p>
             Unlike a privacy policy alone, DPDP requires operational controls:
             notices, valid consent, Data Principal rights, reasonable security
-            safeguards, vendor oversight, and — for Significant Data Fiduciaries —
+            safeguards, vendor oversight, and, for Significant Data Fiduciaries,
             a Data Protection Officer, DPIAs, and annual audits.
           </p>
 

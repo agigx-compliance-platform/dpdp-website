@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Search,
@@ -15,89 +16,98 @@ import {
   AlertTriangle,
   ShieldCheck,
   Scale,
-  Sparkles,
   ArrowLeft,
-  ChevronRight,
   Eye,
   HelpCircle,
   Megaphone,
   ArrowUpRight,
-  MessageSquare,
 } from 'lucide-react'
 import { SectionWrapper } from '@/components/ui/SectionWrapper'
 import { Button } from '@/components/ui/Button'
-import type { AnalysisResult } from '@/lib/privacy-pitstop/types'
+import { EvidenceCard } from '@/components/ui/EvidenceCard'
+import type { AnalysisResult, CitizenActions, EvidenceStatus, Finding } from '@/lib/privacy-pitstop/types'
+import { generateCitizenActions } from '@/lib/privacy-pitstop/citizen-actions'
+import { sectionForFinding } from '@/lib/privacy-pitstop/finding-section'
+import { privacyQualityScore, qualityRatingText } from '@/lib/privacy-pitstop/score-display'
 import { ScanProgressLoader } from '@/components/ui/ScanProgressLoader'
 
 /* ─── constants ────────────────────────────────────────────── */
 
 const EXAMPLE_DOMAINS = ['hdfcbank.com', 'zomato.com', 'redbus.in', 'matrimony.com']
 
-const LEADERBOARD_DOMAINS = ['zoho.com', 'tata.com', 'infosys.com', 'facebook.com', 'twitter.com']
+const ANALYZE_TIMEOUT_MS = 180_000
 
-const ALL_LEADERBOARD_ITEMS = [
-  { rank: 1, domain: 'zoho.com', category: 'Top Gainers' },
-  { rank: 2, domain: 'tata.com', category: 'Top Gainers' },
-  { rank: 3, domain: 'infosys.com', category: 'Top Gainers' },
-  { rank: 1, domain: 'facebook.com', category: 'Top Decliners' },
-  { rank: 2, domain: 'twitter.com', category: 'Top Decliners' },
-  { rank: 3, domain: 'newsportal.com', category: 'Top Decliners' },
-  { rank: 1, domain: 'govt.in', category: 'Most Transparent' },
-  { rank: 2, domain: 'pmindia.gov.in', category: 'Most Transparent' },
-  { rank: 3, domain: 'eci.gov.in', category: 'Most Transparent' },
-  { rank: 1, domain: 'freegames.com', category: 'Needs Attention' },
-  { rank: 2, domain: 'flashnews.com', category: 'Needs Attention' },
-  { rank: 3, domain: 'dealscorner.com', category: 'Needs Attention' }
-]
+type LeaderboardEntry = { rank: number; domain: string; score: number }
 
 const ANALYSIS_STEPS = [
-  { icon: Globe, label: 'Fetching Privacy Policy' },
-  { icon: Brain, label: 'AI Analysis' },
-  { icon: Cookie, label: 'Detecting Cookies & Trackers' },
-  { icon: BarChart3, label: 'Calculating Privacy Score' },
-  { icon: FileText, label: 'Generating Report' },
+  { icon: Globe, label: 'Reading public pages' },
+  { icon: FileText, label: 'Reading the notice' },
+  { icon: Cookie, label: 'Checking cookies and trackers' },
+  { icon: BarChart3, label: 'Scoring privacy quality' },
+  { icon: Brain, label: 'Preparing the report' },
 ]
 
-const STEP_INTERVAL_MS = 1800
+/** Queued scans sit near 12%. Report generation is only the last step, after the job is done. */
+function stepForScanProgress(progress: number): number {
+  if (!Number.isFinite(progress) || progress < 20) return 0
+  if (progress < 45) return 1
+  if (progress < 75) return 2
+  if (progress < 100) return 3
+  return ANALYSIS_STEPS.length - 1
+}
 
 /* ─── component ────────────────────────────────────────────── */
 
 type View = 'landing' | 'analyzing' | 'results' | 'error' | 'leaderboard'
 
-export default function PrivacyPitstopPage() {
+function PrivacyPitstopPageInner() {
+  const searchParams = useSearchParams()
   const [view, setView] = useState<View>('landing')
-  const [domain, setDomain] = useState('')
+  const [domain, setDomain] = useState(() => searchParams.get('q')?.trim() ?? '')
   const [activeStep, setActiveStep] = useState(-1)
   const [result, setResult] = useState<AnalysisResult | null>(null)
   const [error, setError] = useState('')
+  const [leaderboardError, setLeaderboardError] = useState('')
+  const [board, setBoard] = useState<LeaderboardEntry[]>([])
   const inputRef = useRef<HTMLInputElement>(null)
-  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([])
+  const timersRef = useRef<number[]>([])
   const abortRef = useRef<AbortController | null>(null)
   const scannedOrScanningRef = useRef<Set<string>>(new Set())
-  const hasInitLeaderboardScansRef = useRef(false)
 
-  // Dynamic user-scanned domains state for live Privacy Market Watch leaderboard
-  const [scannedUserDomains, setScannedUserDomains] = useState<{ domain: string; score: number }[]>([])
+  const loadLeaderboard = useCallback(() => {
+    fetch('/api/privacy-pitstop/leaderboard')
+      .then(async (res) => {
+        if (!res.ok) {
+          throw new Error(`Leaderboard failed (${res.status})`)
+        }
+        return res.json()
+      })
+      .then((data) => {
+        setLeaderboardError('')
+        const entries: LeaderboardEntry[] = []
+        for (const item of data?.entries ?? []) {
+          if (item?.domain && Number.isFinite(item.score) && Number.isFinite(item.rank)) {
+            entries.push({
+              rank: item.rank,
+              domain: String(item.domain).trim().toLowerCase(),
+              score: Math.round(item.score),
+            })
+          }
+        }
+        entries.sort((a, b) => a.rank - b.rank)
+        setBoard(entries)
+      })
+      .catch(() => setLeaderboardError('The leaderboard is unavailable right now.'))
+  }, [])
 
   useEffect(() => {
-    const q = new URLSearchParams(window.location.search).get('q')?.trim()
-    if (q) setDomain(q)
+    const q = searchParams.get('q')?.trim()
+    if (q) queueMicrotask(() => setDomain(q))
+  }, [searchParams])
 
-    // Fetch server-side leaderboard to seed the Privacy Market Watch
-    fetch('/api/privacy-pitstop/leaderboard')
-      .then(res => res.json())
-      .then(data => {
-        const serverDomains: { domain: string; score: number }[] = []
-        for (const item of (data?.topGainers || [])) {
-          if (item?.domain) serverDomains.push({ domain: item.domain, score: item.score })
-        }
-        for (const item of (data?.topLosers || [])) {
-          if (item?.domain) serverDomains.push({ domain: item.domain, score: item.score })
-        }
-        setScannedUserDomains(serverDomains)
-      })
-      .catch(() => setScannedUserDomains([]))
-  }, [])
+  useEffect(() => {
+    loadLeaderboard()
+  }, [loadLeaderboard])
 
   const [scanningLeaderboard, setScanningLeaderboard] = useState<Record<string, boolean>>({})
   const [leaderboardFullResults, setLeaderboardFullResults] = useState<Record<string, AnalysisResult>>({})
@@ -105,7 +115,7 @@ export default function PrivacyPitstopPage() {
 
   // Clean up timers & fetches
   const cleanup = useCallback(() => {
-    timersRef.current.forEach(clearTimeout)
+    timersRef.current.forEach((id) => window.clearTimeout(id))
     timersRef.current = []
     abortRef.current?.abort()
     abortRef.current = null
@@ -141,24 +151,14 @@ export default function PrivacyPitstopPage() {
         return
       }
 
-      const scoreVal = Math.round(analysisData.riskScore)
-
       setLeaderboardFullResults(prev => ({ ...prev, [cleanDomain]: analysisData }))
-
-      setScannedUserDomains(prev => {
-        const filtered = prev.filter(item => item.domain.toLowerCase() !== cleanDomain)
-        const updated = [{ domain: cleanDomain, score: scoreVal }, ...filtered]
-        try {
-          localStorage.setItem('dpdp_privacy_live_searched_domains', JSON.stringify(updated))
-        } catch (err) {}
-        return updated
-      })
-    } catch (err) {
-      // Quietly absorb scan errors
+      loadLeaderboard()
+    } catch {
+      scannedOrScanningRef.current.delete(cleanDomain)
     } finally {
       setScanningLeaderboard(prev => ({ ...prev, [cleanDomain]: false }))
     }
-  }, [])
+  }, [loadLeaderboard])
 
   const startAnalysis = useCallback(async (targetDomain: string) => {
     if (!targetDomain.trim()) return
@@ -169,14 +169,10 @@ export default function PrivacyPitstopPage() {
     setResult(null)
     setError('')
 
-    for (let i = 1; i < ANALYSIS_STEPS.length; i++) {
-      timersRef.current.push(
-        setTimeout(() => setActiveStep(i), i * STEP_INTERVAL_MS)
-      )
-    }
-
     const controller = new AbortController()
     abortRef.current = controller
+    const timeoutId = window.setTimeout(() => controller.abort(), ANALYZE_TIMEOUT_MS)
+    timersRef.current.push(timeoutId)
 
     try {
       const res = await fetch('/api/privacy-pitstop/analyze', {
@@ -194,41 +190,37 @@ export default function PrivacyPitstopPage() {
       let analysisData: AnalysisResult
       if (data?.scanId) {
         const { pollUntilPitstopReport } = await import('@/lib/website-scan')
-        analysisData = await pollUntilPitstopReport(data.scanId)
+        analysisData = await pollUntilPitstopReport(data.scanId, {
+          onProgress: (progress) => setActiveStep(stepForScanProgress(progress)),
+        })
       } else if (data?.riskScore !== undefined) {
         analysisData = data as AnalysisResult
       } else {
         throw new Error('Invalid response from scan service')
       }
 
-      const scoreVal = Math.round(analysisData.riskScore)
       const cleanDomain = targetDomain.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '')
 
       setLeaderboardFullResults(prev => ({ ...prev, [cleanDomain]: analysisData }))
-
-      // Update scannedUserDomains for live Privacy Market Watch (Top Gainers & Top Losers)
-      setScannedUserDomains(prev => {
-        const filtered = prev.filter(item => item.domain.toLowerCase() !== cleanDomain)
-        const updated = [{ domain: cleanDomain, score: scoreVal }, ...filtered]
-        try {
-          localStorage.setItem('dpdp_privacy_live_searched_domains', JSON.stringify(updated))
-        } catch (err) {}
-        return updated
-      })
+      loadLeaderboard()
 
       setActiveStep(ANALYSIS_STEPS.length - 1)
       timersRef.current.push(
-        setTimeout(() => {
+        window.setTimeout(() => {
           setResult(analysisData)
           setView('results')
         }, 800)
       )
     } catch (err) {
-      if ((err as Error).name === 'AbortError') return
+      if ((err as Error).name === 'AbortError') {
+        setError('The scan timed out. Try again.')
+        setView('error')
+        return
+      }
       setError((err as Error).message || 'Analysis failed')
       setView('error')
     }
-  }, [cleanup])
+  }, [cleanup, loadLeaderboard])
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -248,33 +240,27 @@ export default function PrivacyPitstopPage() {
   /* ─── score color mapping ────────────────────────────────── */
   function getScoreColor(score: number) {
     if (score === 0) return 'text-muted-foreground stroke-muted-foreground'
-    if (score >= 80) return 'text-primary stroke-primary'
-    if (score >= 60) return 'text-green-500 stroke-green-500'
-    if (score >= 40) return 'text-yellow-500 stroke-yellow-500'
-    if (score >= 20) return 'text-orange-500 stroke-orange-500'
-    return 'text-red-500 stroke-red-500'
+    if (score >= 80) return 'text-success stroke-success'
+    if (score >= 60) return 'text-primary stroke-primary'
+    if (score >= 40) return 'text-warning stroke-warning'
+    return 'text-destructive stroke-destructive'
   }
 
   function getBarBgColor(score: number) {
-    if (score === 0) return 'bg-primary/10'
-    if (score >= 80) return 'bg-primary'
-    if (score >= 60) return 'bg-green-500'
-    if (score >= 40) return 'bg-yellow-500'
-    if (score >= 20) return 'bg-orange-500'
-    return 'bg-red-500'
+    if (score === 0) return 'bg-muted'
+    if (score >= 80) return 'bg-success'
+    if (score >= 60) return 'bg-primary'
+    if (score >= 40) return 'bg-warning'
+    return 'bg-destructive'
   }
 
   function getRatingText(score: number) {
-    if (score === 0) return 'Not Scanned'
-    if (score >= 80) return 'Excellent'
-    if (score >= 70) return 'Good'
-    if (score >= 50) return 'Guarded'
-    if (score >= 30) return 'Elevated'
-    return 'Severe'
+    if (score === 0) return 'Not scanned'
+    return qualityRatingText(score)
   }
 
-  const displayScore = result ? result.riskScore : 0
-  const displayRating = result ? getRatingText(result.riskScore) : 'Not Scanned'
+  const displayScore = result ? privacyQualityScore(result.riskScore) : 0
+  const displayRating = result ? getRatingText(displayScore) : 'Not scanned'
 
   const getAllFindings = (res: AnalysisResult | null) => {
     if (!res) return []
@@ -355,132 +341,80 @@ export default function PrivacyPitstopPage() {
 
   const allFindings = getAllFindings(result)
 
+  const citizenActions: CitizenActions | null = result
+    ? result.citizenActions ?? generateCitizenActions(
+        allFindings
+          .map((item) => {
+            if (!item?.title) return null
+            const finding: Finding = {
+              id: String(item.id ?? item.title),
+              pillarId: String(item.pillarId ?? 'P1'),
+              module: String(item.module ?? item.id ?? 'generic'),
+              title: String(item.title),
+              description: String(item.description ?? ''),
+              severity: item.severity ?? 'medium',
+              confidence: item.confidence ?? 'medium',
+              evidence: (['detected', 'inferred', 'not-detected', 'not-applicable'].includes(item.evidence)
+                ? item.evidence
+                : 'detected') as EvidenceStatus,
+              evidenceItems: Array.isArray(item.evidenceItems) ? item.evidenceItems : [],
+              recommendation: item.recommendation,
+              details: item.details,
+              categoryId: item.categoryId,
+            }
+            return finding
+          })
+          .filter((f): f is Finding => f !== null),
+        result.domain,
+      )
+    : null
+
   const gapSummary = (result?.gapReasons && result.gapReasons.length > 0)
     ? result.gapReasons
     : Array.from(new Set(
         allFindings
           .filter(f => f.severity !== 'info')
           .sort((a, b) => (SEVERITY_WEIGHT_VAL[b.severity] || 0) - (SEVERITY_WEIGHT_VAL[a.severity] || 0))
-          .map(f => f.title + (f.description ? ` — ${f.description}` : ''))
+          .map(f => f.title + (f.description ? `: ${f.description}` : ''))
           .filter(Boolean)
       )).slice(0, 5)
 
-  // Deduplicate and validate user-scanned domain records
-  const uniqueScannedDomains = useMemo(() => {
-    const map = new Map<string, { domain: string; score: number }>()
-    for (const item of scannedUserDomains) {
-      if (!item || !item.domain || item.score == null || typeof item.score !== 'number' || isNaN(item.score)) {
-        continue
-      }
-      const clean = item.domain.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '')
-      if (clean) {
-        map.set(clean, { domain: clean, score: Math.round(item.score) })
-      }
-    }
-    return Array.from(map.values())
-  }, [scannedUserDomains])
-
-  // Top Gainers: score > 60, ordered by highest score first (descending)
-  const topGainers = useMemo(() => {
-    return uniqueScannedDomains
-      .filter(item => item.score > 60)
-      .sort((a, b) => b.score - a.score)
-  }, [uniqueScannedDomains])
-
-  // Top Losers: score < 60, ordered by lowest score first (ascending)
-  const topLosers = useMemo(() => {
-    return uniqueScannedDomains
-      .filter(item => item.score < 60)
-      .sort((a, b) => a.score - b.score)
-  }, [uniqueScannedDomains])
+  const visitorPlacement = useMemo(() => {
+    if (!result?.domain) return null
+    const domain = result.domain.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '')
+    const score = privacyQualityScore(result.riskScore)
+    const listed = board.find((item) => item.domain === domain)
+    if (listed) return { domain, score: listed.score, rank: listed.rank, listed: true }
+    const better = board.filter((item) => item.score > score).length
+    return { domain, score, rank: better + 1, listed: false }
+  }, [board, result])
 
   const fullLeaderboardItems = useMemo(() => {
-    const items: { domain: string; category: string; score: number }[] = []
-
-    for (const item of topGainers) {
-      items.push({ domain: item.domain, category: 'Top Gainers', score: item.score })
+    const labeled = board.map((item) => ({
+      domain: item.domain,
+      category: item.score > 60 ? 'Top Gainers' : 'Top Losers',
+      score: item.score,
+    }))
+    if (visitorPlacement && !visitorPlacement.listed) {
+      labeled.push({
+        domain: visitorPlacement.domain,
+        category: visitorPlacement.score > 60 ? 'Top Gainers' : 'Top Losers',
+        score: visitorPlacement.score,
+      })
     }
+    const byScore = (a: { score: number }, b: { score: number }) => b.score - a.score
+    const gainers = labeled.filter((item) => item.score > 60).sort(byScore)
+    const losers = labeled.filter((item) => item.score <= 60).sort(byScore)
+    return [...gainers, ...losers]
+  }, [board, visitorPlacement])
 
-    for (const item of topLosers) {
-      items.push({ domain: item.domain, category: 'Top Losers', score: item.score })
-    }
-
-    return items
-  }, [topGainers, topLosers])
-
-  const getCategoryScore = (catName: string, baseScore: number = displayScore) => {
-    if (!result && baseScore === 0) return 0
-    if (result && baseScore === result.riskScore) {
-      const match = result.categories.find(c => c.name === catName)
-      return match ? Math.round(match.score) : 0
-    }
-    if (catName === 'Notice Transparency') return Math.min(100, Math.round(baseScore * 1.05))
-    if (catName === 'Cookie & Consent') return Math.min(100, Math.round(baseScore * 0.94))
-    if (catName === 'User Rights & Redressal') return Math.min(100, Math.round(baseScore * 0.97))
-    if (catName === 'AI Transparency') return Math.min(100, Math.round(baseScore * 1.02))
-    if (catName === 'Security Signals') return Math.min(100, Math.round(baseScore * 1.0))
-    return Math.round(baseScore)
+  const getCategoryScore = (catName: string) => {
+    if (!result) return null
+    const match = result.categories.find((c) => c.name === catName)
+    return match ? Math.round(match.score) : null
   }
 
   const scoreRingOffset = 2 * Math.PI * 54 * (1 - (displayScore / 100))
-
-  /* ─── MythBreaker style overlapping card ─────────────────── */
-  function MythStyleCard({ title, desc, backText, icon: Icon }: { title: string; desc: string; backText: string; icon: any }) {
-    const [revealed, setRevealed] = useState(false)
-
-    return (
-      <button
-        onClick={() => setRevealed(!revealed)}
-        className="glass-card w-full text-left p-4 hover:border-primary/30 transition-all duration-300 group cursor-pointer relative overflow-hidden"
-      >
-        <div className="grid">
-          {/* Front / Myth layer */}
-          <motion.div
-            className="col-start-1 row-start-1 flex flex-col justify-between space-y-2"
-            initial={false}
-            animate={{
-              opacity: revealed ? 0 : 1,
-              y: revealed ? -12 : 0,
-              scale: revealed ? 0.95 : 1,
-              pointerEvents: revealed ? 'none' : 'auto',
-            }}
-            transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
-          >
-            <Icon className="w-5 h-5 text-primary" />
-            <div>
-              <h4 className="text-sm font-semibold text-foreground leading-tight">{title}</h4>
-              <p className="text-xs text-muted-foreground mt-1 leading-snug">{desc}</p>
-            </div>
-            <span className="text-xs text-primary/70 font-medium uppercase tracking-wider block pt-1">
-              Click to inspect &rarr;
-            </span>
-          </motion.div>
-
-          {/* Back / Reality layer */}
-          <motion.div
-            className="col-start-1 row-start-1 flex flex-col justify-between space-y-2"
-            initial={false}
-            animate={{
-              opacity: revealed ? 1 : 0,
-              y: revealed ? 0 : 12,
-              scale: revealed ? 1 : 0.95,
-              pointerEvents: revealed ? 'auto' : 'none',
-            }}
-            transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
-          >
-            <ShieldCheck className="w-5 h-5 text-primary" />
-            <div>
-              <h4 className="text-xs font-semibold text-primary uppercase tracking-wider">{title}</h4>
-              <p className="text-xs text-foreground mt-1 leading-snug font-medium">{backText}</p>
-            </div>
-            <span className="text-xs text-muted-foreground uppercase tracking-wider block pt-1">
-              &larr; Click to flip back
-            </span>
-          </motion.div>
-        </div>
-      </button>
-    )
-  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -496,8 +430,8 @@ export default function PrivacyPitstopPage() {
           >
             <div className="flex items-center justify-between border-b border-border pb-4">
               <div className="text-left">
-                <h1 className="text-2xl font-bold text-foreground">Privacy Leaderboard - Detailed Analysis</h1>
-                <p className="text-xs text-primary mt-1">Full scan details and compliance breakdowns for leaderboard domains</p>
+                <h1 className="text-2xl font-semibold tracking-tight text-foreground">Privacy leaderboard</h1>
+                <p className="text-sm text-muted-foreground mt-1">Public scans ranked by privacy quality. Expand a domain for findings.</p>
               </div>
               <button
                 onClick={() => setView('landing')}
@@ -508,11 +442,11 @@ export default function PrivacyPitstopPage() {
             </div>
 
             {fullLeaderboardItems.length === 0 ? (
-              <div className="glass-card p-12 text-center space-y-2">
+              <div className="ledger-panel p-12 text-center space-y-2">
                 <ShieldCheck className="w-8 h-8 text-primary mx-auto opacity-60" />
-                <h3 className="text-base font-bold text-foreground">No Qualifying Domains Scanned Yet</h3>
+                <h3 className="text-base font-bold text-foreground">Top 10 is not loaded</h3>
                 <p className="text-xs text-muted-foreground max-w-md mx-auto">
-                  Enter a domain in Policy Pitstop to perform a live scan and populate the privacy leaderboard. Domains with score &gt; 60 rank under Top Gainers, and score &lt; 60 rank under Top Losers.
+                  The India top 10 is stored with the scan service. A new scan is inserted when its privacy quality score belongs in that ten.
                 </p>
               </div>
             ) : (
@@ -522,7 +456,9 @@ export default function PrivacyPitstopPage() {
                 const activeResultDomain = result?.domain ? result.domain.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '') : ''
                 const fullRes = leaderboardFullResults[cleanDomain] || (activeResultDomain === cleanDomain ? result : null)
                 const isScanning = scanningLeaderboard[cleanDomain]
-                const score = fullRes ? Math.round(fullRes.riskScore) : (item.score ?? 70)
+                const score = fullRes
+                  ? privacyQualityScore(fullRes.riskScore)
+                  : (typeof item.score === 'number' ? item.score : null)
                 const isExpanded = expandedDomain === cleanDomain
                 const domainFindings = getAllFindings(fullRes || null)
 
@@ -540,7 +476,7 @@ export default function PrivacyPitstopPage() {
                       || fullRes.report?.categories?.find(c => c.name.toLowerCase() === catName.toLowerCase() || c.id === catId)
                     if (match) return Math.round(match.score)
                   }
-                  return getCategoryScore(catName, score)
+                  return getCategoryScore(catName)
                 }
 
                 const itemGapReasons = fullRes?.gapReasons && fullRes.gapReasons.length > 0
@@ -548,18 +484,18 @@ export default function PrivacyPitstopPage() {
                   : domainFindings
                       .filter(f => f.severity !== 'info')
                       .sort((a, b) => (SEVERITY_WEIGHT_VAL[b.severity] || 0) - (SEVERITY_WEIGHT_VAL[a.severity] || 0))
-                      .map(f => f.title + (f.description ? ` — ${f.description}` : ''))
+                      .map(f => f.title + (f.description ? `: ${f.description}` : ''))
                       .filter(Boolean)
                       .slice(0, 3)
 
                 return (
-                  <div key={item.domain} className="glass-card p-6 flex flex-col justify-between space-y-4 hover:border-primary/30 transition-all">
+                  <div key={item.domain} className="ledger-panel p-6 flex flex-col justify-between space-y-4 hover:border-primary/30 transition-all">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-border pb-4">
                       <div className="flex items-center gap-3">
-                        <span className={`text-xs font-bold px-2.5 py-1 rounded border ${
+                        <span className={`text-xs font-semibold px-2.5 py-1 rounded border ${
                           item.category === 'Top Gainers'
-                            ? 'text-primary bg-emerald-500/10 border-emerald-500/30'
-                            : 'text-red-400 bg-red-500/10 border-red-500/30'
+                            ? 'text-primary bg-primary/10 border-primary/30'
+                            : 'text-warning bg-warning/10 border-warning/30'
                         }`}>
                           {item.category}
                         </span>
@@ -576,8 +512,12 @@ export default function PrivacyPitstopPage() {
                         <div className="text-right">
                           <span className="text-xs text-muted-foreground block">Overall Privacy Score</span>
                           <div className="flex items-center gap-2 justify-end">
-                            <span className={`text-xl font-bold ${getScoreColor(score)}`}>{score}/100</span>
-                            <span className="text-xs font-semibold text-primary">({getRatingText(score)})</span>
+                            <span className={`text-xl font-bold ${getScoreColor(score ?? 0)}`}>
+                              {score == null ? 'Not scanned' : `${score}/100`}
+                            </span>
+                            {score != null ? (
+                              <span className="text-xs font-semibold text-primary">({getRatingText(score)})</span>
+                            ) : null}
                           </div>
                         </div>
 
@@ -599,10 +539,10 @@ export default function PrivacyPitstopPage() {
                           <div key={cat.id} className="bg-muted p-2.5 rounded-xl border border-border text-left space-y-1">
                             <div className="flex items-center justify-between text-sm">
                               <span className="text-muted-foreground truncate">{cat.name}</span>
-                              <span className="text-foreground font-bold ml-1">{catScore}</span>
+                              <span className="text-foreground font-bold ml-1">{catScore ?? 'n/a'}</span>
                             </div>
                             <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
-                              <div className={`h-full rounded-full ${getBarBgColor(catScore)}`} style={{ width: `${catScore}%` }} />
+                              <div className={`h-full rounded-full ${getBarBgColor(catScore ?? 0)}`} style={{ width: `${catScore ?? 0}%` }} />
                             </div>
                           </div>
                         )
@@ -613,7 +553,7 @@ export default function PrivacyPitstopPage() {
                     {itemGapReasons.length > 0 && (
                       <div className="bg-muted/60 rounded-xl p-3.5 border border-border text-left space-y-2">
                         <h4 className="text-xs font-bold text-primary flex items-center gap-2">
-                          <AlertTriangle className="w-3.5 h-3.5 text-yellow-400" /> Key Privacy Concerns
+                          <AlertTriangle className="w-3.5 h-3.5 text-warning" /> Key privacy concerns
                         </h4>
                         <ul className="space-y-1 text-xs text-muted-foreground">
                           {itemGapReasons.map((reason, idx) => (
@@ -639,11 +579,15 @@ export default function PrivacyPitstopPage() {
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-muted p-3 rounded-xl border border-border text-center">
                               <div>
                                 <span className="text-xs text-muted-foreground block">Confidence Score</span>
-                                <span className="text-sm font-bold text-primary">{fullRes.confidenceScore || 85}%</span>
+                                <span className="text-sm font-bold text-primary">
+                                  {Number.isFinite(fullRes.confidenceScore) ? `${fullRes.confidenceScore}%` : 'Not scanned'}
+                                </span>
                               </div>
                               <div>
                                 <span className="text-xs text-muted-foreground block">Coverage Score</span>
-                                <span className="text-sm font-bold text-primary">{fullRes.coverageScore || 90}%</span>
+                                <span className="text-sm font-bold text-primary">
+                                  {Number.isFinite(fullRes.coverageScore) ? `${fullRes.coverageScore}%` : 'Not scanned'}
+                                </span>
                               </div>
                               <div>
                                 <span className="text-xs text-muted-foreground block">Pages Analyzed</span>
@@ -651,7 +595,7 @@ export default function PrivacyPitstopPage() {
                               </div>
                               <div>
                                 <span className="text-xs text-muted-foreground block">Total Findings</span>
-                                <span className="text-sm font-bold text-yellow-400">{domainFindings.length}</span>
+                                <span className="text-sm font-semibold text-foreground">{domainFindings.length}</span>
                               </div>
                             </div>
 
@@ -666,11 +610,11 @@ export default function PrivacyPitstopPage() {
                                     <div key={finding.id ? `${finding.id}-${idx}` : idx} className="p-3 rounded-xl bg-muted border border-border text-xs space-y-1">
                                       <div className="flex items-center justify-between">
                                         <span className="font-bold text-foreground">{finding.title}</span>
-                                        <span className={`text-xs font-bold px-2 py-0.5 rounded uppercase ${
-                                          finding.severity === 'critical' ? 'bg-red-500/10 text-red-400 border border-red-500/30' :
-                                          finding.severity === 'high' ? 'bg-orange-500/10 text-orange-400 border border-orange-500/30' :
-                                          finding.severity === 'medium' ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/30' :
-                                          'bg-primary/10 text-primary border border-primary/30'
+                                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded uppercase tracking-wide ${
+                                          finding.severity === 'critical' ? 'bg-destructive/10 text-destructive border border-destructive/30' :
+                                          finding.severity === 'high' ? 'bg-warning/10 text-warning border border-warning/30' :
+                                          finding.severity === 'medium' ? 'bg-primary/10 text-primary border border-primary/30' :
+                                          'bg-muted text-muted-foreground border border-border'
                                         }`}>
                                           {finding.severity}
                                         </span>
@@ -714,24 +658,24 @@ export default function PrivacyPitstopPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             <div className={`${view === 'results' ? 'lg:col-span-6' : 'lg:col-span-8'} space-y-6`}>
               {/* Title Block */}
-              <div className="text-center lg:text-left max-w-3xl space-y-4">
-                <div className="inline-flex items-center gap-2 rounded-full border border-border bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
-                  <ShieldCheck className="w-3.5 h-3.5 text-primary" />
-                  Free public privacy scan · No signup
-                </div>
-                <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
-                  <span className="gradient-text">Privacy Pitstop by DPDP Consultancy</span>
+              <div className="text-left max-w-2xl space-y-4">
+                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                  Public scan
+                </p>
+                <h1 className="text-4xl md:text-5xl font-semibold tracking-tight text-foreground">
+                  Privacy Pitstop
                 </h1>
                 <p className="text-lg text-muted-foreground leading-relaxed">
-                  Scan. Understand. Question. Grieve. Track. Escalate.
+                  A public-page scan of notice, consent, cookies, rights, children&apos;s
+                  data, and transport security. Values from behind a login are not requested.
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  A free public privacy capability by DPDP Consultancy
+                  Findings become questions, a grievance draft, and a complaint pack.
                 </p>
               </div>
 
               {/* Form Input Section */}
-              <div className="glass-card p-2 sm:p-2.5 flex items-center gap-2 rounded-2xl">
+              <div className="ledger-panel p-2 sm:p-2.5 flex items-center gap-2 rounded-2xl">
                 <div className="pl-3 text-muted-foreground">
                   <Globe className="w-4 h-4" />
                 </div>
@@ -801,10 +745,10 @@ export default function PrivacyPitstopPage() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="border border-red-500/20 rounded-2xl bg-destructive/5 p-8 text-center"
+                    className="ledger-panel p-8 text-center"
                   >
-                    <AlertTriangle className="w-8 h-8 text-red-500 mx-auto mb-3" />
-                    <p className="text-sm font-bold text-foreground">Analysis Failed</p>
+                    <AlertTriangle className="w-8 h-8 text-destructive mx-auto mb-3" />
+                    <p className="text-sm font-semibold text-foreground">Scan failed</p>
                     <p className="text-xs text-muted-foreground mt-1 mb-4">{error}</p>
                     <Button variant="secondary" size="sm" onClick={resetToLanding}>
                       Reset
@@ -818,7 +762,7 @@ export default function PrivacyPitstopPage() {
                     className="space-y-6"
                   >
                     {/* ── Scan Result Header ──────────────────────────── */}
-                    <div className="glass-card p-5">
+                    <div className="ledger-panel p-5">
                       <p className="text-xs font-semibold tracking-widest text-muted-foreground uppercase mb-3">Scan result</p>
                       <div className="flex items-center justify-between flex-wrap gap-3">
                         <div className="flex items-center gap-3">
@@ -839,14 +783,14 @@ export default function PrivacyPitstopPage() {
                         </div>
                         <div className="text-right">
                           <p className="text-xs text-muted-foreground">
-                            Scanned on {new Date(result.analyzedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} · India 🇮🇳
+                            Scanned on {new Date(result.analyzedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} · India
                           </p>
                         </div>
                       </div>
                     </div>
 
                     {/* ── Section 1: Privacy Score Summary ──────────── */}
-                    <div className="glass-card p-6 md:p-8">
+                    <div className="ledger-panel p-6 md:p-8">
                       <p className="text-xs font-semibold tracking-widest text-muted-foreground uppercase mb-5">Overall privacy score</p>
                       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
                         {/* Score Ring */}
@@ -868,24 +812,16 @@ export default function PrivacyPitstopPage() {
                             </div>
                           </div>
                           <div className="mt-4">
-                            <div className={`text-base font-bold uppercase tracking-wider ${getScoreColor(displayScore)}`}>
+                            <div className={`text-sm font-semibold uppercase tracking-wider ${getScoreColor(displayScore)}`}>
                               {displayRating}
                             </div>
-                            <p className="text-xs text-muted-foreground mt-1">Privacy is a right. Transparency is respect.</p>
+                            <p className="text-xs text-muted-foreground mt-1">Public pages only. Not a Board finding.</p>
                           </div>
                         </div>
 
                         {/* Category bars */}
                         <div className="md:col-span-7 space-y-3 text-left">
-                          {(result?.report?.categories || [
-                            { id: 'notice', name: 'Privacy Notice', score: getCategoryScore('Notice Transparency') },
-                            { id: 'consent', name: 'Consent', score: getCategoryScore('Cookie & Consent') },
-                            { id: 'cookies', name: 'Cookies', score: getCategoryScore('Cookie & Consent') },
-                            { id: 'rights', name: 'Rights', score: getCategoryScore('User Rights & Redressal') },
-                            { id: 'ai_transparency', name: 'AI Transparency', score: getCategoryScore('AI Transparency') },
-                            { id: 'childrens_privacy', name: "Children's Privacy", score: getCategoryScore('Notice Transparency') },
-                            { id: 'security', name: 'Security', score: getCategoryScore('Security Signals') },
-                          ]).map((cat) => {
+                          {(result?.report?.categories ?? result?.categories ?? []).map((cat) => {
                             const iconMap: Record<string, any> = {
                               notice: FileText,
                               consent: ShieldCheck,
@@ -895,8 +831,9 @@ export default function PrivacyPitstopPage() {
                               childrens_privacy: HelpCircle,
                               security: Shield,
                             }
-                            const IconComp = iconMap[cat.id] || FileText
-                            const score = Math.round(cat.score)
+                            const catId = 'id' in cat ? String(cat.id) : cat.name
+                            const IconComp = iconMap[catId] || FileText
+                            const score = Number.isFinite(cat.score) ? Math.round(cat.score) : null
                             return (
                               <div key={cat.name} className="space-y-1">
                                 <div className="flex justify-between items-center text-xs font-semibold text-muted-foreground">
@@ -904,10 +841,10 @@ export default function PrivacyPitstopPage() {
                                     <IconComp className="w-3 h-3 text-primary/60" />
                                     <span>{cat.name}</span>
                                   </div>
-                                  <span className="text-foreground font-bold">{score}/100</span>
+                                  <span className="text-foreground font-bold">{score == null ? 'Not scanned' : `${score}/100`}</span>
                                 </div>
                                 <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
-                                  <div className={`h-full rounded-full ${getBarBgColor(score)}`} style={{ width: `${score}%` }} />
+                                  <div className={`h-full rounded-full ${getBarBgColor(score ?? 0)}`} style={{ width: `${score ?? 0}%` }} />
                                 </div>
                               </div>
                             )
@@ -921,7 +858,7 @@ export default function PrivacyPitstopPage() {
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.12 }}
-                      className="glass-card p-6 md:p-8 space-y-4 text-left border-l-4 border-l-primary"
+                      className="ledger-panel p-6 md:p-8 space-y-4 text-left border-l-4 border-l-primary"
                     >
                       <div className="flex items-center gap-2 border-b border-border pb-3">
                         <CheckCircle2 className="w-5 h-5 text-primary" />
@@ -931,47 +868,47 @@ export default function PrivacyPitstopPage() {
                         </div>
                       </div>
 
-                      {displayScore >= 95 ? (
-                        <div className="space-y-3 bg-emerald-500/10 p-5 rounded-xl border border-emerald-500/30">
-                          <div className="flex items-center gap-2 text-emerald-400 font-bold text-sm">
+                      {displayScore === 100 ? (
+                        <div className="space-y-3 bg-success/10 p-5 rounded-xl border border-success/30">
+                          <div className="flex items-center gap-2 text-success font-semibold text-sm">
                             <ShieldCheck className="w-5 h-5" />
-                            <span>100/100 Perfect Compliance Score Achieved</span>
+                            <span>Privacy quality 100/100 on this public scan</span>
                           </div>
-                          <p className="text-xs text-emerald-200/90 leading-relaxed font-medium">
-                            This domain achieved a perfect score because verified scan evidence confirms all key statutory compliance and transparency criteria were met:
+                          <p className="text-xs text-muted-foreground leading-relaxed">
+                            The detectors that ran recorded no deductions. That is not a Board finding or a legal opinion.
                           </p>
-                          <ul className="space-y-2 text-xs text-emerald-300 font-medium">
-                            <li className="flex items-center gap-2 bg-background/40 p-2.5 rounded border border-emerald-500/20">
-                              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                              <span>Privacy Policy & Notice documentation published and accessible at standard path</span>
+                          <ul className="space-y-2 text-xs text-foreground">
+                            <li className="flex items-center gap-2 bg-card p-2.5 rounded border border-border">
+                              <CheckCircle2 className="w-4 h-4 text-success shrink-0" />
+                              <span>Privacy notice published and reachable on a public path</span>
                             </li>
-                            <li className="flex items-center gap-2 bg-background/40 p-2.5 rounded border border-emerald-500/20">
-                              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                              <span>{result?.consentBannerPresent ? 'Active cookie consent banner detected with explicit choice options' : 'Clean tracking posture with 0 pre-consent unauthenticated trackers'}</span>
+                            <li className="flex items-center gap-2 bg-card p-2.5 rounded border border-border">
+                              <CheckCircle2 className="w-4 h-4 text-success shrink-0" />
+                              <span>{result?.consentBannerPresent ? 'Cookie consent banner present with an explicit choice' : 'No pre-consent unauthenticated trackers recorded'}</span>
                             </li>
-                            <li className="flex items-center gap-2 bg-background/40 p-2.5 rounded border border-emerald-500/20">
-                              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                              <span>0 unauthenticated third-party tracking scripts or data leakage endpoints detected</span>
+                            <li className="flex items-center gap-2 bg-card p-2.5 rounded border border-border">
+                              <CheckCircle2 className="w-4 h-4 text-success shrink-0" />
+                              <span>No unauthenticated third-party tracking scripts recorded on public pages</span>
                             </li>
-                            <li className="flex items-center gap-2 bg-background/40 p-2.5 rounded border border-emerald-500/20">
-                              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                              <span>HTTPS transport security active across all scanned pages</span>
+                            <li className="flex items-center gap-2 bg-card p-2.5 rounded border border-border">
+                              <CheckCircle2 className="w-4 h-4 text-success shrink-0" />
+                              <span>HTTPS in use on the scanned pages</span>
                             </li>
                           </ul>
                         </div>
                       ) : (
-                        <div className="space-y-3 bg-amber-500/10 p-5 rounded-xl border border-amber-500/30">
-                          <div className="flex items-center gap-2 text-amber-400 font-bold text-sm">
+                        <div className="space-y-3 bg-warning/10 p-5 rounded-xl border border-warning/30">
+                          <div className="flex items-center gap-2 text-warning font-semibold text-sm">
                             <AlertTriangle className="w-5 h-5" />
-                            <span>Why This Score: Key Impact Factors ({displayScore}/100)</span>
+                            <span>Why this score ({displayScore}/100)</span>
                           </div>
-                          <p className="text-xs text-amber-200/90 leading-relaxed font-medium">
-                            The score of {displayScore}/100 was derived from the following key non-compliance factors detected during the scan:
+                          <p className="text-xs text-muted-foreground leading-relaxed">
+                            Deductions on this public scan came from the factors below.
                           </p>
-                          <ul className="space-y-2 text-xs text-amber-200">
+                          <ul className="space-y-2 text-xs text-foreground">
                             {gapSummary.slice(0, 4).map((gap, idx) => (
-                              <li key={idx} className="flex items-start gap-2 bg-background/40 p-2.5 rounded border border-amber-500/20">
-                                <span className="text-amber-400 font-bold">•</span>
+                              <li key={idx} className="flex items-start gap-2 bg-card p-2.5 rounded border border-border">
+                                <span className="text-warning font-semibold">•</span>
                                 <span className="leading-snug">{gap}</span>
                               </li>
                             ))}
@@ -986,15 +923,15 @@ export default function PrivacyPitstopPage() {
                         initial={{ opacity: 0, y: 12 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.15 }}
-                        className="glass-card p-6 md:p-8 space-y-6 text-left"
+                        className="ledger-panel p-6 md:p-8 space-y-6 text-left"
                       >
                         <div className="flex items-center justify-between border-b border-border pb-4">
                           <div className="flex items-center gap-2">
-                            <Sparkles className="w-5 h-5 text-primary" />
-                            <h3 className="text-base font-bold text-foreground">AI Privacy Audit & Technical Report</h3>
+                            <FileText className="w-5 h-5 text-primary" />
+                            <h3 className="text-base font-bold text-foreground">Scan report</h3>
                           </div>
-                          <span className="text-xs font-semibold px-2.5 py-1 rounded bg-primary/10 border border-primary/30 text-primary flex items-center gap-1.5">
-                            <Brain className="w-3.5 h-3.5" /> OpenAI Enriched
+                          <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                            From public pages
                           </span>
                         </div>
 
@@ -1026,7 +963,7 @@ export default function PrivacyPitstopPage() {
                       className="w-full"
                     >
                       {/* GAP SUMMARY */}
-                      <div className="glass-card p-5">
+                      <div className="ledger-panel p-5">
                         <p className="text-xs font-semibold tracking-widest text-muted-foreground uppercase mb-3">Gap summary</p>
                         <div className="space-y-2.5">
                           {gapSummary.length > 0 ? (
@@ -1048,7 +985,78 @@ export default function PrivacyPitstopPage() {
                       </div>
                     </motion.div>
 
+                    {allFindings.length > 0 ? (
+                      <div className="space-y-3">
+                        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                          Findings ({allFindings.length})
+                        </p>
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          {allFindings.map((finding, idx) => (
+                            <EvidenceCard
+                              key={finding.id ? `${finding.id}-${idx}` : idx}
+                              title={finding.title}
+                              section={sectionForFinding(finding)}
+                              severity={finding.severity}
+                              recordId={finding.id ? String(finding.id) : undefined}
+                              footer={finding.recommendation}
+                            >
+                              {finding.description}
+                            </EvidenceCard>
+                          ))}
+                        </div>
+                      </div>
+                    ) : null}
 
+                    {citizenActions ? (
+                      <div className="ledger-panel space-y-5 p-5 md:p-6">
+                        <div>
+                          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+                            Citizen actions
+                          </p>
+                          <p className="mt-1 text-xs text-muted-foreground">
+                            Questions and drafts generated from this scan. They are not legal advice.
+                          </p>
+                        </div>
+                        {citizenActions.questions.length > 0 ? (
+                          <div className="space-y-2">
+                            <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">Questions</h4>
+                            <ul className="space-y-2">
+                              {citizenActions.questions.slice(0, 8).map((q) => (
+                                <li key={q.id} className="rounded-lg border border-dashed border-border p-3 text-xs leading-relaxed text-foreground">
+                                  {q.question}
+                                  {q.evidenceReference ? (
+                                    <p className="mt-1 font-mono text-[10px] text-muted-foreground">{q.evidenceReference}</p>
+                                  ) : null}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ) : null}
+                        {citizenActions.grievanceDraft ? (
+                          <div className="space-y-2">
+                            <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">
+                              Grievance draft
+                            </h4>
+                            <p className="text-xs font-medium text-foreground">{citizenActions.grievanceDraft.subject}</p>
+                            <pre className="whitespace-pre-wrap rounded-lg border border-border bg-muted/40 p-3 font-mono text-[11px] leading-relaxed text-muted-foreground">
+                              {citizenActions.grievanceDraft.body}
+                            </pre>
+                          </div>
+                        ) : null}
+                        <div className="space-y-2">
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">Follow-up</h4>
+                          <pre className="whitespace-pre-wrap rounded-lg border border-border bg-muted/40 p-3 font-mono text-[11px] leading-relaxed text-muted-foreground">
+                            {citizenActions.followUpTemplate}
+                          </pre>
+                        </div>
+                        <div className="space-y-2">
+                          <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">Complaint pack</h4>
+                          <pre className="whitespace-pre-wrap rounded-lg border border-dashed border-border p-3 font-mono text-[11px] leading-relaxed text-muted-foreground">
+                            {citizenActions.complaintPackSummary}
+                          </pre>
+                        </div>
+                      </div>
+                    ) : null}
 
                     {/* ── Scan Another CTA ──────────────────────────── */}
                     <motion.div
@@ -1070,70 +1078,56 @@ export default function PrivacyPitstopPage() {
                 ) : null}
               </AnimatePresence>
 
-              {/* Bottom 5 Cards using MythBreaker style overlap */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3 pt-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2">
                 {[
                   {
-                    title: 'Cookie & Consent Check',
-                    desc: 'See how websites use cookies and get consent.',
-                    backText: 'Analyzes cookie banners, opt-out toggles, and tracks script-loading behaviors.',
+                    title: 'Cookie and consent',
+                    desc: 'Public banners, reject paths, and what loads before a choice.',
                     icon: Cookie
                   },
                   {
-                    title: 'Grievance & Rights Guidance',
-                    desc: 'Know your rights. Find redressal options.',
-                    backText: 'Checks for mechanisms to submit DSAR or contact DPO under DPDP Act.',
+                    title: 'Rights and grievance',
+                    desc: 'Notice of how to ask, complain, and reach the grievance officer.',
                     icon: Scale
                   },
                   {
-                    title: 'AI Transparency Signals',
-                    desc: 'Understand how AI is used on the website.',
-                    backText: 'Scans for disclosures regarding AI model usage and data training consent.',
-                    icon: Sparkles
-                  },
-                  {
-                    title: 'Public Scan Rankings',
-                    desc: 'Compare. Learn. Drive better privacy.',
-                    backText: 'Compares privacy posture against industry benchmarks and transparency scoreboards.',
+                    title: 'Public ranking',
+                    desc: 'Scores from the same public scan, listed for comparison.',
                     icon: Globe
                   },
-                  {
-                    title: 'Built from public signals',
-                    desc: 'Independent. Objective. Transparent.',
-                    backText: 'Uses non-intrusive public page requests and network inspection.',
-                    icon: Shield
-                  }
                 ].map((c) => (
-                  <MythStyleCard key={c.title} title={c.title} desc={c.desc} backText={c.backText} icon={c.icon} />
+                  <div key={c.title} className="ledger-panel p-4 space-y-2">
+                    <c.icon className="w-4 h-4 text-primary" />
+                    <h4 className="text-sm font-semibold text-foreground">{c.title}</h4>
+                    <p className="text-xs text-muted-foreground leading-relaxed">{c.desc}</p>
+                  </div>
                 ))}
               </div>
             </div>
 
             {/* Middle Column: Your Privacy Action Journey (only on results) */}
             {view === 'results' && result && (
-            <div className="lg:col-span-3 glass-card p-5 space-y-0">
+            <div className="lg:col-span-3 ledger-panel p-5 space-y-0">
               <div className="flex items-center gap-2 mb-5 border-b border-border pb-3">
                 <Shield className="w-4 h-4 text-primary" />
                 <h3 className="text-sm font-semibold text-foreground tracking-wide">Your Privacy Action Journey</h3>
               </div>
 
-              {/* Journey Steps */}
               <div className="relative">
-                {/* Vertical connecting line */}
-                <div className="absolute left-[15px] top-4 bottom-4 w-px bg-gradient-to-b from-primary/40 via-primary/20 to-primary/40" />
+                <div className="absolute left-[15px] top-4 bottom-4 w-px bg-border" />
 
                 <div className="space-y-4">
                   {[
-                    { step: 1, icon: Search, title: 'Scan', desc: 'Check any company website or app', color: 'from-primary to-[hsl(var(--gradient-end))]' },
-                    { step: 2, icon: Eye, title: 'Understand', desc: 'See privacy score, gaps, and plain-language insights', color: 'from-emerald-500 to-emerald-600' },
-                    { step: 3, icon: HelpCircle, title: 'Question', desc: 'Ask the fiduciary about your data, consent, retention, and AI use', color: 'from-blue-500 to-blue-600' },
-                    { step: 4, icon: AlertTriangle, title: 'Grieve', desc: 'Raise a privacy grievance using guided templates', color: 'from-amber-500 to-amber-600' },
-                    { step: 5, icon: BarChart3, title: 'Track', desc: 'Monitor responses and unresolved issues', color: 'from-violet-500 to-violet-600' },
-                    { step: 6, icon: ArrowUpRight, title: 'Escalate', desc: 'Build a complaint pack for formal escalation', color: 'from-rose-500 to-rose-600' },
+                    { step: 1, icon: Search, title: 'Scan', desc: 'Public pages only. No login, no private APIs.' },
+                    { step: 2, icon: Eye, title: 'Understand', desc: 'Privacy quality score, category bars, and gap reasons from the scan.' },
+                    { step: 3, icon: HelpCircle, title: 'Question', desc: 'Ask the fiduciary about notice, consent, retention, and AI use.' },
+                    { step: 4, icon: AlertTriangle, title: 'Grieve', desc: 'Raise a privacy grievance using the generated draft.' },
+                    { step: 5, icon: BarChart3, title: 'Track', desc: 'Keep the follow-up template until a response arrives.' },
+                    { step: 6, icon: ArrowUpRight, title: 'Escalate', desc: 'Use the complaint pack if the grievance stays unresolved.' },
                   ].map((item) => (
                     <div key={item.step} className="flex items-start gap-3 relative">
-                      <div className={`w-[30px] h-[30px] rounded-full bg-gradient-to-br ${item.color} flex items-center justify-center shrink-0 z-10 shadow-lg shadow-primary/20`}>
-                        <span className="text-xs font-bold text-white">{item.step}</span>
+                      <div className="z-10 flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full border border-border bg-card font-mono text-[11px] font-semibold text-foreground">
+                        {item.step}
                       </div>
                       <div className="pt-0.5">
                         <div className="flex items-center gap-1.5">
@@ -1152,8 +1146,8 @@ export default function PrivacyPitstopPage() {
                 <div className="flex items-start gap-2 px-3 py-2.5 rounded-lg bg-primary/5 border border-border">
                   <Megaphone className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-xs font-bold text-primary leading-tight">Your voice creates accountability.</p>
-                    <p className="text-xs text-muted-foreground leading-snug mt-0.5">Together, we build a privacy-respectful India.</p>
+                    <p className="text-xs font-bold text-primary leading-tight">Section 13 grievance, then Board complaint if unanswered.</p>
+                    <p className="text-xs text-muted-foreground leading-snug mt-0.5">The drafts below cite only what this public scan recorded.</p>
                   </div>
                 </div>
               </div>
@@ -1161,55 +1155,60 @@ export default function PrivacyPitstopPage() {
             )}
 
             {/* Right Column */}
-            <div className={`${view === 'results' ? 'lg:col-span-3' : 'lg:col-span-4'} glass-card p-5 space-y-5`}>
+            <div className={`${view === 'results' ? 'lg:col-span-3' : 'lg:col-span-4'} ledger-panel p-5 space-y-5`}>
               <div className="flex items-center justify-between border-b border-border pb-4">
                 <div className="text-left">
-                  <h3 className="text-base font-semibold text-foreground leading-none">Privacy Market Watch</h3>
+                  <h3 className="text-base font-semibold text-foreground leading-none">Public leaderboard</h3>
+                  {leaderboardError ? (
+                    <p className="mt-2 text-xs text-destructive">{leaderboardError}</p>
+                  ) : null}
                   <span className="text-xs text-muted-foreground tracking-tight mt-1 inline-block">
-                    Illustrative public leaderboard based on public scans
+                    India top 10 by privacy quality
                   </span>
                 </div>
-                <div className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-primary/10 border border-primary/30">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                  <span className="text-xs font-bold text-primary tracking-wider">LIVE</span>
-                </div>
+                <span className="rounded-md border border-border bg-muted px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                  Top 10
+                </span>
               </div>
 
-              {topGainers.length === 0 && topLosers.length === 0 ? (
+              {board.length === 0 ? (
                 <div className="py-4 text-center space-y-1">
-                  <p className="text-xs text-muted-foreground italic">No qualifying domains scanned yet.</p>
-                  <p className="text-[11px] text-muted-foreground/80">Enter a domain above to populate live rankings.</p>
+                  <p className="text-xs text-muted-foreground italic">The top 10 is not available yet.</p>
                 </div>
               ) : (
-                [
-                  {
-                    title: 'Top Gainers (Score > 60)',
-                    color: 'text-primary',
-                    items: topGainers.slice(0, 5)
-                  },
-                  {
-                    title: 'Top Losers (Score < 60)',
-                    color: 'text-red-400',
-                    items: topLosers.slice(0, 5)
-                  }
-                ].filter(section => section.items.length > 0).map((section) => (
-                  <div key={section.title} className="space-y-2 text-left">
-                    <h4 className={`text-xs font-bold ${section.color}`}>{section.title}</h4>
-                    <div className="space-y-1.5">
-                      {section.items.map((item, idx) => (
-                        <div key={`${section.title}-${item.domain}`} className="flex items-center justify-between text-xs py-1 hover:bg-muted px-2 rounded-md transition-all">
-                          <div className="flex items-center gap-3">
-                            <span className="text-muted-foreground w-4 text-xs">{idx + 1}</span>
-                            <span className="font-semibold text-muted-foreground hover:text-foreground transition-colors">
-                              {item.domain}
-                            </span>
+                <div className="space-y-1.5 text-left">
+                  {(['Top Gainers', 'Top Losers'] as const).map((group) => {
+                    const rows = board.filter((item) => (group === 'Top Gainers' ? item.score > 60 : item.score <= 60))
+                    if (rows.length === 0) return null
+                    return (
+                      <div key={group} className="space-y-1">
+                        <p className={`px-2 pt-2 text-[10px] font-semibold uppercase tracking-wider ${group === 'Top Gainers' ? 'text-primary' : 'text-warning'}`}>
+                          {group}
+                        </p>
+                        {rows.map((item) => (
+                          <div key={item.domain} className="flex items-center justify-between text-xs py-1 hover:bg-muted px-2 rounded-md transition-all">
+                            <div className="flex items-center gap-3">
+                              <span className="text-muted-foreground w-4 text-xs">{item.rank}</span>
+                              <span className="font-semibold text-muted-foreground hover:text-foreground transition-colors">
+                                {item.domain}
+                              </span>
+                            </div>
+                            <span className="font-bold text-foreground text-sm">{item.score}</span>
                           </div>
-                          <span className="font-bold text-foreground text-sm">{item.score}</span>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
+                    )
+                  })}
+                  {visitorPlacement && !visitorPlacement.listed ? (
+                    <div className="flex items-center justify-between text-xs py-1 px-2 rounded-md border border-warning/30 bg-warning/5">
+                      <div className="flex items-center gap-3">
+                        <span className="text-warning w-4 text-xs">{visitorPlacement.rank}</span>
+                        <span className="font-semibold text-foreground">{visitorPlacement.domain}</span>
+                      </div>
+                      <span className="font-bold text-foreground text-sm">{visitorPlacement.score}</span>
                     </div>
-                  </div>
-                ))
+                  ) : null}
+                </div>
               )}
 
               <div className="pt-2 text-center">
@@ -1217,7 +1216,7 @@ export default function PrivacyPitstopPage() {
                   onClick={() => setView('leaderboard')}
                   className="text-xs text-primary hover:underline cursor-pointer bg-transparent border-0 outline-none focus:outline-none"
                 >
-                  View full leaderboard on dpdpconsultancy.in/pitstop &gt;
+                  View full leaderboard
                 </button>
               </div>
             </div>
@@ -1225,5 +1224,13 @@ export default function PrivacyPitstopPage() {
         )}
       </SectionWrapper>
     </div>
+  )
+}
+
+export default function PrivacyPitstopPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-background" />}>
+      <PrivacyPitstopPageInner />
+    </Suspense>
   )
 }

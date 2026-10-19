@@ -12,7 +12,7 @@ export function ScanOptionStep({ value, onChange }: ScanOptionStepProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-foreground">
+        <h2 className="text-2xl font-semibold tracking-tight text-foreground">
           Would you like a free privacy risk scan?
         </h2>
         <p className="mt-2 text-muted-foreground">
@@ -28,7 +28,7 @@ export function ScanOptionStep({ value, onChange }: ScanOptionStepProps) {
           className={cn(
             'flex flex-col items-center gap-4 rounded-xl border p-6 text-center transition-all duration-200',
             value === true
-              ? 'border-primary/50 bg-primary/5 shadow-[0_0_20px_hsl(var(--primary)/0.15)]'
+              ? 'border-primary/50 bg-primary/5'
               : 'border-border hover:border-primary/30 hover:bg-secondary/50'
           )}
         >
@@ -54,7 +54,7 @@ export function ScanOptionStep({ value, onChange }: ScanOptionStepProps) {
           className={cn(
             'flex flex-col items-center gap-4 rounded-xl border p-6 text-center transition-all duration-200',
             value === false
-              ? 'border-primary/50 bg-primary/5 shadow-[0_0_20px_hsl(var(--primary)/0.15)]'
+              ? 'border-primary/50 bg-primary/5'
               : 'border-border hover:border-primary/30 hover:bg-secondary/50'
           )}
         >

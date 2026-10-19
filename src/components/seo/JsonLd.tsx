@@ -22,7 +22,7 @@ export function JsonLd() {
     url: BASE_URL,
     logo: `${BASE_URL}/images/brand/logo-icon-color.svg`,
     description:
-      'DPDP Consultancy (dpdpconsultancy.in) is India\'s DPDP compliance intelligence platform — automated assessments, consent management, DSAR automation, and AI-powered governance for Indian enterprises.',
+      'DPDP Consultancy (dpdpconsultancy.in) is India\'s DPDP compliance intelligence platform: automated assessments, consent management, DSAR automation, and AI-powered governance for Indian enterprises.',
     foundingDate: '2024',
     areaServed: {
       '@type': 'Country',
@@ -56,7 +56,7 @@ export function JsonLd() {
     url: BASE_URL,
     publisher: { '@id': ORG_ID },
     description:
-      'Official website of DPDP Consultancy (dpdpconsultancy.in) — DPDP Act 2023 compliance platform for Indian enterprises.',
+      'Official website of DPDP Consultancy (dpdpconsultancy.in), DPDP Act 2023 compliance platform for Indian enterprises.',
     potentialAction: {
       '@type': 'SearchAction',
       target: {

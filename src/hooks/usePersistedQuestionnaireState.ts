@@ -1,5 +1,20 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { z } from 'zod'
 import type { QuestionnaireResponses, ScanResult } from '@/lib/types'
+const formDataSchema = z.object({
+  role: z.string(),
+  orgType: z.string(),
+  journeyStage: z.string(),
+  dataTypes: z.array(z.string()),
+  priorities: z.array(z.string()),
+  supportType: z.array(z.string()),
+  wantsScan: z.boolean(),
+  websiteUrl: z.string().optional(),
+  email: z.string().optional(),
+  name: z.string().optional(),
+  company: z.string().optional(),
+  consentGiven: z.boolean(),
+})
 
 const STORAGE_KEY = 'agigx_questionnaire_v1'
 
@@ -42,11 +57,25 @@ const defaultState: PersistedQuestionnaireState = {
   scanResult: null,
 }
 
+const persistedSchema = z.object({
+  formData: formDataSchema,
+  currentStep: z.number().int().min(0).max(8),
+  direction: z.number(),
+  wantsScan: z.boolean(),
+  scanId: z.string().nullable(),
+  scanProgress: z.number(),
+  issuesFound: z.number(),
+  scanDone: z.boolean(),
+  scanResult: z.unknown().nullable(),
+  _seq: z.number().optional(),
+})
+
 function readPersistedState(): PersistedQuestionnaireState | null {
   try {
     const stored = localStorage.getItem(STORAGE_KEY)
     if (!stored) return null
-    return JSON.parse(stored) as PersistedQuestionnaireState
+    const parsed = persistedSchema.parse(JSON.parse(stored))
+    return parsed as PersistedQuestionnaireState
   } catch {
     return null
   }
@@ -89,9 +118,9 @@ export function usePersistedQuestionnaireState() {
   useEffect(() => {
     const loadState = () => {
       try {
-        const stored = localStorage.getItem(STORAGE_KEY)
-        if (stored) {
-          applyStoredState(JSON.parse(stored))
+        const parsed = readPersistedState()
+        if (parsed) {
+          applyStoredState(parsed)
         } else {
           lastAppliedSeqRef.current = 0
           stateRef.current = defaultState

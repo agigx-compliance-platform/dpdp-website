@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import Script from 'next/script'
+import { Inter, JetBrains_Mono } from 'next/font/google'
 import { JsonLd } from '@/components/seo/JsonLd'
 import './globals.css'
 import { ThemeProvider } from '@/components/providers/ThemeProvider'
@@ -14,14 +15,26 @@ import { ConsentGatedGtagScripts } from '@/components/analytics/ConsentGatedGtag
 import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics'
 import { SITE_URL } from '@/lib/site-url'
 
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-sans',
+  display: 'swap',
+})
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-mono',
+  display: 'swap',
+})
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: 'DPDP Consultancy (dpdpconsultancy) — DPDP Compliance Platform India',
+    default: 'DPDP Consultancy (dpdpconsultancy): DPDP Compliance Platform India',
     template: '%s | DPDP Consultancy',
   },
   description:
-    'DPDP Consultancy (dpdpconsultancy.in) — India\'s DPDP compliance platform for privacy assessments, consent management, DSAR automation, and AI governance.',
+    'DPDP Consultancy (dpdpconsultancy.in): India\'s DPDP compliance platform for privacy assessments, consent management, DSAR automation, and AI governance.',
   keywords: [
     'DPDP Consultancy',
     'dpdpconsultancy',
@@ -80,7 +93,7 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_IN',
     siteName: 'DPDP Consultancy',
-    title: 'DPDP Consultancy (dpdpconsultancy) — DPDP Compliance Platform India',
+    title: 'DPDP Consultancy (dpdpconsultancy): DPDP Compliance Platform India',
     description:
       'DPDP Consultancy (dpdpconsultancy.in): privacy assessments, consent management, DSAR automation, and AI governance for Indian enterprises.',
     images: [
@@ -88,13 +101,13 @@ export const metadata: Metadata = {
         url: '/images/brand/og-1200x630.png',
         width: 1200,
         height: 630,
-        alt: 'DPDP Consultancy — DPDP Compliance Intelligence Platform for India',
+        alt: 'DPDP Consultancy: DPDP Compliance Intelligence Platform for India',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'DPDP Consultancy (dpdpconsultancy) — DPDP Compliance Platform India',
+    title: 'DPDP Consultancy (dpdpconsultancy): DPDP Compliance Platform India',
     description:
       'DPDP Consultancy (dpdpconsultancy.in): assessments, consent management, DSAR automation & AI governance. Avoid ₹250 Crore penalties.',
     images: ['/images/brand/og-1200x630.png'],
@@ -133,13 +146,13 @@ export default function RootLayout({
     ''
 
   return (
-    <html lang="en-IN" suppressHydrationWarning data-scroll-behavior="smooth" data-theme="dark">
+    <html lang="en-IN" suppressHydrationWarning data-scroll-behavior="smooth" data-theme="light" className={`${inter.variable} ${jetbrainsMono.variable}`}>
       <head>
         <Script
           id="theme-init"
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='light')document.documentElement.setAttribute('data-theme','light');}catch(e){}})();`,
+            __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();`,
           }}
         />
         {consentApiUrl ? (
@@ -154,7 +167,7 @@ export default function RootLayout({
         <ConsentGatedGtagScripts />
         <JsonLd />
       </head>
-      <body className="antialiased font-sans">
+      <body className={`${inter.className} antialiased font-sans`}>
         <ThemeProvider>
           <SmoothScrollProvider>
             <Navbar />

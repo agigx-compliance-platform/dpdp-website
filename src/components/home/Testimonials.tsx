@@ -23,7 +23,7 @@ const testimonials = [
   },
   {
     quote:
-      "What impressed us most was how the engine adapted to our healthcare-specific data requirements. This isn\u2019t a generic tool \u2014 it actually understands our domain.",
+      "What impressed us most was how the engine adapted to our healthcare-specific data requirements. This isn't a generic tool. It actually understands our domain.",
     author: 'Dr. Ananya Rao',
     role: 'Data Protection Officer',
     company: 'HealthBridge',

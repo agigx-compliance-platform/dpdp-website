@@ -1,7 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState } from 'react'
 import { Loader2 } from 'lucide-react'
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
@@ -31,12 +30,6 @@ const scanLaunchSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
 })
 
-const STATS = [
-  "E-commerce platforms face avg ₹82 Crore exposure under DPDP",
-  "72-hour breach notification window. Are you ready?",
-  "Section 6 violations alone carry ₹50 Crore penalty"
-]
-
 export function ScanLaunchStep({
   values,
   onChange,
@@ -45,15 +38,7 @@ export function ScanLaunchStep({
   isSubmitting,
   scanError,
 }: ScanLaunchStepProps) {
-  const [activeStatIndex, setActiveStatIndex] = useState(0)
   const [errors, setErrors] = useState<Record<string, string>>({})
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveStatIndex((prev) => (prev + 1) % STATS.length)
-    }, 3000)
-    return () => clearInterval(interval)
-  }, [])
 
   const handleStartScan = async () => {
     try {
@@ -73,28 +58,11 @@ export function ScanLaunchStep({
 
   return (
     <div className="space-y-8">
-      <div className="text-center">
-        <h2 className="text-3xl font-bold text-foreground">Scan your website for free</h2>
-        <p className="mt-3 text-base text-muted-foreground">
-          We&apos;ll check for consent banners, cookie compliance, DSAR mechanisms, and privacy policy gaps (about 90 seconds).
+      <div>
+        <h2 className="text-2xl font-semibold tracking-tight text-foreground">Scan a public site</h2>
+        <p className="mt-3 text-base text-muted-foreground leading-relaxed">
+          Consent banner, cookies, rights links, and the privacy notice. About 90 seconds. Skipping still requires consent before contact details are stored.
         </p>
-      </div>
-
-      <div className="flex justify-center">
-        <div className="relative h-10 w-full max-w-sm overflow-hidden rounded-full border-l-4 border-l-primary bg-secondary/50 px-4 py-2 flex items-center shadow-sm">
-          <AnimatePresence mode="wait">
-            <motion.p
-              key={activeStatIndex}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
-              className="text-xs font-medium text-muted-foreground text-center w-full"
-            >
-              {STATS[activeStatIndex]}
-            </motion.p>
-          </AnimatePresence>
-        </div>
       </div>
 
       {scanError && (
@@ -142,19 +110,19 @@ export function ScanLaunchStep({
         </div>
       </div>
 
-      <div className="flex flex-col items-center gap-4 pt-4">
+      <div className="flex flex-col items-stretch gap-4 pt-2 sm:items-start">
         <Button
           type="button"
           variant="primary"
           size="lg"
-          className="w-full text-base sm:w-auto sm:min-w-[300px]"
+          className="w-full sm:w-auto"
           onClick={handleStartScan}
           disabled={isSubmitting}
         >
           {isSubmitting ? (
             <Loader2 className="h-5 w-5 animate-spin" />
           ) : (
-            'Start Scan & Begin Assessment →'
+            'Start scan and continue'
           )}
         </Button>
         <button

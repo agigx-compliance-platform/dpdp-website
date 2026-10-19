@@ -1,57 +1,30 @@
-"use client";
+'use client'
 
-import { motion } from "framer-motion";
-import { SectionWrapper } from "@/components/ui/SectionWrapper";
-import { ThemeScreenshot } from "@/components/ui/ThemeScreenshot";
-import { consentCockpitBestFeatures } from "@/lib/agigx-ui-screenshots";
+import { SectionWrapper } from '@/components/ui/SectionWrapper'
+import { ConnectorCanvas } from '@/components/workflow'
+import { consentCenter, consentEdges, consentNodes } from '@/lib/workflows'
 
 export function ConsentCockpitHighlights() {
   return (
-    <SectionWrapper className="py-12 md:py-16 border-y border-border/40 bg-background-secondary/30">
-      <div className="text-center mb-10 max-w-3xl mx-auto">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary mb-3">
+    <SectionWrapper className="border-y border-border bg-background-secondary/30 py-12 md:py-16">
+      <div className="mb-10 max-w-2xl">
+        <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
           Consent Cockpit
         </p>
-        <h2 className="text-2xl sm:text-3xl font-bold mb-3">
-          Best features,{" "}
-          <span className="gradient-text">one platform</span>
+        <h2 className="text-2xl font-semibold sm:text-3xl">
+          Notice, grant, withdrawal, receipt.
         </h2>
-        <p className="text-sm text-muted-foreground">
-          Real admin console screens and Privacy Assistant chat flows — each
-          screenshot matched to what it describes.
+        <p className="mt-3 text-sm text-muted-foreground">
+          A Section 6 event as a ledger. Not a screenshot of a demo tenant.
         </p>
       </div>
-
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        {consentCockpitBestFeatures.map((item, i) => (
-          <motion.div
-            key={item.title}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.45, delay: i * 0.06 }}
-            className="overflow-hidden rounded-xl border border-border/60 bg-card shadow-sm transition-colors hover:border-primary/40"
-          >
-            <div className="relative aspect-[16/10] w-full overflow-hidden border-b border-border/40 bg-card">
-              <ThemeScreenshot
-                dark={item.dark}
-                light={item.light}
-                alt={item.title}
-                surface={"chatSurface" in item && item.chatSurface ? "chat" : "default"}
-                darkClassName={"darkImageClassName" in item ? item.darkImageClassName : undefined}
-                lightClassName={"lightImageClassName" in item ? item.lightImageClassName : undefined}
-                priority={i === 0}
-              />
-            </div>
-            <div className="p-4">
-              <h3 className="text-sm font-semibold mb-1">{item.title}</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                {item.caption}
-              </p>
-            </div>
-          </motion.div>
-        ))}
-      </div>
+      <ConnectorCanvas
+        variant="canvas"
+        nodes={consentNodes}
+        edges={consentEdges}
+        center={consentCenter}
+        minHeight={480}
+      />
     </SectionWrapper>
-  );
+  )
 }

@@ -25,7 +25,10 @@ export function calculateRiskScore(formData: Partial<QuestionnaireResponses>): n
     customer: 4,
     'third-party': 4,
   }
-  for (const dt of formData.dataTypes ?? []) {
+  if (!Array.isArray(formData.dataTypes)) {
+    throw new Error('dataTypes missing from assessment state')
+  }
+  for (const dt of formData.dataTypes) {
     score += dataRisk[dt] ?? 0
   }
 

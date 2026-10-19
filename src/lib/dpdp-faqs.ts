@@ -1,7 +1,12 @@
+import { formatMilestoneDate, getEnforcementMilestone, getNextMilestone } from './dpdp-timeline'
+
 export type DpdpFaqItem = {
   question: string
   answer: string
 }
+
+const nextMilestone = getNextMilestone()
+const enforcement = getEnforcementMilestone()
 
 export const HOME_FAQS: DpdpFaqItem[] = [
   {
@@ -17,7 +22,7 @@ export const HOME_FAQS: DpdpFaqItem[] = [
   {
     question: 'Who does the DPDP Act 2023 apply to?',
     answer:
-      'The DPDP Act applies to any organisation that processes digital personal data of individuals in India — including Indian companies, foreign companies offering goods or services to people in India, employers, SaaS platforms, hospitals, banks, and marketplaces. Certain research, legal, and state functions have limited exemptions, but most businesses are in scope.',
+      'The DPDP Act applies to any organisation that processes digital personal data of individuals in India, including Indian companies, foreign companies offering goods or services to people in India, employers, SaaS platforms, hospitals, banks, and marketplaces. Certain research, legal, and state functions have limited exemptions, but most businesses are in scope.',
   },
   {
     question: 'What are the penalties under the DPDP Act?',
@@ -27,7 +32,7 @@ export const HOME_FAQS: DpdpFaqItem[] = [
   {
     question: 'When does DPDP enforcement begin?',
     answer:
-      'The Digital Personal Data Protection Act received Presidential assent in August 2023. The DPDP Rules were notified in November 2025, with phased enforcement. Organisations should implement consent, notice, rights, and security controls now rather than waiting for full enforcement, because remediation typically takes 3–6 months.',
+      `The Digital Personal Data Protection Act received Presidential assent in August 2023. The DPDP Rules were notified in November 2025, with phased enforcement. The next milestone on this site's timeline is ${nextMilestone.label} (${formatMilestoneDate(nextMilestone)}; ${nextMilestone.citation}). Full enforcement in the timeline is ${enforcement.label} on ${formatMilestoneDate(enforcement)}. Organisations should implement consent, notice, rights, and security controls now. Remediation typically takes months.`,
   },
   {
     question: 'How is DPDP different from GDPR?',
@@ -116,7 +121,7 @@ export const WHAT_IS_DPDP_FAQS: DpdpFaqItem[] = [
   {
     question: 'Who does the DPDP Act apply to?',
     answer:
-      'The DPDP Act applies to organisations that process digital personal data of people in India — including Indian companies and foreign companies offering goods or services in India. DPDP Consultancy helps Data Fiduciaries map which obligations apply.',
+      'The DPDP Act applies to organisations that process digital personal data of people in India, including Indian companies and foreign companies offering goods or services in India. DPDP Consultancy helps Data Fiduciaries map which obligations apply.',
   },
   {
     question: 'How can DPDP Consultancy help with DPDP compliance?',
@@ -134,7 +139,7 @@ export const DPDP_COMPLIANCE_FAQS: DpdpFaqItem[] = [
   {
     question: 'Who needs DPDP compliance in India?',
     answer:
-      'Any organisation that processes digital personal data of individuals in India — including Indian companies and foreign companies offering goods or services here. Employers, SaaS platforms, hospitals, banks, marketplaces, and public-facing websites are typically in scope. DPDP Consultancy maps which obligation domains apply to your processing.',
+      'Any organisation that processes digital personal data of individuals in India, including Indian companies and foreign companies offering goods or services here. Employers, SaaS platforms, hospitals, banks, marketplaces, and public-facing websites are typically in scope. DPDP Consultancy maps which obligation domains apply to your processing.',
   },
   {
     question: 'What are the main DPDP compliance requirements?',
@@ -167,12 +172,22 @@ export const CONSENT_MANAGEMENT_FAQS: DpdpFaqItem[] = [
   {
     question: 'How is DPDP consent different from GDPR consent?',
     answer:
-      'DPDP does not treat legitimate interest as a general lawful basis the way GDPR does. Notices and consent are the default path for most processing. Withdrawal must be as easy as giving consent, and purpose must be specific — bundled “accept all” without purpose choice is a compliance risk.',
+      'DPDP does not treat legitimate interest as a general lawful basis the way GDPR does. Notices and consent are the default path for most processing. Withdrawal must be as easy as giving consent, and purpose must be specific. Bundled “accept all” without purpose choice is a compliance risk.',
   },
   {
     question: 'What proof of consent does DPDP expect?',
     answer:
       'You should be able to show who consented, to which purposes, on which notice version, at what time, and whether they later withdrew. DPDP Consultancy’s consent platform keeps an immutable audit trail so that proof is available for grievance handling and Board inquiries.',
+  },
+  {
+    question: 'Do banners, notices, and rights forms need Indian languages?',
+    answer:
+      'The person has to understand the notice and the choice. English and Hindi ship on the banner and notices today. DSAR and grievance intake use the same language table. Further languages can be added without a separate product per workflow.',
+  },
+  {
+    question: 'Where does the Data Principal see and change what they granted?',
+    answer:
+      'The privacy cockpit is the one ledger. Consent grants and withdrawals, DSAR, and grievance sit there. When a purpose is withdrawn, the fiduciary and mapped processors are notified from that same record, not from a second helpdesk tool.',
   },
   {
     question: 'Can I use a global CMP for DPDP consent management?',
@@ -200,7 +215,7 @@ export const DPDP_PLATFORM_FAQS: DpdpFaqItem[] = [
   {
     question: 'Who should use a DPDP compliance platform?',
     answer:
-      'DPOs, privacy leads, CISOs, and legal teams at organisations that collect data through websites, apps, or vendors — especially if they cannot prove consent, meet rights timelines, or see what trackers fire on their properties. Start with a free Privacy Pitstop scan, then scope the platform.',
+      'DPOs, privacy leads, CISOs, and legal teams at organisations that collect data through websites, apps, or vendors, especially if they cannot prove consent, meet rights timelines, or see what trackers fire on their properties. Start with a free Privacy Pitstop scan, then scope the platform.',
   },
   {
     question: 'Is the DPDP Consultancy platform only for large enterprises?',

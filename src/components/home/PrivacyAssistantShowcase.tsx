@@ -35,7 +35,7 @@ export function PrivacyAssistantShowcase() {
           </h2>
           <p className="text-muted-foreground leading-relaxed mb-6 max-w-xl">
             Give data principals a multilingual, conversational way to exercise
-            rights — consent preferences, DSAR intake, grievances, and request
+            rights: consent preferences, DSAR intake, grievances, and request
             tracking in one guided chat experience.
           </p>
 

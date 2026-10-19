@@ -1,4 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
 @import "./colors.css";
 
 @tailwind base;
@@ -7,21 +6,7 @@
 
 @layer base {
   :root {
-    --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    --radius: 0.75rem;
-
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35), 0 1px 3px rgba(0, 0, 0, 0.22);
-    --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.25);
-    --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.55), 0 4px 16px rgba(0, 0, 0, 0.3);
-
-    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  [data-theme="light"] {
-    --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.06);
-    --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.1), 0 2px 8px rgba(15, 23, 42, 0.06);
-    --shadow-lg: 0 20px 50px rgba(15, 23, 42, 0.14), 0 6px 20px rgba(15, 23, 42, 0.08);
+    --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", "Fira Code", monospace;
   }
 }
 
@@ -40,6 +25,10 @@
   html[data-theme='light'] .brand-mark__logo--dark,
   html:not([data-theme='light']) .brand-mark__logo--light {
     display: none;
+  }
+
+  html:not([data-theme='light']) .connector-mark {
+    filter: invert(1);
   }
 
   html[data-theme='light'] .theme-screenshot__img--dark,
@@ -108,6 +97,10 @@
 }
 
 @layer components {
+  .ledger-panel {
+    @apply rounded-xl border border-border bg-card shadow-[var(--shadow-sm)];
+  }
+
   .glass-card {
     background: var(--glass-bg);
     backdrop-filter: blur(20px) saturate(1.8);

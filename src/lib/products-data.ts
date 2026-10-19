@@ -1,9 +1,10 @@
 import type { ElementType } from 'react'
-import { Fingerprint, ScanSearch, FileCheck, Server, Bot, RefreshCw, Network } from 'lucide-react'
+import { Fingerprint, ScanSearch, FileCheck, Server, Bot, RefreshCw, Network, Database, GitBranch, Cookie, FileText } from 'lucide-react'
 
 export const PRODUCTS = [
   {
     id: "consent-platform",
+    href: "/consent-management",
     name: "Consent Cockpit Platform",
     tagline:
       "Consent that satisfies Section 6, from capture to withdrawal to proof",
@@ -19,7 +20,7 @@ export const PRODUCTS = [
       {
         title: "Cookie Discovery",
         description:
-          "Playwright-powered scanning discovers all cookies and trackers across your digital properties",
+          "See cookies and tags on the live property, then map them to purposes",
       },
       {
         title: "Immutable Audit Trail",
@@ -43,6 +44,64 @@ export const PRODUCTS = [
       },
     ],
     dpdpSections: ["5", "6(1)", "6(2)", "6(4)", "8(5)", "8(7)"],
+    complianceDomains: ["Consent & Notice"],
+  },
+  {
+    id: "cookie-consent",
+    href: "/cookie-consent",
+    name: "Cookie Consent",
+    tagline: "Two banner layouts now. More can be added.",
+    description:
+      "Bar and modal ship today. Scan what the page sets, block non-essential tags until a grant, and keep a receipt. Further layouts, languages, and location rules can be added.",
+    icon: "Cookie",
+    features: [
+      {
+        title: "Bar and modal",
+        description: "Two layouts now. Brand colour and copy follow the notice.",
+      },
+      {
+        title: "More layouts can be added",
+        description: "Further layouts use the same consent record.",
+      },
+      {
+        title: "Block until grant",
+        description: "Non-essential tags wait. Decline is as easy as accept.",
+      },
+      {
+        title: "Preference centre",
+        description: "The visitor reopens the same purposes later.",
+      },
+    ],
+    dpdpSections: ["5", "6"],
+    complianceDomains: ["Consent & Notice"],
+  },
+  {
+    id: "policy-notice",
+    href: "/policy-notice",
+    name: "Policy and Notice",
+    tagline: "Two notice types now. More can be added.",
+    description:
+      "Privacy notice and cookie policy ship today, with versioning and purpose mapping. Children’s notices, processor lists, and AI disclosures can be added on the same history.",
+    icon: "FileText",
+    features: [
+      {
+        title: "Privacy notice",
+        description: "Purposes, rights, and how to reach the grievance officer.",
+      },
+      {
+        title: "Cookie policy",
+        description: "What actually loads, named by category and vendor.",
+      },
+      {
+        title: "More types can be added",
+        description: "Children, processors, AI, and in-product notices.",
+      },
+      {
+        title: "Version history",
+        description: "The text the visitor saw, not a CMS guess.",
+      },
+    ],
+    dpdpSections: ["5", "6"],
     complianceDomains: ["Consent & Notice"],
   },
   {
@@ -92,6 +151,68 @@ export const PRODUCTS = [
     ],
   },
   {
+    id: "data-discovery",
+    href: "/data-discovery",
+    name: "Data Discovery",
+    tagline: "A live inventory of personal data, built from catalogs, not spreadsheets",
+    description:
+      "Locate stores, classify personal data, and mark what a rights request can look up. Records stay in your network. Further connectors can be added.",
+    icon: "Database",
+    features: [
+      {
+        title: "Locate, classify, confirm",
+        description:
+          "Find the stores, name the personal data, then mark exact lookups.",
+      },
+      {
+        title: "Records stay with you",
+        description:
+          "The inventory is systems and fields. It is not a copy of the rows.",
+      },
+      {
+        title: "Classification",
+        description:
+          "Contact, financial, child, and other labels a fiduciary can act on.",
+      },
+      {
+        title: "Connectors",
+        description:
+          "Databases, warehouses, SaaS, streams, and cloud stores today. More can be added.",
+      },
+    ],
+    dpdpSections: ["8(5)", "8(7)"],
+    complianceDomains: ["Data Security & Breach", "Governance"],
+  },
+  {
+    id: "data-lineage",
+    href: "/data-lineage",
+    name: "Data Lineage",
+    tagline: "How data moved, and what is still unknown",
+    description:
+      "A coverage view of known stores. Pipeline definitions, infrastructure, query history, and job runs feed the map. Missing pieces are not invented.",
+    icon: "GitBranch",
+    features: [
+      {
+        title: "Pipeline definitions",
+        description: "Transforms and sources become edges, not a completeness claim.",
+      },
+      {
+        title: "Infrastructure definitions",
+        description: "Stores and processors that exist in infrastructure show up here.",
+      },
+      {
+        title: "Query history and job runs",
+        description: "How data actually moved, not how someone remembered it.",
+      },
+      {
+        title: "Coverage view",
+        description: "Known versus unknown stores. Gaps stay listed.",
+      },
+    ],
+    dpdpSections: ["8(5)", "12", "8(2)"],
+    complianceDomains: ["Data Principal Rights", "Governance"],
+  },
+  {
     id: "dsar-platform",
     name: "DSAR Management Platform",
     tagline: "Rights workflows that meet Section 11-13 timelines",
@@ -128,7 +249,7 @@ export const PRODUCTS = [
     name: "Vendor & Processor Governance",
     tagline: "Section 8(2) processor oversight from registry to downstream action",
     description:
-      "Register third-party processors and vendors, map them to processing purposes, orchestrate consent and DSAR propagation via webhooks, and monitor delivery health — with vendor risk visibility on your organisation dashboard.",
+      "Register third-party processors and vendors, map them to processing purposes, orchestrate consent and DSAR propagation via webhooks, and monitor delivery health, with vendor risk visibility on your organisation dashboard.",
     icon: "Network",
     features: [
       {
@@ -167,26 +288,27 @@ export const PRODUCTS = [
   },
   {
     id: "infra-scanner",
-    name: "Infrastructure and Code Scanner",
-    tagline: "Compliance visibility from cloud to codebase",
+    href: "/infra-posture",
+    name: "Infrastructure Posture",
+    tagline: "Cloud and code, seen as a privacy duty",
     description:
-      "Scans your cloud infrastructure and code repositories for privacy-relevant misconfigurations, PII exposure, and consent bypass patterns. Provides unified compliance dashboards across AWS, Azure, and GCP environments.",
+      "Open storage, over-broad identity, and identifiers left in repositories, on AWS, Azure, GCP, and Kubernetes. More estates can be added.",
     icon: "Server",
     features: [
       {
-        title: "Cloud Security Scanning",
+        title: "Cloud accounts",
         description:
-          "AWS, Azure, GCP misconfiguration detection with privacy-focused rules",
+          "AWS, Azure, and GCP findings that put personal data in reach",
       },
       {
-        title: "Code Repository Scanning",
+        title: "Code repositories",
         description:
-          "Static analysis for PII exposure and consent bypass in source code",
+          "Identifiers left in the open, and flows that skip a consent check",
       },
       {
-        title: "Compliance Dashboard",
+        title: "One posture list",
         description:
-          "Unified infrastructure and code compliance view with trend tracking",
+          "Open items and owners, next to the inventory those stores belong to",
       },
     ],
     dpdpSections: ["8(5)", "8(6)", "10"],
@@ -261,4 +383,8 @@ export const productIconMap: Record<string, ElementType> = {
   Server,
   Bot,
   RefreshCw,
+  Database,
+  GitBranch,
+  Cookie,
+  FileText,
 }

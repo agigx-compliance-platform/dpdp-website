@@ -29,7 +29,7 @@ export function RoleStep({ value, onChange, error }: RoleStepProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-foreground">What&apos;s your role?</h2>
+        <h2 className="text-2xl font-semibold tracking-tight text-foreground">What&apos;s your role?</h2>
         <p className="mt-2 text-muted-foreground">
           This helps us tailor recommendations to your perspective.
         </p>
@@ -44,7 +44,7 @@ export function RoleStep({ value, onChange, error }: RoleStepProps) {
             className={cn(
               'flex items-center gap-3 rounded-xl border p-4 text-left transition-all duration-200',
               value === id
-                ? 'border-primary/50 bg-primary/5 shadow-[0_0_12px_hsl(var(--primary)/0.15)]'
+                ? 'border-primary/50 bg-primary/5'
                 : 'border-border hover:border-primary/30 hover:bg-secondary/50'
             )}
           >

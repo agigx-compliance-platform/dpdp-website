@@ -18,8 +18,8 @@ export default function DpdpPlatformPage() {
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground leading-relaxed">
             The DPDP Consultancy platform is software for running Digital
-            Personal Data Protection Act duties every day — consent, scanning,
-            Data Principal rights, vendors, and evidence — not a slide deck
+            Personal Data Protection Act duties every day: consent, scanning,
+            Data Principal rights, vendors, and evidence, not a slide deck
             delivered at the end of a workshop.
           </p>
         </div>
@@ -136,7 +136,7 @@ export default function DpdpPlatformPage() {
             it is also how programmes stall. DPDP Consultancy’s stack is opinionated
             so a mid-size fiduciary can go live on consent, scanning, and DSAR
             without a six-month integration project. You can still keep SIEM,
-            IAM, and existing security tools — the platform does not replace
+            IAM, and existing security tools. The platform does not replace
             those.
           </p>
 

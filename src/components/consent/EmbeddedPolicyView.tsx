@@ -51,7 +51,7 @@ export function EmbeddedPolicyView({
     >
       {!CONSENT_API ? (
         <p className="text-sm text-muted-foreground not-prose">
-          Policy content is unavailable — consent API URL is not configured.
+          Policy content is unavailable. Consent API URL is not configured.
         </p>
       ) : (
         <div className="not-prose space-y-3 animate-pulse">

@@ -1,84 +1,60 @@
 'use client'
 
 import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { Compass, ShieldCheck, Brain, Wrench, ArrowRight } from 'lucide-react'
+import { Compass, ShieldCheck, Brain, Wrench } from 'lucide-react'
 import { SectionWrapper } from '@/components/ui/SectionWrapper'
 import { Button } from '@/components/ui/Button'
-import { TorchGrid, TorchCard } from '@/components/ui/TorchGrid'
 
 const services = [
   {
     icon: Compass,
     title: 'Advisory',
     description:
-      'Strategic compliance roadmaps, gap assessments, and board-level advisory for data protection regulations.',
+      'Applicability against Sections 5–16, SDF readiness, and a sequenced remediation plan.',
   },
   {
     icon: ShieldCheck,
-    title: 'Privacy Ops',
+    title: 'Privacy operations',
     description:
-      'End-to-end privacy operations: consent management, DSAR workflows, breach response, and vendor risk.',
+      'Consent, DSAR, breach notification, and processor contracts running as daily work.',
   },
   {
     icon: Brain,
-    title: 'AI Governance',
+    title: 'AI governance',
     description:
-      'Responsible AI frameworks, algorithmic audits, and AI Act readiness assessments.',
+      'Purpose, notice, and rights controls on models that process personal data of Indian residents.',
   },
   {
     icon: Wrench,
-    title: 'Technical Implementation',
+    title: 'Technical implementation',
     description:
-      'Privacy-by-design engineering, SDK integration, cookie management, and data classification tooling.',
+      'Embed on the site, connect the stores you already run, and keep records in your network.',
   },
 ]
 
 export function ServicesOverview() {
   return (
     <SectionWrapper id="services-preview">
-      <div className="text-center mb-10">
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-3xl sm:text-4xl font-bold"
-        >
-          Expert-Led Compliance <span className="gradient-text">Services</span>
-        </motion.h2>
+      <div className="max-w-2xl">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+          Services
+        </p>
+        <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
+          Software plus people who have read the Act.
+        </h2>
       </div>
-
-      <TorchGrid cols="sm:grid-cols-2 lg:grid-cols-4" gap="gap-6" className="mb-10">
-        {services.map((svc, i) => (
-          <motion.div
-            key={svc.title}
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: i * 0.1 }}
-            className="h-full"
-          >
-            <TorchCard className="p-6 flex flex-col">
-              <svc.icon className="w-9 h-9 text-primary mb-4 shrink-0" />
-              <h3 className="text-lg font-semibold mb-2">{svc.title}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed flex-1">
-                {svc.description}
-              </p>
-              <Link
-                href="/services"
-                className="mt-4 inline-flex items-center gap-1 text-sm text-primary font-medium hover:underline"
-              >
-                Learn More <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </TorchCard>
-          </motion.div>
+      <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {services.map((svc) => (
+          <div key={svc.title} className="rounded-xl border border-border bg-card p-6 shadow-[var(--shadow-sm)]">
+            <svc.icon className="mb-4 h-5 w-5 text-primary" aria-hidden />
+            <h3 className="text-base font-semibold">{svc.title}</h3>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{svc.description}</p>
+          </div>
         ))}
-      </TorchGrid>
-
-      <div className="text-center">
+      </div>
+      <div className="mt-8">
         <Link href="/services">
-          <Button variant="outline">View All Services</Button>
+          <Button variant="outline">All services</Button>
         </Link>
       </div>
     </SectionWrapper>

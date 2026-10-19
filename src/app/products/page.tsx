@@ -19,7 +19,7 @@ export default function ProductsPage() {
           className="text-center max-w-4xl mx-auto"
         >
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-            <span className="gradient-text">DPDP Consultancy Products</span>
+            DPDP Consultancy products
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
             Purpose-built technology products that automate DPDP compliance,
@@ -38,10 +38,10 @@ export default function ProductsPage() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="glass-card p-8 md:p-12 text-center"
+          className="rounded-xl border border-border bg-card p-8 text-center shadow-[var(--shadow-sm)] md:p-12"
         >
           <h2 className="text-3xl font-bold mb-4">
-            <span className="gradient-text">Find the Right Product for You</span>
+            Find the right product
           </h2>
           <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
             Take our guided questionnaire and receive personalised product

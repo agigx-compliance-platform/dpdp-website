@@ -1,31 +1,140 @@
 import Link from 'next/link'
 import { SectionWrapper } from '@/components/ui/SectionWrapper'
-import { FaqSection } from '@/components/seo/FaqSection'
-import { GuideCtas } from '@/components/seo/GuideCtas'
-import { RelatedGuides } from '@/components/seo/RelatedGuides'
+import { ProductLanding } from '@/components/products/ProductLanding'
+import { ConnectorCanvas } from '@/components/workflow'
 import { CONSENT_MANAGEMENT_FAQS } from '@/lib/dpdp-faqs'
+import {
+  consentCenter,
+  consentEdges,
+  consentLifecycleCenter,
+  consentLifecycleEdges,
+  consentLifecycleNodes,
+  consentNodes,
+  discoveryCenter,
+  discoveryEdges,
+  discoveryNodes,
+  lineageCenter,
+  lineageEdges,
+  lineageNodes,
+} from '@/lib/workflows'
 
 export default function ConsentManagementPage() {
   return (
-    <div className="min-h-screen bg-background">
-      <SectionWrapper className="pt-32 md:pt-40 pb-12">
-        <div className="mx-auto max-w-3xl text-center">
-          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-            DPDP Consultancy · dpdpconsultancy.in
-          </p>
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-            <span className="gradient-text">Consent management for the DPDP Act</span>
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground leading-relaxed">
-            Consent management is how Indian Data Fiduciaries collect, record,
-            update, and prove purpose-specific consent under Section 6 of the
-            Digital Personal Data Protection Act, 2023 — not a cookie banner
-            copied from a European template.
-          </p>
+    <ProductLanding
+      current="/consent-management"
+      eyebrow="Platform"
+      title="Consent lifecycle for the DPDP Act"
+      lead="Notice, purpose grant, withdrawal, and a sealed receipt. The cookie banner is one place that duty shows up. The record is what the Board can ask for."
+      nodes={consentNodes}
+      edges={consentEdges}
+      center={consentCenter}
+      capabilities={[
+        {
+          title: 'Purpose grant',
+          body: 'Each purpose is asked separately. Marketing is not bundled into onboarding. Withdrawal uses the same purpose IDs.',
+        },
+        {
+          title: 'Notice bound to the grant',
+          body: 'The version the person saw is stored with the choice. A later rewrite of the notice does not silently stretch old consent.',
+        },
+        {
+          title: 'Sealed receipt',
+          body: 'Who was asked, what they chose, which notice, and when they withdrew. Append-only. Withdrawal invalidates that version.',
+        },
+        {
+          title: 'Downstream signal',
+          body: 'Vendors mapped to a purpose stop using it when the grant is withdrawn. A banner-only change that never reaches processors is not a complete control.',
+        },
+        {
+          title: 'Preference centre',
+          body: 'The Data Principal reopens the same purposes later. No helpdesk required to withdraw.',
+        },
+        {
+          title: 'SDK and tags',
+          body: 'One script or API reads those purposes and gates tags. Marketing pixels should not have a parallel, ungoverned load path.',
+        },
+        {
+          title: 'Languages from one table',
+          body: 'Banner, purpose notice, DSAR, and grievance copy share the same locales. English and Hindi ship today. Further languages can be added without a new product per workflow.',
+        },
+        {
+          title: 'Cockpit as the activity ledger',
+          body: 'The Data Principal sees grants, withdrawals, access requests, and grievances in one place. Operators see the same events, not a scatter of inboxes.',
+        },
+      ]}
+      notes={[
+        {
+          title: 'Notice and consent',
+          body: 'Section 5 and Section 6 require a clear notice of purposes and consent that is free, specific, informed, and unambiguous. A European legitimate-interest default does not carry over.',
+        },
+        {
+          title: 'Withdrawal',
+          body: 'A grant that cannot be withdrawn as easily as it was given is not a complete control.',
+        },
+      ]}
+      faqs={CONSENT_MANAGEMENT_FAQS}
+      nextHref="/cookie-consent"
+      nextLabel="cookie consent banners"
+    >
+      <SectionWrapper>
+        <h2 className="text-2xl font-semibold text-foreground">Two working solutions</h2>
+        <p className="mt-3 max-w-2xl text-muted-foreground">
+          Consent is one closed loop. Discovery and lineage are the second: they show where the
+          personal data actually sits so a withdrawal or a rights request is not a guess.
+        </p>
+      </SectionWrapper>
+
+      <SectionWrapper>
+        <h3 className="text-xl font-semibold text-foreground">1. Give, see, withdraw, notify</h3>
+        <p className="mt-3 max-w-2xl text-muted-foreground">
+          The person grants a purpose, opens the same record in the cockpit, withdraws it, and the
+          fiduciary plus mapped processors are told to stop. A banner change that never reaches a
+          vendor is not this loop.
+        </p>
+        <div className="mt-8">
+          <ConnectorCanvas
+            variant="canvas"
+            nodes={consentLifecycleNodes}
+            edges={consentLifecycleEdges}
+            center={consentLifecycleCenter}
+            minHeight={520}
+          />
         </div>
       </SectionWrapper>
 
-      <SectionWrapper className="py-8">
+      <SectionWrapper>
+        <h3 className="text-xl font-semibold text-foreground">2. Discover, then follow lineage</h3>
+        <p className="mt-3 max-w-2xl text-muted-foreground">
+          Finding the stores and naming the fields is what makes the consent signal useful. Lineage
+          is how a withdrawal follows a table into a warehouse or a vendor export.{' '}
+          <Link href="/data-discovery" className="text-foreground underline-offset-4 hover:underline">
+            Data discovery
+          </Link>{' '}
+          and{' '}
+          <Link href="/data-lineage" className="text-foreground underline-offset-4 hover:underline">
+            data lineage
+          </Link>{' '}
+          are that path.
+        </p>
+        <div className="mt-8 grid gap-8 lg:grid-cols-2">
+          <ConnectorCanvas
+            variant="canvas"
+            nodes={discoveryNodes}
+            edges={discoveryEdges}
+            center={discoveryCenter}
+            minHeight={420}
+          />
+          <ConnectorCanvas
+            variant="canvas"
+            nodes={lineageNodes}
+            edges={lineageEdges}
+            center={lineageCenter}
+            minHeight={420}
+          />
+        </div>
+      </SectionWrapper>
+
+      <SectionWrapper>
         <article className="mx-auto max-w-3xl space-y-6 text-muted-foreground leading-relaxed">
           <h2 className="text-2xl font-semibold text-foreground">What DPDP requires of consent</h2>
           <p>
@@ -55,7 +164,7 @@ export default function ConsentManagementPage() {
             lists “analytics” while the tag manager also fires advertising and
             session-replay scripts is a notice failure even if a banner exists.
             Consent management has to inventory storage and pixels, map them to
-            purposes, and keep the notice in lockstep — which is why DPDP
+            purposes, and keep the notice in lockstep, which is why DPDP
             Consultancy pairs the consent platform with Privacy Pitstop rather
             than treating the CMP as self-sufficient.
           </p>
@@ -67,7 +176,7 @@ export default function ConsentManagementPage() {
             to tags and SDKs, preference updates, withdrawal, and an audit trail
             that survives a grievance or a Board inquiry. If marketing pixels
             still fire after a Data Principal declined a purpose, you do not
-            have consent management — you have a UI.
+            have consent management. You have a UI.
           </p>
           <p>
             DPDP Consultancy’s Consent Cockpit is built for that lifecycle.
@@ -75,105 +184,9 @@ export default function ConsentManagementPage() {
             binds consent to a versioned notice, and keeps an append-only log of
             who agreed to which purpose, on which policy version, and when they
             withdrew. That is the evidence DSAR and grievance workflows need.
-            See the{' '}
-            <Link href="/products" className="text-foreground underline-offset-4 hover:underline">
-              products overview
-            </Link>{' '}
-            for how it sits next to scanning and rights automation.
           </p>
-
-          <h2 className="text-2xl font-semibold text-foreground">Purpose, children, and vendors</h2>
-          <p>
-            Granular purpose is not a preference — it is how Section 6(2) is
-            written. Analytics, advertising, essential operations, and
-            personalisation are different purposes. Consent management has to
-            model those purposes, block downstream tags when consent is absent,
-            and re-prompt when the notice or purpose set changes.
-          </p>
-          <p>
-            Children’s data adds verifiable parental consent and tighter use
-            limits. Processor and vendor chains add another failure mode:
-            consent withdrawn on your site must propagate to parties who still
-            hold the data. DPDP Consultancy maps processors to purposes so a
-            withdrawal or rights request is not trapped in the first system that
-            recorded it.
-          </p>
-
-          <h2 className="text-2xl font-semibold text-foreground">Proof you can produce</h2>
-          <p>
-            When a Data Principal or the Board asks “on what basis did you send
-            this data to that vendor?”, the answer is a record, not a
-            recollection. Effective consent management stores identity or a
-            durable token, purposes, notice version, timestamp, channel (web,
-            app, call centre), and later withdrawal. Without that trail,{' '}
-            <Link href="/dpdp-platform" className="text-foreground underline-offset-4 hover:underline">
-              platform
-            </Link>{' '}
-            scanning and DSAR modules cannot reconstruct a lawful story.
-          </p>
-
-          <h2 className="text-2xl font-semibold text-foreground">Failure modes we see on Indian sites</h2>
-          <p>
-            Privacy Pitstop scans repeatedly surface the same consent failures:
-            non-essential cookies set before any choice, no genuine reject
-            path, analytics and ads still firing after withdrawal, notices that
-            do not list the vendors that actually load, and no record of which
-            policy version the user saw. Each of those is a Section 5 or Section
-            6 problem, not a design preference.
-          </p>
-          <p>
-            Another pattern is a CMP configured for “EU / rest of world” that
-            treats India as unregulated. Tags run freely, the banner is hidden,
-            and the only India-facing artefact is an English privacy policy.
-            DPDP does not work that way. If you offer goods or services to
-            people in India, the India traffic needs the same purpose split,
-            blocking, and proof as any other in-scope region — usually more
-            strictly on consent, because other lawful bases are narrower.
-          </p>
-
-          <h2 className="text-2xl font-semibold text-foreground">Preference centres and the SDK</h2>
-          <p>
-            Giving consent once on a first visit is not enough. Data Principals
-            must be able to reopen purposes, change a choice, and withdraw
-            without calling a helpdesk. That is a preference centre wired to the
-            same purpose IDs the banner uses. DPDP Consultancy’s SDK is a single
-            script (or API) that reads those purposes and gates tags; marketing
-            pixels should not have a parallel, ungoverned load path.
-          </p>
-          <p>
-            When the notice text or purpose set changes, prior consent should
-            not be silently stretched to the new processing. Version the notice,
-            invalidate or re-prompt where the purpose actually changed, and keep
-            both versions in the audit log. That is how you answer “what did this
-            person agree to in March?” without reconstructing a CMS history.
-          </p>
-
-          <h2 className="text-2xl font-semibold text-foreground">How DPDP Consultancy implements it</h2>
-          <p>
-            Implementation starts with what your properties already load. The
-            free{' '}
-            <Link href="/privacy-pitstop" className="text-foreground underline-offset-4 hover:underline">
-              Privacy Pitstop
-            </Link>{' '}
-            scan shows cookies, trackers, and notice gaps on a public website.
-            From there we define purposes against real processing, wire the
-            consent SDK, version the notice, and connect withdrawal to tag
-            blocking and vendor webhooks. Advisory covers notice wording and
-            children’s data; the platform runs the capture and proof.
-          </p>
-          <p>
-            Global CMPs that were configured for GDPR often leave DPDP notice
-            content, purpose split, and Indian rights hooks unfinished. DPDP
-            Consultancy implements consent management against the DPDP Act 2023
-            and the November 2025 Rules, then keeps it aligned as tags and
-            vendors change — which they will.
-          </p>
-          <GuideCtas />
         </article>
       </SectionWrapper>
-
-      <FaqSection title="Consent management questions" faqs={CONSENT_MANAGEMENT_FAQS} />
-      <RelatedGuides current="/consent-management" />
-    </div>
+    </ProductLanding>
   )
 }

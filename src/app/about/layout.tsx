@@ -3,7 +3,7 @@ import { BreadcrumbJsonLd } from '@/components/seo/BreadcrumbJsonLd'
 import { pageSeo } from '@/lib/page-metadata'
 
 export const metadata: Metadata = pageSeo({
-  title: 'About DPDP Consultancy — India\'s DPDP Compliance Experts',
+  title: 'About DPDP Consultancy: India\'s DPDP Compliance Experts',
   description:
     'DPDP Consultancy (dpdpconsultancy.in) turns DPDP Act 2023 obligations into enforceable controls for Indian enterprises.',
   path: '/about',

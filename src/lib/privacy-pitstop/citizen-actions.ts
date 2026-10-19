@@ -109,7 +109,7 @@ Regards,
 This grievance was generated based on a public scan of ${domain}. The findings are based on publicly accessible information only.`
 
   return {
-    subject: `Privacy Grievance — ${domain} — ${criticalOrHigh.length} Concern(s) Identified`,
+    subject: `Privacy Grievance: ${domain} (${criticalOrHigh.length} concern(s) identified)`,
     body,
     relatedFindings: criticalOrHigh.map(f => f.id),
   }
@@ -120,7 +120,7 @@ This grievance was generated based on a public scan of ${domain}. The findings a
    ═══════════════════════════════════════════════════════════════ */
 
 function generateFollowUp(domain: string): string {
-  return `Subject: Follow-Up — Privacy Grievance Regarding ${domain}
+  return `Subject: Follow-Up: Privacy Grievance Regarding ${domain}
 
 Dear Data Protection Officer / Grievance Officer,
 

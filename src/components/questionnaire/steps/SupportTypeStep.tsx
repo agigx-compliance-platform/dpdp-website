@@ -29,7 +29,7 @@ export function SupportTypeStep({ value, onChange, error }: SupportTypeStepProps
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-foreground">
+        <h2 className="text-2xl font-semibold tracking-tight text-foreground">
           What type of support are you looking for?
         </h2>
         <p className="mt-2 text-muted-foreground">

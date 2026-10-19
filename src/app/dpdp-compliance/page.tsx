@@ -52,7 +52,7 @@ export default function DpdpCompliancePage() {
           <h2 className="text-2xl font-semibold text-foreground">Who needs DPDP compliance</h2>
           <p>
             If you process digital personal data of individuals in India, you
-            are in scope — whether you are incorporated here or you offer goods
+            are in scope, whether you are incorporated here or you offer goods
             or services into India from abroad. Employers, hospitals, banks,
             marketplaces, SaaS products, and any site that drops analytics or
             advertising cookies typically have DPDP duties. Limited exemptions
@@ -75,7 +75,7 @@ export default function DpdpCompliancePage() {
           </p>
           <ul className="list-disc space-y-2 pl-5">
             <li>
-              <strong className="text-foreground">Consent and notice</strong> —
+              <strong className="text-foreground">Consent and notice</strong>:
               purpose-specific consent, withdrawal that is as easy as giving
               consent, and notices that state what you collect and why. See{' '}
               <Link href="/consent-management" className="text-foreground underline-offset-4 hover:underline">
@@ -84,27 +84,27 @@ export default function DpdpCompliancePage() {
               .
             </li>
             <li>
-              <strong className="text-foreground">Data Principal rights</strong> —
+              <strong className="text-foreground">Data Principal rights</strong>:
               access, correction, erasure, and grievance handling within the
               Act’s timelines, with a published grievance officer.
             </li>
             <li>
-              <strong className="text-foreground">Minimisation and retention</strong> —
+              <strong className="text-foreground">Minimisation and retention</strong>:
               collect only what the specified purpose needs, and delete it when
               that purpose ends.
             </li>
             <li>
-              <strong className="text-foreground">Security and breach</strong> —
+              <strong className="text-foreground">Security and breach</strong>:
               reasonable safeguards, and the ability to detect and report a
               personal data breach as required.
             </li>
             <li>
-              <strong className="text-foreground">Vendors and processors</strong> —
+              <strong className="text-foreground">Vendors and processors</strong>:
               contracts, purpose mapping, and downstream action when consent
               changes or a rights request arrives.
             </li>
             <li>
-              <strong className="text-foreground">Governance</strong> — policies,
+              <strong className="text-foreground">Governance</strong>: policies,
               training, SDF duties where they apply, and evidence you can hand
               to the Board.
             </li>
@@ -125,7 +125,7 @@ export default function DpdpCompliancePage() {
           <h2 className="text-2xl font-semibold text-foreground">A practical DPDP compliance path</h2>
           <p>
             Programmes that finish share a sequence. First, establish
-            applicability and a gap picture — what you collect, which vendors
+            applicability and a gap picture: what you collect, which vendors
             touch it, and what your website discloses versus what it loads.
             DPDP Consultancy’s free{' '}
             <Link href="/privacy-pitstop" className="text-foreground underline-offset-4 hover:underline">
@@ -139,7 +139,7 @@ export default function DpdpCompliancePage() {
           </p>
           <p>
             Second, design notices, consent purposes, and rights SLAs against
-            the Act and the 2025 Rules — not against a GDPR template. Third,
+            the Act and the 2025 Rules, not against a GDPR template. Third,
             implement technical controls: a consent platform, DSAR automation,
             and scanner coverage, which live on the{' '}
             <Link href="/dpdp-platform" className="text-foreground underline-offset-4 hover:underline">
@@ -169,8 +169,8 @@ export default function DpdpCompliancePage() {
             control today?
           </p>
           <p>
-            A GDPR programme is useful raw material — data maps, processors,
-            security — but it is not DPDP compliance. Lawful bases, children’s
+            A GDPR programme is useful raw material: data maps, processors,
+            security. It is not DPDP compliance. Lawful bases, children’s
             data, notice content, and the Data Protection Board’s process are
             different. Treat the Rules as the operating calendar and the Act as
             the obligation set, then implement against both.

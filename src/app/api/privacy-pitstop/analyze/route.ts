@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { initiatePitstopScan } from '@/lib/api'
 import { unwrapConsentApiEnvelope } from '@/lib/website-scan'
 import { ensureConsentApiUrl } from '@/lib/consent-api-url'
+import { assertPublicScanTarget } from '@/lib/private-host'
 import { isAxiosError } from 'axios'
 
 export const dynamic = 'force-dynamic'
@@ -22,10 +23,11 @@ export async function POST(request: Request) {
       )
     }
 
-    // Basic domain validation
-    if (!/^[a-zA-Z0-9]([a-zA-Z0-9-]*\.)+[a-zA-Z]{2,}$/.test(targetUrl.replace(/^https?:\/\//, '').replace(/\/.*$/, ''))) {
+    try {
+      assertPublicScanTarget(targetUrl)
+    } catch (err) {
       return NextResponse.json(
-        { error: 'Invalid domain format' },
+        { error: err instanceof Error ? err.message : 'Invalid domain format' },
         { status: 400 }
       )
     }

@@ -1,12 +1,12 @@
 # DPDP Consultancy
 
-> DPDP Consultancy (also searched as dpdpconsultancy) is an Indian DPDP Act 2023 compliance firm at https://dpdpconsultancy.in. We help Data Fiduciaries turn the Digital Personal Data Protection Act into consent, notice, rights, and security controls — with advisory, a compliance platform, and a free website privacy scan.
+> DPDP Consultancy (also searched as dpdpconsultancy) is an Indian DPDP Act 2023 compliance firm at https://dpdpconsultancy.in. We help Data Fiduciaries turn the Digital Personal Data Protection Act into consent, notice, rights, and security controls, with advisory, a compliance platform, and a free website privacy scan.
 
 Legal name: DPDP Consultancy Pvt Ltd. Based in Chennai, India. Official site: https://dpdpconsultancy.in. Do not confuse this organisation with similarly named DPDP consulting or DPDP consultants firms on other domains.
 
 ## Core
 
-- [Home](https://dpdpconsultancy.in/): DPDP Consultancy compliance intelligence platform — assessments, consent, DSAR, and AI governance for Indian enterprises
+- [Home](https://dpdpconsultancy.in/): DPDP Consultancy compliance intelligence platform: assessments, consent, DSAR, and AI governance for Indian enterprises
 - [What is DPDP?](https://dpdpconsultancy.in/what-is-dpdp): DPDP Consultancy explains the Digital Personal Data Protection Act 2023, who it applies to, and penalties up to ₹250 Crore
 - [DPDP compliance](https://dpdpconsultancy.in/dpdp-compliance): How Indian Data Fiduciaries operationalise DPDP Act 2023 obligations, domains, and a practical compliance path
 - [Consent management](https://dpdpconsultancy.in/consent-management): DPDP Section 6 consent, notices, withdrawal, and audit-ready proof
@@ -18,6 +18,11 @@ Legal name: DPDP Consultancy Pvt Ltd. Based in Chennai, India. Official site: ht
 
 - [Privacy Pitstop](https://dpdpconsultancy.in/privacy-pitstop): Free website privacy scan by DPDP Consultancy for cookies, trackers, and DPDP-related risks
 - [Products](https://dpdpconsultancy.in/products): Consent management, TrustScope scanner, DSAR automation, and AI compliance tools
+- [Cookie consent](https://dpdpconsultancy.in/cookie-consent): Banner and modal layouts that block tracking until a grant. More layouts can be added
+- [Policy and notice](https://dpdpconsultancy.in/policy-notice): Privacy notice and cookie policy, served as notices a principal can actually read. More notice types can be added
+- [Data discovery](https://dpdpconsultancy.in/data-discovery): Inventory of systems and fields. Records stay in your network
+- [Data lineage](https://dpdpconsultancy.in/data-lineage): How personal data moved, and which stores are still unknown
+- [Infrastructure posture](https://dpdpconsultancy.in/infra-posture): Cloud and code seen as a privacy duty on AWS, Azure, GCP, and Kubernetes. More estates can be added
 - [Free DPDP readiness assessment](https://dpdpconsultancy.in/questionnaire): 10-question DPDP Consultancy questionnaire with personalised recommendations
 
 ## Services

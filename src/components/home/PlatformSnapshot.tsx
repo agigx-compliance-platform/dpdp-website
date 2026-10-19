@@ -49,7 +49,7 @@ export function PlatformSnapshot() {
           See the Platform <span className="gradient-text">in Action</span>
         </motion.h2>
         <p className="mt-3 text-sm text-muted-foreground max-w-2xl mx-auto">
-          Real screens from Consent Cockpit — admin console views that adapt to
+          Real screens from Consent Cockpit: admin console views that adapt to
           your light or dark theme automatically.
         </p>
       </div>

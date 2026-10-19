@@ -82,7 +82,7 @@ export const productScreenshots = {
   trustscope: {
     ...adminShot('cmp-domains.png'),
     caption:
-      'Register domains, run Playwright-powered compliance scans, and review health scores with category-level findings.',
+      'Register domains, run public-site scans, and review health scores with category-level findings.',
     highlights: [
       adminHighlight('cmp-domains.png', 'Domain scan'),
       adminHighlight('cmp-dashboard.png', 'Health overview'),
@@ -125,7 +125,7 @@ export const productScreenshots = {
   'ai-assistant': {
     ...adminShot('cmp-ai-setup.png'),
     caption:
-      'AI setup guide for banners, policies, and DSAR configuration — plus a multilingual Privacy Assistant for data principals.',
+      'AI setup guide for banners, policies, and DSAR configuration, plus a multilingual Privacy Assistant for data principals.',
     highlights: [
       adminHighlight('cmp-ai-setup.png', 'AI setup guide'),
       adminHighlight('cmp-consent-banner.png', 'Banner preview'),
@@ -284,7 +284,7 @@ export const privacyAssistantGallery = [
     ...chatShot('cockpit-chat-dsar-flow.png'),
     title: 'DSAR data request',
     caption:
-      'Guided intake for download, delete, correct, or marketing opt-out — with name and email collection.',
+      'Guided intake for download, delete, correct, or marketing opt-out, with name and email collection.',
     darkImageClassName: 'object-contain object-center p-1',
     lightImageClassName: 'object-contain object-center p-1',
     chatSurface: true,

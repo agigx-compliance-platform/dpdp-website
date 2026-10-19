@@ -20,13 +20,16 @@ export function penaltyExposureForScore(score: number): string {
 }
 
 export function mapScanReportToResult(report: ScanReportResponse, scanId?: string): ScanResult {
+  if (!Array.isArray(report.complianceFlags)) {
+    throw new Error('Scan report is incomplete: complianceFlags missing')
+  }
   return {
     ...(scanId != null ? { scanId } : {}),
     scannedUrl: report.scannedUrl,
     overallScore: report.score,
     grade: report.grade,
     summary: report.summary,
-    complianceFlags: report.complianceFlags ?? [],
+    complianceFlags: report.complianceFlags,
     totalCookies: report.totalCookies,
     totalTrackers: report.totalTrackers,
     consentBannerPresent: report.consentBannerPresent,
@@ -84,8 +87,8 @@ export async function pollUntilPitstopReport(
   }
 ): Promise<import('./privacy-pitstop/types').AnalysisResult> {
   const { getPitstopScanReport, getPitstopScanStatus } = await import('./api')
-  const pollIntervalMs = options?.pollIntervalMs ?? 1600
-  const maxAttempts = options?.maxAttempts ?? 375
+  const pollIntervalMs = options?.pollIntervalMs ?? 8000
+  const maxAttempts = options?.maxAttempts ?? 75
 
   let consecutiveConflictRetries = 0
 

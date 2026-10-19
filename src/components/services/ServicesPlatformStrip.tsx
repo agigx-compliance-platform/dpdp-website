@@ -36,7 +36,7 @@ export function ServicesPlatformStrip() {
           className="text-muted-foreground"
         >
           Our advisory and operations services are delivered on the same platform
-          you see here — theme-matched admin console screenshots throughout.
+          you see here: theme-matched admin console screenshots throughout.
         </motion.p>
       </div>
 

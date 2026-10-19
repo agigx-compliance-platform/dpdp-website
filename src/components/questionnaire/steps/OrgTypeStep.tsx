@@ -29,7 +29,7 @@ export function OrgTypeStep({ value, onChange, error }: OrgTypeStepProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-foreground">
+        <h2 className="text-2xl font-semibold tracking-tight text-foreground">
           What type of organization are you?
         </h2>
         <p className="mt-2 text-muted-foreground">
@@ -46,7 +46,7 @@ export function OrgTypeStep({ value, onChange, error }: OrgTypeStepProps) {
             className={cn(
               'flex items-center gap-3 rounded-xl border p-4 text-left transition-all duration-200',
               value === id
-                ? 'border-primary/50 bg-primary/5 shadow-[0_0_12px_hsl(var(--primary)/0.15)]'
+                ? 'border-primary/50 bg-primary/5'
                 : 'border-border hover:border-primary/30 hover:bg-secondary/50'
             )}
           >

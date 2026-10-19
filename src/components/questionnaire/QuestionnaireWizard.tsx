@@ -25,15 +25,17 @@ import {
   step4Schema,
   step5Schema,
   step6Schema,
-  step9Schema,
+  consentStepSchema,
 } from '@/lib/questionnaire-schema'
-import { submitQuestionnaire, initiateScan, getScanReport } from '@/lib/api'
+import { submitQuestionnaire, initiateScan } from '@/lib/api'
+import { storeQuestionnaireResults } from '@/lib/questionnaire-results'
+import { safeHostname } from '@/lib/safe-url'
 import {
   unwrapConsentApiEnvelope,
   mapScanReportToResult,
   pollUntilScanReport,
 } from '@/lib/website-scan'
-import type { ScanReportResponse, ScanResult } from '@/lib/types'
+import type { ScanResult } from '@/lib/types'
 import { prewarmConsentApi } from '@/lib/consent-api-prewarm'
 const slideVariants = {
   enter: (direction: number) => ({
@@ -64,6 +66,7 @@ export function QuestionnaireWizard() {
     scanDone,
     scanResult,
     scanId,
+    isInitialized,
     updateState,
     updateFormData,
     clearPersistedState,
@@ -104,12 +107,8 @@ export function QuestionnaireWizard() {
         return
       }
 
-      const params = new URLSearchParams()
-      params.set('data', btoa(JSON.stringify(formData)))
-      if (result) {
-        params.set('scan', btoa(JSON.stringify(result)))
-      }
-      router.push(`/questionnaire/results?${params.toString()}`)
+      storeQuestionnaireResults({ responses: formData, scanResult: result })
+      router.push('/questionnaire/results')
     },
     [formData, isModalOpen, router, scanId, updateState]
   )
@@ -155,9 +154,7 @@ export function QuestionnaireWizard() {
           step6Schema.parse({ supportType: formData.supportType })
           break
         case 7:
-          if (wantsScan) {
-            step9Schema.parse({ consentGiven: formData.consentGiven })
-          }
+          consentStepSchema.parse({ consentGiven: formData.consentGiven })
           break
       }
       return true
@@ -173,15 +170,15 @@ export function QuestionnaireWizard() {
       }
       return false
     }
-  }, [currentStep, formData, wantsScan])
+  }, [currentStep, formData])
 
   const handleSubmitWithoutScan = async () => {
     setIsSubmitting(true)
     try {
-      await submitQuestionnaire(formData).catch(() => undefined)
+      await submitQuestionnaire(formData)
       navigateToResults()
     } catch {
-      setErrors({ general: 'Could not open results. Please try again.' })
+      setErrors({ general: 'Could not save the assessment. Try again.' })
     } finally {
       setIsSubmitting(false)
     }
@@ -212,7 +209,7 @@ export function QuestionnaireWizard() {
         )
         questionnaireSessionId = submitted.sessionId
       } catch {
-        /* proceed with scan if questionnaire save fails */
+        setErrors({ general: 'Assessment save failed. Scan will still run; results may not be linked to your session.' })
       }
 
       if (resolvedResult) {
@@ -257,32 +254,6 @@ export function QuestionnaireWizard() {
         navigateToResults(resolvedResult)
       }
     } catch {
-      if (!resolvedResult && activeScanId) {
-        try {
-          const report = unwrapConsentApiEnvelope<ScanReportResponse>(
-            await getScanReport(activeScanId)
-          )
-          resolvedResult = mapScanReportToResult(report, activeScanId)
-          updateState({
-            currentStep: 8,
-            direction: 1,
-            scanResult: resolvedResult,
-            scanDone: true,
-            scanId: activeScanId,
-            scanProgress: 100,
-          })
-        } catch {
-          // Scan genuinely unavailable
-        }
-      }
-
-      if (resolvedResult) {
-        if (!isModalOpen) {
-          navigateToResults(resolvedResult)
-        }
-        return
-      }
-
       setErrors({ general: 'Scan failed. Showing recommendations based on your answers.' })
       if (isModalOpen) {
         updateState({ currentStep: 8, direction: 1 })
@@ -298,11 +269,21 @@ export function QuestionnaireWizard() {
 
   const handleStartScan = async () => {
     void prewarmConsentApi('questionnaire-start')
-    updateState({ wantsScan: true, direction: 1, currentStep: 1 })
+    updateState({
+      wantsScan: true,
+      formData: { ...formData, wantsScan: true },
+      direction: 1,
+      currentStep: 1,
+    })
   }
 
   const handleSkipScan = () => {
-    updateState({ wantsScan: false, direction: 1, currentStep: 1 })
+    updateState({
+      wantsScan: false,
+      formData: { ...formData, wantsScan: false },
+      direction: 1,
+      currentStep: 1,
+    })
   }
 
   const goNext = () => {
@@ -320,35 +301,40 @@ export function QuestionnaireWizard() {
 
   const goBack = () => {
     setErrors({})
-    updateState({ direction: -1, currentStep: Math.max(currentStep - 1, 1) })
+    updateState({ direction: -1, currentStep: Math.max(currentStep - 1, 0) })
+  }
+
+  if (!isInitialized) {
+    return (
+      <div className="p-8 text-sm text-muted-foreground">Loading assessment…</div>
+    )
   }
 
   if (isFinalizing || isScanning) {
     return (
       <div className="mx-auto max-w-2xl space-y-6 p-4 sm:p-8">
         <StepProgress currentStep={currentStep} totalSteps={8} />
-        <div className="glass-card overflow-hidden rounded-xl p-6 sm:p-10">
+        <div className="overflow-hidden rounded-xl border border-border bg-card p-6 shadow-[var(--shadow-sm)] sm:p-10">
           <div className="flex flex-col items-center justify-center gap-6 py-8 text-center">
-            <Loader2 className="h-12 w-12 animate-spin text-cyan-400" />
+            <Loader2 className="h-12 w-12 animate-spin text-primary" />
             <div className="space-y-2 max-w-md">
               <h3 className="text-xl font-semibold text-foreground">Scanning in progress</h3>
               <p className="text-sm text-muted-foreground">
-                Analyzing your website for privacy compliance. This may take a minute or two.
+                Public pages only: notice, consent banner, cookies, rights links, and transport headers.
               </p>
             </div>
 
-            {/* ₹250 Crore Statutory Risk Card */}
-            <div className="w-full max-w-md rounded-xl border border-amber-500/25 bg-gradient-to-r from-amber-950/20 via-amber-950/10 to-red-950/20 p-4 text-left">
+            <div className="w-full max-w-md rounded-xl border border-border bg-card p-4 text-left shadow-[var(--shadow-sm)]">
               <div className="flex items-start gap-3">
-                <div className="p-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 shrink-0 mt-0.5">
-                  <AlertTriangle className="w-4 h-4" />
+                <div className="mt-0.5 shrink-0 rounded-lg border border-border bg-muted p-2 text-muted-foreground">
+                  <AlertTriangle className="h-4 w-4" />
                 </div>
                 <div className="space-y-1">
-                  <span className="text-[9px] font-bold uppercase tracking-wider text-amber-400 bg-amber-950/50 px-2 py-0.5 rounded border border-amber-500/30 inline-block">
-                    DPDP ACT 2023 STATUTORY RISK
+                  <span className="inline-block font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                    Schedule to the Act
                   </span>
-                  <p className="text-xs sm:text-sm text-amber-100/90 font-medium leading-snug">
-                    DPDP fines in India can be up to <span className="font-extrabold text-amber-400">₹250 Crore</span> per violation instance.
+                  <p className="text-xs leading-snug text-muted-foreground sm:text-sm">
+                    Specified penalties in the Schedule go up to ₹250 crore for listed failures. This scan does not compute a fine.
                   </p>
                 </div>
               </div>
@@ -414,7 +400,7 @@ export function QuestionnaireWizard() {
       {/* Custom Scroll Progress Indicator */}
       <div className="sticky top-0 z-50 h-1 w-full bg-transparent pointer-events-none">
         <motion.div
-          className="h-full bg-gradient-to-r from-primary to-[hsl(var(--gradient-end))] shadow-[0_0_10px_rgba(var(--primary),0.5)]"
+          className="h-full bg-primary"
           style={{ scaleX: scrollProgress, transformOrigin: 'left' }}
         />
       </div>
@@ -423,12 +409,12 @@ export function QuestionnaireWizard() {
       {wantsScan && scanId && currentStep > 0 && (
         <div className="w-full bg-secondary/30 px-6 py-2 border-b border-border flex items-center justify-between text-xs sm:text-sm">
           <div className="flex items-center gap-2">
-            <div className={`h-2 w-2 rounded-full ${scanDone ? 'bg-green-500' : 'bg-primary animate-pulse'}`} />
+            <div className={`h-2 w-2 rounded-full ${scanDone ? 'bg-success' : 'bg-primary animate-pulse'}`} />
             <span className="text-muted-foreground">
               {scanDone ? 'Scan Complete' : 'Scanning in background...'}
             </span>
             <span className="font-medium text-foreground ml-1 hidden sm:inline">
-              {formData.websiteUrl && new URL(formData.websiteUrl).hostname}
+              {safeHostname(formData.websiteUrl) ?? formData.websiteUrl}
             </span>
           </div>
           <span className="font-semibold text-primary">{scanProgress}%</span>
@@ -478,26 +464,36 @@ export function QuestionnaireWizard() {
           )}
 
           {currentStep > 0 && currentStep < 8 && (
-            <div className="mt-8 flex items-center justify-between pt-6 border-t border-border">
+            <div className="mt-8 flex items-center justify-between gap-3 pt-6 border-t border-border">
               <Button
                 type="button"
                 variant="ghost"
                 onClick={goBack}
-                disabled={currentStep === 1 || isSubmitting}
-                className={currentStep === 1 ? 'invisible' : ''}
+                disabled={currentStep === 0 || isSubmitting}
+                className={currentStep === 0 ? 'invisible' : ''}
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back
               </Button>
 
+              <button
+                type="button"
+                className="text-xs text-muted-foreground hover:text-foreground"
+                onClick={() => {
+                  clearPersistedState()
+                  setErrors({})
+                }}
+              >
+                Start over
+              </button>
               <Button
                 type="button"
                 variant="primary"
                 onClick={goNext}
                 disabled={
                   isSubmitting ||
-                  (currentStep === 7 && wantsScan && !formData.consentGiven) ||
-                  (currentStep === 7 && scanDone)
+                  isScanning ||
+                  (currentStep === 7 && !formData.consentGiven)
                 }
               >
                 {isSubmitting ? (
