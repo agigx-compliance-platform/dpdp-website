@@ -37,7 +37,49 @@ const EXAMPLE_DOMAINS = ['hdfcbank.com', 'zomato.com', 'redbus.in', 'matrimony.c
 
 const ANALYZE_TIMEOUT_MS = 180_000
 
-type LeaderboardEntry = { rank: number; domain: string; score: number }
+type StoredScanDetail = {
+  riskScore?: number
+  riskRating?: string
+  confidenceScore?: number
+  coverageScore?: number
+  pagesAnalyzed?: number
+  summary?: string
+  gapReasons?: string[]
+  categories?: { id?: string; name?: string; score?: number; findings?: unknown[] }[]
+  complianceFlags?: unknown[]
+}
+
+type LeaderboardEntry = { rank: number; domain: string; score: number; detail?: StoredScanDetail | null }
+
+const RISK_RATINGS = ['Low', 'Guarded', 'Elevated', 'High', 'Severe'] as const
+
+function storedDetailToResult(domain: string, qualityScore: number, detail: StoredScanDetail): AnalysisResult {
+  const riskScore = Number.isFinite(detail.riskScore) ? Number(detail.riskScore) : 100 - qualityScore
+  const rating = RISK_RATINGS.find((item) => item === detail.riskRating) ?? 'Guarded'
+  const categories = (detail.categories ?? []).map((category) => ({
+    id: category.id,
+    name: category.name ?? '',
+    score: Number.isFinite(category.score) ? privacyQualityScore(Number(category.score)) : qualityScore,
+    pillarIds: [] as string[],
+    findings: category.findings ?? [],
+  }))
+  const findingCount = categories.reduce((sum, category) => sum + category.findings.length, 0)
+  return {
+    domain,
+    analyzedAt: '',
+    riskScore,
+    riskRating: rating,
+    confidenceScore: Number.isFinite(detail.confidenceScore) ? Number(detail.confidenceScore) : 0,
+    coverageScore: Number.isFinite(detail.coverageScore) ? Number(detail.coverageScore) : 0,
+    pillars: [],
+    categories,
+    totalFindings: findingCount,
+    pagesAnalyzed: Number.isFinite(detail.pagesAnalyzed) ? Number(detail.pagesAnalyzed) : 0,
+    summary: detail.summary ?? '',
+    gapReasons: detail.gapReasons,
+    complianceFlags: detail.complianceFlags,
+  } as AnalysisResult
+}
 
 const ANALYSIS_STEPS = [
   { icon: Globe, label: 'Reading public pages' },
@@ -87,10 +129,12 @@ function PrivacyPitstopPageInner() {
         const entries: LeaderboardEntry[] = []
         for (const item of data?.entries ?? []) {
           if (item?.domain && Number.isFinite(item.score) && Number.isFinite(item.rank)) {
+            const detail = item.detail && typeof item.detail === 'object' ? item.detail as StoredScanDetail : null
             entries.push({
               rank: item.rank,
-              domain: String(item.domain).trim().toLowerCase(),
+              domain: String(item.domain).trim().toLowerCase().replace(/^www\./, ''),
               score: Math.round(item.score),
+              detail,
             })
           }
         }
@@ -126,7 +170,7 @@ function PrivacyPitstopPageInner() {
   }, [cleanup])
 
   const fetchFullScanForDomain = useCallback(async (d: string) => {
-    const cleanDomain = d.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '')
+    const cleanDomain = d.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '').replace(/^www\./, '')
     if (!cleanDomain || scannedOrScanningRef.current.has(cleanDomain)) return
 
     scannedOrScanningRef.current.add(cleanDomain)
@@ -199,7 +243,7 @@ function PrivacyPitstopPageInner() {
         throw new Error('Invalid response from scan service')
       }
 
-      const cleanDomain = targetDomain.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '')
+      const cleanDomain = targetDomain.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '').replace(/^www\./, '')
 
       setLeaderboardFullResults(prev => ({ ...prev, [cleanDomain]: analysisData }))
       loadLeaderboard()
@@ -394,12 +438,14 @@ function PrivacyPitstopPageInner() {
       domain: item.domain,
       category: item.score > 60 ? 'Top Gainers' : 'Top Losers',
       score: item.score,
+      detail: item.detail ?? null,
     }))
     if (visitorPlacement && !visitorPlacement.listed) {
       labeled.push({
         domain: visitorPlacement.domain,
         category: visitorPlacement.score > 60 ? 'Top Gainers' : 'Top Losers',
         score: visitorPlacement.score,
+        detail: null,
       })
     }
     const byScore = (a: { score: number }, b: { score: number }) => b.score - a.score
@@ -451,10 +497,11 @@ function PrivacyPitstopPageInner() {
               </div>
             ) : (
               <div className="grid grid-cols-1 gap-6">
-                {fullLeaderboardItems.map((item: { domain: string; category: string; score?: number }) => {
-                const cleanDomain = item.domain.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '')
-                const activeResultDomain = result?.domain ? result.domain.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '') : ''
-                const fullRes = leaderboardFullResults[cleanDomain] || (activeResultDomain === cleanDomain ? result : null)
+                {fullLeaderboardItems.map((item: { domain: string; category: string; score?: number; detail?: StoredScanDetail | null }) => {
+                const cleanDomain = item.domain.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '').replace(/^www\./, '')
+                const activeResultDomain = result?.domain ? result.domain.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '').replace(/^www\./, '') : ''
+                const stored = item.detail ? storedDetailToResult(cleanDomain, item.score ?? 0, item.detail) : null
+                const fullRes = leaderboardFullResults[cleanDomain] || (activeResultDomain === cleanDomain ? result : null) || stored
                 const isScanning = scanningLeaderboard[cleanDomain]
                 const score = fullRes
                   ? privacyQualityScore(fullRes.riskScore)
@@ -636,7 +683,7 @@ function PrivacyPitstopPageInner() {
                           </div>
                         ) : (
                           <div className="flex items-center justify-between py-3 px-4 bg-muted rounded-xl border border-border text-xs">
-                            <span className="text-muted-foreground">Full scan details not yet loaded for {item.domain}.</span>
+                            <span className="text-muted-foreground">No scan report is stored for {item.domain} yet.</span>
                             <button
                               onClick={() => fetchFullScanForDomain(cleanDomain)}
                               className="px-3 py-1 rounded bg-primary/20 text-primary font-bold hover:bg-primary/30 transition-all cursor-pointer"
