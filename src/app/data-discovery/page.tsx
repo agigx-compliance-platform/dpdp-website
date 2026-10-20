@@ -79,7 +79,7 @@ export default function DataDiscoveryPage() {
       </SectionWrapper>
 
       <SectionWrapper>
-        <h2 className="text-2xl font-semibold">Can be added</h2>
+        <h2 className="text-2xl font-semibold">Further systems</h2>
         <p className="mt-3 max-w-2xl text-muted-foreground">
           Further stores use the same inventory. They are not claimed as live
           until they are connected on an estate.

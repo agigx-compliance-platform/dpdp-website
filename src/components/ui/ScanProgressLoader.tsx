@@ -220,15 +220,14 @@ export function ScanProgressLoader({
             </div>
           </div>
 
-          <p
-            id="scan-loader-desc"
-            className="text-sm sm:text-base text-foreground font-medium leading-relaxed pt-1"
-          >
-            <strong className="text-primary font-semibold">
-              Hang on while we complete the scan
-            </strong>{' '}
-            Meanwhile, here is a quick introduction to who we are and how we help.
-          </p>
+          <div id="scan-loader-desc" className="space-y-1 pt-1">
+            <p className="text-base sm:text-lg font-semibold text-primary">
+              Hang on while we complete the scan.
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Meanwhile, here is a quick introduction to who we are and how we help.
+            </p>
+          </div>
         </div>
 
         {/* Fancy Radar Loader Animation & Live Step Checklist */}
