@@ -22,11 +22,11 @@ const QUESTIONS = [
 export function ProblemQuestions() {
   return (
     <SectionWrapper id="problems">
-      <div className="max-w-2xl">
+      <div>
         <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
           Where programmes stall
         </p>
-        <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
+        <h2 className="mt-3 whitespace-nowrap text-[clamp(1rem,2.5vw,2.25rem)] font-semibold tracking-tight">
           Four questions a policy pack cannot answer.
         </h2>
       </div>

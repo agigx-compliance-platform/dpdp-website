@@ -35,11 +35,11 @@ const services = [
 export function ServicesOverview() {
   return (
     <SectionWrapper id="services-preview">
-      <div className="max-w-2xl">
+      <div>
         <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
           Services
         </p>
-        <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
+        <h2 className="mt-3 whitespace-nowrap text-[clamp(1rem,2.5vw,2.25rem)] font-semibold tracking-tight">
           Software plus people who have read the Act.
         </h2>
       </div>

@@ -46,14 +46,12 @@ export function Footer() {
   return (
     <footer className="bg-background-secondary border-t border-border">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
-        <div className="mb-12 max-w-2xl">
+        <div className="mb-12">
           <Link href="/" className="text-lg font-semibold text-foreground hover:text-primary transition-colors">
             DPDP Consultancy
           </Link>
-          <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-            DPDP Consultancy (dpdpconsultancy.in) helps Indian enterprises turn
-            DPDP Act 2023 obligations into enforceable privacy, consent, and AI
-            governance controls.
+          <p className="mt-2 whitespace-nowrap text-[clamp(0.7rem,1.15vw,0.875rem)] text-muted-foreground">
+            DPDP Consultancy (dpdpconsultancy.in) helps Indian enterprises turn DPDP Act 2023 obligations into enforceable privacy, consent, and AI governance controls.
           </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">

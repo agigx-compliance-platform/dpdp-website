@@ -41,12 +41,12 @@ export function ProductLanding({
   return (
     <div className="min-h-screen bg-background">
       <SectionWrapper className="pb-8 pt-32 md:pt-40">
-        <div className="max-w-2xl">
+        <div>
           <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
             {eyebrow}
           </p>
-          <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">{title}</h1>
-          <p className="mt-5 text-lg leading-relaxed text-muted-foreground">{lead}</p>
+          <h1 className="whitespace-nowrap text-[clamp(1.05rem,2.8vw,3rem)] font-semibold tracking-tight">{title}</h1>
+          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground">{lead}</p>
         </div>
         <div className="mt-12">
           <ConnectorCanvas variant="canvas" nodes={nodes} edges={edges} center={center} minHeight={520} />
