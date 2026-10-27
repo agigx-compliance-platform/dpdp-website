@@ -1,192 +1,123 @@
 import Link from 'next/link'
+import { ArrowRight, BellOff, Cookie, FileText, ListChecks, Network, ScrollText } from 'lucide-react'
 import { SectionWrapper } from '@/components/ui/SectionWrapper'
-import { ProductLanding } from '@/components/products/ProductLanding'
-import { ConnectorCanvas } from '@/components/workflow'
+import { Button } from '@/components/ui/Button'
+import { FaqSection } from '@/components/seo/FaqSection'
+import { RelatedGuides } from '@/components/seo/RelatedGuides'
+import { ConsentShowcase } from '@/components/products/ConsentShowcase'
+import { DemoCta } from '@/components/products/DemoCta'
 import { CONSENT_MANAGEMENT_FAQS } from '@/lib/dpdp-faqs'
-import {
-  consentCenter,
-  consentEdges,
-  consentLifecycleCenter,
-  consentLifecycleEdges,
-  consentLifecycleNodes,
-  consentNodes,
-  discoveryCenter,
-  discoveryEdges,
-  discoveryNodes,
-  lineageCenter,
-  lineageEdges,
-  lineageNodes,
-} from '@/lib/workflows'
+
+const COVERAGE = [
+  {
+    icon: FileText,
+    title: 'Notice',
+    body: 'Plain-language notice of purposes, versioned and stored with every choice.',
+    section: 'Section 5',
+  },
+  {
+    icon: ListChecks,
+    title: 'Purpose consent',
+    body: 'Each purpose asked separately. Nothing bundled into sign-up.',
+    section: 'Section 6(1)',
+  },
+  {
+    icon: Cookie,
+    title: 'Banner and cookies',
+    body: 'Web and mobile banners that block non-essential tags until a grant.',
+    section: 'Section 6',
+  },
+  {
+    icon: BellOff,
+    title: 'Withdrawal',
+    body: 'As easy as giving consent, from a preference centre the person controls.',
+    section: 'Section 6(4)',
+  },
+  {
+    icon: Network,
+    title: 'Third parties',
+    body: 'Changes reach every processor that uses the purpose, with delivery tracked.',
+    section: 'Section 8(2)',
+  },
+  {
+    icon: ScrollText,
+    title: 'Proof',
+    body: 'Append-only record of who agreed to what, on which notice, and when.',
+    section: 'Section 6(10)',
+  },
+] as const
 
 export default function ConsentManagementPage() {
   return (
-    <ProductLanding
-      current="/consent-management"
-      eyebrow="Platform"
-      title="Consent lifecycle for the DPDP Act"
-      lead="Notice, purpose grant, withdrawal, and a sealed receipt. The cookie banner is one place that duty shows up. The record is what the Board can ask for."
-      nodes={consentNodes}
-      edges={consentEdges}
-      center={consentCenter}
-      capabilities={[
-        {
-          title: 'Purpose grant',
-          body: 'Each purpose is asked separately. Marketing is not bundled into onboarding. Withdrawal uses the same purpose IDs.',
-        },
-        {
-          title: 'Notice bound to the grant',
-          body: 'The version the person saw is stored with the choice. A later rewrite of the notice does not silently stretch old consent.',
-        },
-        {
-          title: 'Sealed receipt',
-          body: 'Who was asked, what they chose, which notice, and when they withdrew. Append-only. Withdrawal invalidates that version.',
-        },
-        {
-          title: 'Downstream signal',
-          body: 'Vendors mapped to a purpose stop using it when the grant is withdrawn. A banner-only change that never reaches processors is not a complete control.',
-        },
-        {
-          title: 'Preference centre',
-          body: 'The Data Principal reopens the same purposes later. No helpdesk required to withdraw.',
-        },
-        {
-          title: 'SDK and tags',
-          body: 'One script or API reads those purposes and gates tags. Marketing pixels should not have a parallel, ungoverned load path.',
-        },
-        {
-          title: 'Languages from one table',
-          body: 'Banner, purpose notice, DSAR, and grievance copy share the same locales. English and Hindi ship today. Further languages can be added without a new product per workflow.',
-        },
-        {
-          title: 'Cockpit as the activity ledger',
-          body: 'The Data Principal sees grants, withdrawals, access requests, and grievances in one place. Operators see the same events, not a scatter of inboxes.',
-        },
-      ]}
-      notes={[
-        {
-          title: 'Notice and consent',
-          body: 'Section 5 and Section 6 require a clear notice of purposes and consent that is free, specific, informed, and unambiguous. A European legitimate-interest default does not carry over.',
-        },
-        {
-          title: 'Withdrawal',
-          body: 'A grant that cannot be withdrawn as easily as it was given is not a complete control.',
-        },
-      ]}
-      faqs={CONSENT_MANAGEMENT_FAQS}
-      nextHref="/cookie-consent"
-      nextLabel="cookie consent banners"
-    >
-      <SectionWrapper>
-        <h2 className="text-2xl font-semibold text-foreground">Two working solutions</h2>
-        <p className="mt-3 max-w-2xl text-muted-foreground">
-          Consent is one closed loop. Discovery and lineage are the second: they show where the
-          personal data actually sits so a withdrawal or a rights request is not a guess.
-        </p>
+    <div className="min-h-screen bg-background">
+      <SectionWrapper className="pb-10 pt-32 md:pt-40">
+        <div className="max-w-3xl">
+          <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">Consent management</p>
+          <h1 className="text-balance text-4xl font-semibold tracking-tight sm:text-5xl">Consent the DPDP Act will accept</h1>
+          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground">
+            From the first notice to a withdrawal that reaches your vendors, one platform covers every consent duty
+            under the Act, with the proof the Board can ask for.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link href="/contact">
+              <Button variant="primary" size="lg">
+                Book a demo
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
+            <Link href="/questionnaire">
+              <Button variant="outline" size="lg">
+                Check your readiness
+              </Button>
+            </Link>
+          </div>
+        </div>
       </SectionWrapper>
 
-      <SectionWrapper>
-        <h3 className="text-xl font-semibold text-foreground">1. Give, see, withdraw, notify</h3>
+      <SectionWrapper className="py-10 md:py-14">
+        <h2 className="text-2xl font-semibold sm:text-3xl">What we cover</h2>
+        <p className="mt-3 max-w-2xl text-muted-foreground">Six consent duties, one record behind all of them.</p>
+        <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {COVERAGE.map((item) => {
+            const Icon = item.icon
+            return (
+              <li
+                key={item.title}
+                className="group rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-sm)] transition-colors hover:border-primary/40"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+                    <Icon className="h-5 w-5 text-primary" aria-hidden="true" />
+                  </span>
+                  <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                    {item.section}
+                  </span>
+                </div>
+                <h3 className="mt-5 text-base font-semibold">{item.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.body}</p>
+              </li>
+            )
+          })}
+        </ul>
+      </SectionWrapper>
+
+      <SectionWrapper className="py-10 md:py-14">
+        <h2 className="text-2xl font-semibold sm:text-3xl">How it works</h2>
         <p className="mt-3 max-w-2xl text-muted-foreground">
-          The person grants a purpose, opens the same record in the cockpit, withdraws it, and the
-          fiduciary plus mapped processors are told to stop. A banner change that never reaches a
-          vendor is not this loop.
+          Three moments that matter. The demo walks through the rest.
         </p>
         <div className="mt-8">
-          <ConnectorCanvas
-            variant="canvas"
-            nodes={consentLifecycleNodes}
-            edges={consentLifecycleEdges}
-            center={consentLifecycleCenter}
-            minHeight={520}
-          />
+          <ConsentShowcase />
         </div>
       </SectionWrapper>
 
-      <SectionWrapper>
-        <h3 className="text-xl font-semibold text-foreground">2. Discover, then follow lineage</h3>
-        <p className="mt-3 max-w-2xl text-muted-foreground">
-          Finding the stores and naming the fields is what makes the consent signal useful. Lineage
-          is how a withdrawal follows a table into a warehouse or a vendor export.{' '}
-          <Link href="/data-discovery" className="text-foreground underline-offset-4 hover:underline">
-            Data discovery
-          </Link>{' '}
-          and{' '}
-          <Link href="/data-lineage" className="text-foreground underline-offset-4 hover:underline">
-            data lineage
-          </Link>{' '}
-          are that path.
-        </p>
-        <div className="mt-8 grid gap-8 lg:grid-cols-2">
-          <ConnectorCanvas
-            variant="canvas"
-            nodes={discoveryNodes}
-            edges={discoveryEdges}
-            center={discoveryCenter}
-            minHeight={420}
-          />
-          <ConnectorCanvas
-            variant="canvas"
-            nodes={lineageNodes}
-            edges={lineageEdges}
-            center={lineageCenter}
-            minHeight={420}
-          />
-        </div>
-      </SectionWrapper>
+      <DemoCta
+        title="A banner is not consent management"
+        body="A banner shows a choice. DPDP asks you to honour it everywhere: in your tags, your systems, and your vendors, and to prove it later. That is the part we automate."
+      />
 
-      <SectionWrapper>
-        <article className="mx-auto max-w-3xl space-y-6 text-muted-foreground leading-relaxed">
-          <h2 className="text-2xl font-semibold text-foreground">What DPDP requires of consent</h2>
-          <p>
-            Section 6 requires consent that is free, specific, informed, and
-            unambiguous, given for a stated purpose. The Data Principal must be
-            able to withdraw it as easily as they gave it. Notices under Section
-            5 have to describe personal data and purposes in a way a person can
-            actually understand. Bundling unrelated purposes into a single
-            “Accept all”, or hiding withdrawal three menus deep, is the pattern
-            that fails these tests.
-          </p>
-          <p>
-            DPDP does not give organisations a general “legitimate interest”
-            path the way GDPR does for much of analytics and marketing. For most
-            commercial processing,{' '}
-            <Link href="/dpdp-compliance" className="text-foreground underline-offset-4 hover:underline">
-              DPDP compliance
-            </Link>{' '}
-            therefore starts with notice and consent, then with proof that both
-            still match what the site, app, and vendors actually do.
-          </p>
-
-          <h2 className="text-2xl font-semibold text-foreground">Consent, cookies, and notices are not the same control</h2>
-          <p>
-            Cookies are one collection method. Consent is the permission for a
-            purpose. The notice is how you explain both. A cookie policy that
-            lists “analytics” while the tag manager also fires advertising and
-            session-replay scripts is a notice failure even if a banner exists.
-            Consent management has to inventory storage and pixels, map them to
-            purposes, and keep the notice in lockstep, which is why DPDP
-            Consultancy pairs the consent platform with Privacy Pitstop rather
-            than treating the CMP as self-sufficient.
-          </p>
-
-          <h2 className="text-2xl font-semibold text-foreground">Why a banner is not consent management</h2>
-          <p>
-            A banner can display a choice. Consent management is the lifecycle
-            behind that choice: purpose registry, capture on web and app, sync
-            to tags and SDKs, preference updates, withdrawal, and an audit trail
-            that survives a grievance or a Board inquiry. If marketing pixels
-            still fire after a Data Principal declined a purpose, you do not
-            have consent management. You have a UI.
-          </p>
-          <p>
-            DPDP Consultancy’s Consent Cockpit is built for that lifecycle.
-            It deploys region-aware banners, discovers cookies and trackers,
-            binds consent to a versioned notice, and keeps an append-only log of
-            who agreed to which purpose, on which policy version, and when they
-            withdrew. That is the evidence DSAR and grievance workflows need.
-          </p>
-        </article>
-      </SectionWrapper>
-    </ProductLanding>
+      <FaqSection title="Questions" faqs={CONSENT_MANAGEMENT_FAQS} />
+      <RelatedGuides current="/consent-management" />
+    </div>
   )
 }

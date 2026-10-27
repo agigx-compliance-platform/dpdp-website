@@ -1,76 +1,81 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Fingerprint } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SectionWrapper } from "@/components/ui/SectionWrapper";
 import { Badge } from "@/components/ui/Badge";
 import { Card, CardContent } from "@/components/ui/Card";
-import { ThemeScreenshot } from "@/components/ui/ThemeScreenshot";
-import { productScreenshots, type ProductScreenshotKey } from "@/lib/agigx-ui-screenshots";
 import { PRODUCTS, productIconMap } from "@/lib/products-data";
-import { ConnectorCanvas } from "@/components/workflow";
 import {
-  consentCenter,
-  consentEdges,
-  consentNodes,
-  cookieCenter,
-  cookieEdges,
-  cookieNodes,
-  discoveryCenter,
-  discoveryEdges,
-  discoveryNodes,
-  dsarCenter,
-  dsarEdges,
-  dsarNodes,
-  infraCenter,
-  infraEdges,
-  infraNodes,
-  lineageCenter,
-  lineageEdges,
-  lineageNodes,
-  noticeCenter,
-  noticeEdges,
-  noticeNodes,
-  processorCenter,
-  processorEdges,
-  processorNodes,
-} from "@/lib/workflows";
+  AiAssistantDemo,
+  ConsentBannerMockup,
+  DiscoveryInventory,
+  DsarLifecycle,
+  InfraPostureFindings,
+  LineageFlow,
+  NoticeVersions,
+  PurposeConsentCapture,
+  RegulatoryChangeFlow,
+  ThirdPartyPropagation,
+  TrustScopeReport,
+} from "@/components/illustrations";
 
-const WORKFLOWS: Record<
-  string,
-  { nodes: typeof consentNodes; edges: typeof consentEdges; center: typeof consentCenter }
-> = {
-  "consent-platform": { nodes: consentNodes, edges: consentEdges, center: consentCenter },
-  "cookie-consent": { nodes: cookieNodes, edges: cookieEdges, center: cookieCenter },
-  "policy-notice": { nodes: noticeNodes, edges: noticeEdges, center: noticeCenter },
-  "data-discovery": { nodes: discoveryNodes, edges: discoveryEdges, center: discoveryCenter },
-  "data-lineage": { nodes: lineageNodes, edges: lineageEdges, center: lineageCenter },
-  "dsar-platform": { nodes: dsarNodes, edges: dsarEdges, center: dsarCenter },
-  "processor-governance": { nodes: processorNodes, edges: processorEdges, center: processorCenter },
-  "infra-scanner": { nodes: infraNodes, edges: infraEdges, center: infraCenter },
+const ILLUSTRATIONS: Record<string, () => JSX.Element> = {
+  "consent-platform": PurposeConsentCapture,
+  "cookie-consent": ConsentBannerMockup,
+  "dsar-platform": DsarLifecycle,
+  "processor-governance": ThirdPartyPropagation,
+  trustscope: TrustScopeReport,
+  "data-lineage": LineageFlow,
+  "ai-assistant": AiAssistantDemo,
+  "policy-notice": NoticeVersions,
+  "data-discovery": DiscoveryInventory,
+  "infra-scanner": InfraPostureFindings,
+  "adaptive-engine": RegulatoryChangeFlow,
 };
 
 export function ProductsExplorer() {
   const [active, setActive] = useState(0);
-  const [showLive, setShowLive] = useState(false);
   const product = PRODUCTS[active];
   const Icon = productIconMap[product.icon] ?? Fingerprint;
-  const shot =
-    product.id in productScreenshots
-      ? productScreenshots[product.id as ProductScreenshotKey]
-      : null;
+  const Illustration = ILLUSTRATIONS[product.id];
 
+  const explorerRef = useRef<HTMLDivElement>(null);
+  const activeRef = useRef(active);
   useEffect(() => {
-    const hash = window.location.hash.replace("#", "");
-    if (!hash) return;
-    const idx = PRODUCTS.findIndex((p) => p.id === hash);
-    if (idx >= 0) queueMicrotask(() => setActive(idx));
+    activeRef.current = active;
+  }, [active]);
+
+  // Next.js links change the hash with pushState, which fires no hashchange event, so a
+  // link to /products#id from this same page would otherwise leave the old product open.
+  // Re-read the hash on load, on back/forward, and shortly after any click.
+  useEffect(() => {
+    const syncFromHash = () => {
+      const hash = window.location.hash.replace("#", "");
+      const idx = PRODUCTS.findIndex((p) => p.id === hash);
+      if (idx < 0 || idx === activeRef.current) return;
+      setActive(idx);
+      explorerRef.current?.scrollIntoView({ block: "start" });
+    };
+    // The router applies a link's URL asynchronously, so look again over the next few frames.
+    const afterClick = () => {
+      for (const ms of [0, 50, 150, 400]) window.setTimeout(syncFromHash, ms);
+    };
+    syncFromHash();
+    window.addEventListener("hashchange", syncFromHash);
+    window.addEventListener("popstate", syncFromHash);
+    document.addEventListener("click", afterClick);
+    return () => {
+      window.removeEventListener("hashchange", syncFromHash);
+      window.removeEventListener("popstate", syncFromHash);
+      document.removeEventListener("click", afterClick);
+    };
   }, []);
 
   const selectProduct = (index: number) => {
-    setShowLive(false);
+    activeRef.current = index;
     setActive(index);
     const id = PRODUCTS[index]?.id;
     if (id) {
@@ -80,7 +85,7 @@ export function ProductsExplorer() {
 
   return (
     <SectionWrapper className="pb-20">
-      <div className="grid lg:grid-cols-[280px_1fr] gap-8 lg:gap-10 items-start">
+      <div ref={explorerRef} className="grid scroll-mt-24 lg:grid-cols-[280px_1fr] gap-8 lg:gap-10 items-start">
         <nav
           className="flex lg:flex-col gap-2 overflow-x-auto pb-2 lg:pb-0 lg:sticky lg:top-24"
           aria-label="Product list"
@@ -90,7 +95,6 @@ export function ProductsExplorer() {
             return (
               <button
                 key={item.id}
-                id={item.id}
                 type="button"
                 onClick={() => selectProduct(i)}
                 className={cn(
@@ -140,58 +144,33 @@ export function ProductsExplorer() {
             <div className="flex flex-wrap gap-2 mb-6">
               {product.dpdpSections.map((section) => (
                 <Badge key={section} variant="info">
-                  {section === "All" ? "All Sections" : `Section ${section}`}
+                  {section === "All" ? "Every DPDP section" : `Section ${section}`}
                 </Badge>
               ))}
-              {product.complianceDomains.map((domain) => (
-                <Badge key={domain} variant="success">
-                  {domain}
-                </Badge>
-              ))}
+              {product.complianceDomains
+                .filter((domain) => domain !== "All")
+                .map((domain) => (
+                  <Badge key={domain} variant="success">
+                    {domain}
+                  </Badge>
+                ))}
             </div>
 
-            {WORKFLOWS[product.id] && (
+            {Illustration && (
               <div className="mb-6">
-                <ConnectorCanvas
-                  variant="steps"
-                  nodes={WORKFLOWS[product.id].nodes}
-                  edges={WORKFLOWS[product.id].edges}
-                  center={WORKFLOWS[product.id].center}
-                />
-              </div>
-            )}
-
-            {shot && (
-              <div className="mb-6">
-                <button
-                  type="button"
-                  className="mb-3 text-xs font-medium text-primary hover:underline"
-                  onClick={() => setShowLive((v) => !v)}
-                >
-                  {showLive ? "Hide live screen" : "See it live"}
-                </button>
-                {showLive && (
-                  <>
-                    <div className="relative aspect-[16/10] w-full overflow-hidden rounded-2xl border border-border bg-muted/15">
-                      <ThemeScreenshot
-                        dark={shot.dark}
-                        light={shot.light}
-                        alt={product.name}
-                        className="object-contain object-top"
-                        sizes="(max-width: 1024px) 100vw, 900px"
-                      />
-                    </div>
-                    <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted-foreground">
-                      {shot.caption}
-                    </p>
-                  </>
-                )}
+                <Illustration />
               </div>
             )}
 
             <div className="grid sm:grid-cols-2 gap-2">
-              {product.features.map((feature) => (
-                <Card key={feature.title} variant="outline">
+              {product.features.map((feature, i) => (
+                <Card
+                  key={feature.title}
+                  variant="outline"
+                  className={cn(
+                    product.features.length % 2 === 1 && i === product.features.length - 1 && "sm:col-span-2",
+                  )}
+                >
                   <CardContent className="p-3">
                     <h4 className="text-xs font-semibold mb-0.5">{feature.title}</h4>
                     <p className="text-xs text-muted-foreground leading-relaxed">

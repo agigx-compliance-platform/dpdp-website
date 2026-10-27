@@ -6,9 +6,12 @@
  * - steps: numbered grid (always used on small screens, and where chosen)
  *
  * Centering uses an inner wrapper so Framer Motion cannot overwrite it.
+ *
+ * The canvas falls back to steps at any width where the laid-out cards overlap
+ * each other or spill past the frame, so a narrow column never shows clipped cards.
  */
 
-import { useId, useRef, useEffect, useState, useMemo } from 'react'
+import { useId, useRef, useEffect, useLayoutEffect, useState, useMemo } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { WorkflowCard, type WorkflowCardProps } from './WorkflowCard'
 
@@ -49,6 +52,40 @@ function bezierPath(x1: number, y1: number, x2: number, y2: number): string {
   return `M ${x1} ${y1} C ${cx} ${cy}, ${cx2} ${cy2}, ${x2} ${y2}`
 }
 
+/** Space kept between cards, and between a card and the frame, for the canvas to count as fitting. */
+const CARD_CLEARANCE = 8
+
+type Box = { left: number; top: number; right: number; bottom: number }
+
+function cardsFit(canvas: HTMLElement, w: number, h: number): boolean {
+  // offsetWidth/offsetHeight ignore the entrance transforms, so this measures the settled layout.
+  const boxes: Box[] = []
+  for (const el of canvas.querySelectorAll<HTMLElement>('[data-canvas-card]')) {
+    const cx = (Number(el.dataset.x) / 100) * w
+    const cy = (Number(el.dataset.y) / 100) * h
+    const halfW = el.offsetWidth / 2
+    const halfH = el.offsetHeight / 2
+    boxes.push({ left: cx - halfW, top: cy - halfH, right: cx + halfW, bottom: cy + halfH })
+  }
+  for (const b of boxes) {
+    if (b.left < CARD_CLEARANCE || b.top < CARD_CLEARANCE) return false
+    if (b.right > w - CARD_CLEARANCE || b.bottom > h - CARD_CLEARANCE) return false
+  }
+  for (let i = 0; i < boxes.length; i++) {
+    for (let j = i + 1; j < boxes.length; j++) {
+      const a = boxes[i]
+      const b = boxes[j]
+      const apart =
+        a.right + CARD_CLEARANCE <= b.left ||
+        b.right + CARD_CLEARANCE <= a.left ||
+        a.bottom + CARD_CLEARANCE <= b.top ||
+        b.bottom + CARD_CLEARANCE <= a.top
+      if (!apart) return false
+    }
+  }
+  return true
+}
+
 function gridCols(count: number): string {
   if (count <= 1) return 'grid-cols-1'
   if (count === 2 || count === 4) return 'grid-cols-1 sm:grid-cols-2'
@@ -80,7 +117,7 @@ function StepGrid({
         {nodes.map((node, i) => (
           <motion.li
             key={node.id}
-            className="min-w-0"
+            className="flex min-w-0 flex-col"
             initial={{ opacity: 0, y: 8 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.4, delay: 0.06 + i * 0.05 }}
@@ -91,7 +128,7 @@ function StepGrid({
               </span>
               <span className="h-px min-w-0 flex-1 bg-border" />
             </div>
-            <WorkflowCard {...node.card} className="h-full" />
+            <WorkflowCard {...node.card} className="grow" />
           </motion.li>
         ))}
       </ol>
@@ -112,9 +149,25 @@ export function ConnectorCanvas({
   const canvasRef = useRef<HTMLDivElement>(null)
   const isInView = useInView(figureRef, { once: true, margin: '-80px' })
   const [dims, setDims] = useState({ w: 0, h: 0 })
+  const [figureWidth, setFigureWidth] = useState(0)
+  // Widest figure width at which these nodes were measured not to fit. Tied to the node set
+  // so a tab switch to a different workflow measures afresh.
+  const [misfit, setMisfit] = useState<{ nodes: CanvasNode[]; width: number } | null>(null)
+  const canvasFits = figureWidth === 0 || misfit?.nodes !== nodes || figureWidth > misfit.width
 
   useEffect(() => {
     if (variant !== 'canvas') return
+    const el = figureRef.current
+    if (!el) return
+    const update = () => setFigureWidth(el.offsetWidth)
+    update()
+    const ro = new ResizeObserver(update)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [variant])
+
+  useEffect(() => {
+    if (variant !== 'canvas' || !canvasFits) return
     const el = canvasRef.current
     if (!el) return
     const update = () => setDims({ w: el.offsetWidth, h: el.offsetHeight })
@@ -122,7 +175,18 @@ export function ConnectorCanvas({
     const ro = new ResizeObserver(update)
     ro.observe(el)
     return () => ro.disconnect()
-  }, [variant])
+  }, [variant, canvasFits])
+
+  useLayoutEffect(() => {
+    const el = canvasRef.current
+    if (variant !== 'canvas' || !canvasFits || !el || dims.w === 0) return
+    if (!cardsFit(el, dims.w, dims.h)) {
+      setMisfit((prev) => ({
+        nodes,
+        width: prev?.nodes === nodes ? Math.max(prev.width, figureWidth) : figureWidth,
+      }))
+    }
+  }, [variant, canvasFits, dims, figureWidth, nodes])
 
   const nodePositions = useMemo(() => {
     const map = new Map<string, { cx: number; cy: number }>()
@@ -140,7 +204,7 @@ export function ConnectorCanvas({
 
   return (
     <figure ref={figureRef} className={`relative w-full min-w-0 ${className}`}>
-      {variant === 'steps' ? (
+      {variant === 'steps' || !canvasFits ? (
         <StepGrid nodes={nodes} center={center} isInView={isInView} />
       ) : (
         <>
@@ -209,7 +273,12 @@ export function ConnectorCanvas({
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.5, delay: 0.18 + i * 0.08, ease: [0.4, 0, 0.2, 1] }}
               >
-                <div className="w-[210px] -translate-x-1/2 -translate-y-1/2">
+                <div
+                  className="w-[210px] -translate-x-1/2 -translate-y-1/2"
+                  data-canvas-card
+                  data-x={node.x ?? 50}
+                  data-y={node.y ?? 50}
+                >
                   <WorkflowCard {...node.card} />
                 </div>
               </motion.div>

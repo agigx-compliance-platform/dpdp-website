@@ -1,9 +1,10 @@
 import Link from 'next/link'
+import { BellRing, Building2, FileSearch } from 'lucide-react'
 import { SectionWrapper } from '@/components/ui/SectionWrapper'
 import { FaqSection } from '@/components/seo/FaqSection'
 import { GuideCtas } from '@/components/seo/GuideCtas'
 import { RelatedGuides } from '@/components/seo/RelatedGuides'
-import { LineageGraph } from '@/components/illustrations'
+import { LineageFlow } from '@/components/illustrations'
 
 const FAQS = [
   {
@@ -27,18 +28,40 @@ const INPUTS = [
   {
     title: 'Pipeline definitions',
     body: 'Transforms and sources become edges. Not a claim that every table is modelled.',
-  },
-  {
-    title: 'Infrastructure definitions',
-    body: 'Stores and processors declared in infrastructure show up before someone remembers to inventory them.',
+    color: 'hsl(var(--primary))',
   },
   {
     title: 'Query history',
     body: 'Reads and writes that catalogs do not describe. Hints, never treated as complete.',
+    color: 'hsl(var(--info))',
   },
   {
     title: 'Job runs',
     body: 'Runtime evidence of how data actually moved. Missing jobs stay missing.',
+    color: 'hsl(var(--warning))',
+  },
+  {
+    title: 'Infrastructure definitions',
+    body: 'Stores and processors declared in infrastructure show up before someone remembers to inventory them.',
+    color: 'hsl(var(--severity-critical))',
+  },
+]
+
+const USES = [
+  {
+    icon: FileSearch,
+    title: 'Scope a rights request',
+    body: 'Access and erasure run on every store the person reached. Unknown stores are listed, not skipped silently.',
+  },
+  {
+    icon: BellRing,
+    title: 'Carry a withdrawal',
+    body: 'A consent change follows the edges into warehouses and exports, not just the table it started in.',
+  },
+  {
+    icon: Building2,
+    title: 'Show vendor exposure',
+    body: 'See which processors receive which personal fields, and through which pipeline.',
   },
 ]
 
@@ -58,38 +81,44 @@ export default function DataLineagePage() {
           </p>
         </div>
         <div className="mt-12">
-          <LineageGraph />
+          <LineageFlow />
         </div>
       </SectionWrapper>
 
-      <SectionWrapper>
-        <h2 className="text-2xl font-semibold">Inputs</h2>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2">
+      <SectionWrapper className="py-10 md:py-14">
+        <h2 className="text-2xl font-semibold sm:text-3xl">Where the map comes from</h2>
+        <p className="mt-3 max-w-2xl text-muted-foreground">
+          Harvested from what your systems already record. Each link in the diagram keeps the evidence it came from.
+        </p>
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {INPUTS.map((item) => (
-            <div key={item.title} className="rounded-xl border border-border bg-card p-5">
-              <h3 className="text-sm font-semibold">{item.title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{item.body}</p>
+            <div key={item.title} className="rounded-2xl border border-border bg-card p-5 shadow-[var(--shadow-sm)]">
+              <span className="block h-1 w-8 rounded-full" style={{ background: item.color }} aria-hidden="true" />
+              <h3 className="mt-4 text-sm font-semibold">{item.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.body}</p>
             </div>
           ))}
         </div>
       </SectionWrapper>
 
-      <SectionWrapper>
-        <h2 className="text-2xl font-semibold">What the map is for</h2>
-        <ul className="mt-4 max-w-2xl space-y-3 text-sm text-muted-foreground">
-          <li>
-            <span className="font-medium text-foreground">Rights scope.</span> Erasure
-            and access run on stores that are on the map. Unknown stores stay listed
-            as unknown.
-          </li>
-          <li>
-            <span className="font-medium text-foreground">Vendors.</span> A change
-            in consent or a rights ticket follows the edges that exist. A store the
-            map never saw is not messaged.
-          </li>
-        </ul>
-        <p className="mt-6 text-sm text-muted-foreground">
-          Inventory first:{' '}
+      <SectionWrapper className="py-10 md:py-14">
+        <h2 className="text-2xl font-semibold sm:text-3xl">What the map is for</h2>
+        <div className="mt-8 grid gap-4 md:grid-cols-3">
+          {USES.map((item) => {
+            const Icon = item.icon
+            return (
+              <div key={item.title} className="rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-sm)]">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+                  <Icon className="h-5 w-5 text-primary" aria-hidden="true" />
+                </span>
+                <h3 className="mt-5 text-base font-semibold">{item.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.body}</p>
+              </div>
+            )
+          })}
+        </div>
+        <p className="mt-8 text-sm text-muted-foreground">
+          Lineage starts from an inventory:{' '}
           <Link href="/data-discovery" className="text-foreground underline-offset-4 hover:underline">
             data discovery
           </Link>

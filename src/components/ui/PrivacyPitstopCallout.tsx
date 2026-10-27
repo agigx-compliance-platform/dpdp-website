@@ -8,15 +8,41 @@ import { usePathname } from 'next/navigation'
 
 const emptySubscribe = () => () => {}
 
+const COLLAPSED_KEY = 'pitstop-callout-collapsed'
+
+/** Start as the small pill on narrow screens, or once the visitor has minimised it. */
+function initiallyCollapsed(): boolean {
+  if (typeof window === 'undefined') return false
+  if (window.matchMedia('(max-width: 1023px)').matches) return true
+  try {
+    return window.localStorage.getItem(COLLAPSED_KEY) === '1'
+  } catch {
+    // Storage blocked (private mode): the preference simply is not remembered.
+    return false
+  }
+}
+
+function rememberCollapsed(value: boolean) {
+  try {
+    window.localStorage.setItem(COLLAPSED_KEY, value ? '1' : '0')
+  } catch {
+    // Storage blocked: the choice lasts for this page view only.
+  }
+}
+
 export function PrivacyPitstopCallout() {
   const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false)
-  const [collapsed, setCollapsed] = useState(false)
+  const [collapsed, setCollapsedState] = useState(initiallyCollapsed)
+  const setCollapsed = (value: boolean) => {
+    setCollapsedState(value)
+    rememberCollapsed(value)
+  }
   const pathname = usePathname()
 
   if (!mounted || pathname === '/privacy-pitstop') return null
 
   return (
-    <div className="fixed bottom-6 right-6 z-50">
+    <div className="fixed bottom-4 right-4 z-50 sm:bottom-6 sm:right-6">
       <AnimatePresence mode="wait">
         {collapsed ? (
           <motion.button

@@ -18,7 +18,7 @@ export const CONNECTOR_CATEGORIES: ConnectorCategory[] = [
   {
     id: 'warehouse',
     label: 'Warehouses and catalogs',
-    items: ['Snowflake', 'BigQuery', 'AWS Glue', 'Unity Catalog', 'Amazon DataZone'],
+    items: ['Snowflake', 'BigQuery', 'Amazon Redshift', 'AWS Glue', 'Unity Catalog', 'Amazon DataZone'],
   },
   {
     id: 'nosql',
@@ -28,7 +28,7 @@ export const CONNECTOR_CATEGORIES: ConnectorCategory[] = [
   {
     id: 'storage',
     label: 'Object storage',
-    items: ['Amazon S3'],
+    items: ['Amazon S3', 'Google Cloud Storage', 'Azure Blob Storage', 'Azure Data Lake Gen2'],
   },
   {
     id: 'streaming',
@@ -38,7 +38,20 @@ export const CONNECTOR_CATEGORIES: ConnectorCategory[] = [
   {
     id: 'saas',
     label: 'SaaS',
-    items: ['Salesforce', 'ServiceNow', 'Workday', 'SharePoint', 'SAP', 'Zendesk'],
+    items: [
+      'Salesforce',
+      'ServiceNow',
+      'Workday',
+      'SharePoint',
+      'SAP',
+      'Zendesk',
+      'HubSpot',
+      'Zoho CRM',
+      'Freshdesk',
+      'Razorpay',
+      'Google Drive',
+      'OneDrive',
+    ],
   },
   {
     id: 'cloud',
@@ -62,6 +75,11 @@ export const CONNECTOR_CATEGORIES: ConnectorCategory[] = [
     label: 'Backup vaults',
     items: ['AWS Backup', 'Azure Recovery Services', 'GCP Backup'],
   },
+  {
+    id: 'lineage',
+    label: 'Lineage sources',
+    items: ['dbt', 'OpenLineage'],
+  },
 ]
 
 /** Systems that can be added to an estate. Not claimed as live today. */
@@ -69,7 +87,7 @@ export const FUTURE_CONNECTOR_CATEGORIES: ConnectorCategory[] = [
   {
     id: 'rdbms-more',
     label: 'More databases',
-    items: ['MariaDB', 'IBM Db2', 'Azure SQL', 'Amazon Redshift', 'Azure Synapse', 'Teradata', 'ClickHouse', 'Apache Hive'],
+    items: ['MariaDB', 'IBM Db2', 'Azure SQL', 'Azure Synapse', 'Teradata', 'ClickHouse', 'Apache Hive'],
   },
   {
     id: 'warehouse-more',
@@ -84,7 +102,7 @@ export const FUTURE_CONNECTOR_CATEGORIES: ConnectorCategory[] = [
   {
     id: 'storage-more',
     label: 'More object and file stores',
-    items: ['Azure Blob Storage', 'Google Cloud Storage', 'MinIO', 'Box', 'Google Drive', 'OneDrive'],
+    items: ['MinIO', 'Box'],
   },
   {
     id: 'streaming-more',
@@ -94,7 +112,7 @@ export const FUTURE_CONNECTOR_CATEGORIES: ConnectorCategory[] = [
   {
     id: 'saas-more',
     label: 'More SaaS',
-    items: ['HubSpot', 'Shopify', 'Intercom', 'Freshdesk', 'Jira', 'Confluence', 'Slack', 'Microsoft Dynamics', 'Oracle Fusion'],
+    items: ['Shopify', 'Intercom', 'Jira', 'Confluence', 'Slack', 'Microsoft Dynamics', 'Oracle Fusion'],
   },
 ]
 
@@ -161,6 +179,7 @@ export const CONNECTOR_MARK: Record<string, string> = {
   Confluence: 'confluence',
   'Azure Blob Storage': 'microsoftazure',
   'Google Cloud Storage': 'googlecloud',
+  'Azure Data Lake Gen2': 'microsoftazure',
   'Google Drive': 'google',
   OneDrive: 'microsoft',
   'Amazon Kinesis': 'amazonaws',

@@ -1,4 +1,6 @@
 import { ProductLanding } from '@/components/products/ProductLanding'
+import { IllustrationSection } from '@/components/products/IllustrationSection'
+import { ConsentBannerMockup } from '@/components/illustrations'
 import { cookieCenter, cookieEdges, cookieNodes } from '@/lib/workflows'
 
 const FAQS = [
@@ -68,6 +70,14 @@ export default function CookieConsentPage() {
       faqs={FAQS}
       nextHref="/policy-notice"
       nextLabel="policy and notice management"
-    />
+    >
+      <IllustrationSection
+        eyebrow="What visitors see"
+        title="The same banner on desktop and mobile web"
+        lead="A bar on wide screens and a purpose sheet on phones. Both write the same consent record, and both put reject next to accept."
+      >
+        <ConsentBannerMockup />
+      </IllustrationSection>
+    </ProductLanding>
   )
 }

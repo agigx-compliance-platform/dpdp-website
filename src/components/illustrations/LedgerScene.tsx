@@ -31,7 +31,23 @@ export function LedgerScene() {
         <StatusPill status="live" label="Live" />
       </div>
 
-      <div className="relative min-h-[420px] px-5 py-6 sm:min-h-[460px]">
+      {/* Incoming events sit in their own row so they never collide with the floating writes. */}
+      <div className="flex flex-wrap items-center gap-2 border-b border-border px-5 py-3">
+        <p className="mr-1 text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Incoming</p>
+        {STREAMS.map((item, i) => (
+          <motion.span
+            key={item}
+            initial={{ opacity: 0, x: -8 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.4, delay: delay(0.12 + i * 0.06) }}
+            className="rounded-full border border-border bg-card px-2.5 py-1 text-[10px] text-muted-foreground"
+          >
+            {item}
+          </motion.span>
+        ))}
+      </div>
+
+      <div className="relative min-h-[380px] px-5 py-6 sm:min-h-[400px]">
         <svg className="pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 560 320" preserveAspectRatio="none" aria-hidden="true">
           <defs>
             <radialGradient id="ledger-glow" cx="50%" cy="48%" r="42%">
@@ -69,20 +85,6 @@ export function LedgerScene() {
             strokeWidth="1.5"
           />
         </svg>
-
-        <div className="absolute left-5 top-6 hidden w-28 flex-col gap-2 sm:flex">
-          {STREAMS.map((item, i) => (
-            <motion.span
-              key={item}
-              initial={{ opacity: 0, x: -8 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.4, delay: delay(0.12 + i * 0.06) }}
-              className="rounded-full border border-border bg-card px-2.5 py-1 text-[10px] text-muted-foreground"
-            >
-              {item}
-            </motion.span>
-          ))}
-        </div>
 
         {ORBITS.map((orb, i) => (
           <motion.div

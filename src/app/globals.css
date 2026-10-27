@@ -320,6 +320,14 @@
   .animate-spin-slow {
     animation: spin-slow 1.2s linear infinite;
   }
+  .hero-enter {
+    animation: slideUp 0.55s cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-enter {
+      animation: none;
+    }
+  }
 }
 
 @keyframes fadeIn {

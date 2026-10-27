@@ -1,181 +1,177 @@
 import Link from 'next/link'
+import { ArrowRight, ArrowUpRight, Fingerprint } from 'lucide-react'
 import { SectionWrapper } from '@/components/ui/SectionWrapper'
+import { Button } from '@/components/ui/Button'
 import { FaqSection } from '@/components/seo/FaqSection'
-import { GuideCtas } from '@/components/seo/GuideCtas'
 import { RelatedGuides } from '@/components/seo/RelatedGuides'
+import { DemoCta } from '@/components/products/DemoCta'
+import { PlatformShowcase } from '@/components/products/PlatformShowcase'
 import { DPDP_PLATFORM_FAQS } from '@/lib/dpdp-faqs'
+import { PRODUCTS, productIconMap } from '@/lib/products-data'
+
+/** Modules grouped by the DPDP duty they serve. Names, icons, and links come from products-data. */
+const GROUPS: { title: string; note: string; modules: { id: string; blurb: string }[] }[] = [
+  {
+    title: 'Notice and consent',
+    note: 'Sections 5 and 6',
+    modules: [
+      { id: 'consent-platform', blurb: 'Purpose consent, withdrawal, and the record behind it.' },
+      { id: 'cookie-consent', blurb: 'Web and mobile banners that block tags until a grant.' },
+      { id: 'policy-notice', blurb: 'Versioned notices tied to the consent they collected.' },
+    ],
+  },
+  {
+    title: 'Know your data',
+    note: 'Sections 8(5) to 8(7)',
+    modules: [
+      { id: 'data-discovery', blurb: 'An inventory of personal data, built from your catalogs.' },
+      { id: 'data-lineage', blurb: 'Where that data flows, and which stores are still unknown.' },
+      { id: 'infra-scanner', blurb: 'Cloud and code settings that put personal data in reach.' },
+    ],
+  },
+  {
+    title: 'Rights and vendors',
+    note: 'Sections 8(2) and 11 to 13',
+    modules: [
+      { id: 'dsar-platform', blurb: 'Access, correction, and erasure inside the deadline.' },
+      { id: 'processor-governance', blurb: 'Processors registered, mapped, and kept in step.' },
+    ],
+  },
+  {
+    title: 'Assurance',
+    note: 'Across the Act',
+    modules: [
+      { id: 'trustscope', blurb: 'Your public sites, scored the way a regulator would look.' },
+      { id: 'ai-assistant', blurb: 'Answers grounded in the Act, plus a readiness audit.' },
+      { id: 'adaptive-engine', blurb: 'Rule changes turned into control updates to approve.' },
+    ],
+  },
+]
+
+const ROLLOUT = [
+  { title: 'Scan', body: 'Connect public properties and see what they load today.' },
+  { title: 'Lock purposes', body: 'Agree the purpose list and the notice that explains it.' },
+  { title: 'Ship consent', body: 'Banner and SDK live, tags gated on the grant.' },
+  { title: 'Open rights', body: 'DSAR intake on, backed by the data inventory.' },
+  { title: 'Extend', body: 'Vendor webhooks and infrastructure scanning follow.' },
+] as const
+
+const productById = new Map(PRODUCTS.map((p) => [p.id, p]))
+
+function moduleCard(id: string, blurb: string) {
+  const product = productById.get(id)
+  if (!product) throw new Error(`dpdp-platform lists unknown product "${id}"`)
+  const Icon = productIconMap[product.icon] ?? Fingerprint
+  const href = 'href' in product && product.href ? product.href : `/products#${product.id}`
+  return (
+    <li key={id}>
+      <Link
+        href={href}
+        className="group flex h-full items-start gap-3 rounded-xl border border-border bg-card p-4 transition-colors hover:border-primary/40"
+      >
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+          <Icon className="h-4 w-4 text-primary" aria-hidden="true" />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="flex items-center justify-between gap-2 text-sm font-semibold text-foreground">
+            {product.name}
+            <ArrowUpRight
+              className="h-3.5 w-3.5 shrink-0 text-muted-foreground transition-colors group-hover:text-primary"
+              aria-hidden="true"
+            />
+          </span>
+          <span className="mt-1 block text-xs leading-relaxed text-muted-foreground">{blurb}</span>
+        </span>
+      </Link>
+    </li>
+  )
+}
 
 export default function DpdpPlatformPage() {
   return (
     <div className="min-h-screen bg-background">
-      <SectionWrapper className="pt-32 md:pt-40 pb-12">
+      <SectionWrapper className="pb-10 pt-32 md:pt-40">
         <div className="mx-auto max-w-3xl text-center">
-          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-            DPDP Consultancy · dpdpconsultancy.in
-          </p>
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-            <span className="gradient-text">DPDP compliance platform</span>
+          <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">DPDP compliance platform</p>
+          <h1 className="text-balance text-4xl font-semibold tracking-tight sm:text-5xl md:text-6xl">
+            <span className="gradient-text">Every DPDP duty, run every day</span>
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground leading-relaxed">
-            The DPDP Consultancy platform is software for running Digital
-            Personal Data Protection Act duties every day: consent, scanning,
-            Data Principal rights, vendors, and evidence, not a slide deck
-            delivered at the end of a workshop.
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
+            Consent, data inventory, rights requests, vendors, and evidence on one platform built for the DPDP Act 2023
+            and the 2025 Rules. Not a GDPR suite with an India flag turned on.
           </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <Link href="/contact">
+              <Button variant="primary" size="lg">
+                Book a demo
+                <ArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
+            <Link href="/questionnaire">
+              <Button variant="outline" size="lg">
+                Check your readiness
+              </Button>
+            </Link>
+          </div>
         </div>
       </SectionWrapper>
 
-      <SectionWrapper className="py-8">
-        <article className="mx-auto max-w-3xl space-y-6 text-muted-foreground leading-relaxed">
-          <h2 className="text-2xl font-semibold text-foreground">What a DPDP platform is for</h2>
-          <p>
-            Indian Data Fiduciaries do not fail{' '}
-            <Link href="/what-is-dpdp" className="text-foreground underline-offset-4 hover:underline">
-              the DPDP Act
-            </Link>{' '}
-            because they lack a policy. They fail because consent, trackers,
-            rights tickets, and processors live in different tools that do not
-            agree. A DPDP compliance platform is the system of record for those
-            controls: it captures purpose-level consent, shows what a public
-            site actually loads, runs access and erasure workflows, and keeps
-            the audit trail a DPO or the Data Protection Board can inspect.
-          </p>
-          <p>
-            DPDP Consultancy built this platform for the DPDP Act 2023 and the
-            November 2025 Rules. It is not a GDPR suite with an India flag
-            turned on. Terminology, notice, children’s data, grievance SLAs, and
-            penalty-oriented scoring follow Indian law.
-          </p>
-
-          <h2 className="text-2xl font-semibold text-foreground">Platform modules</h2>
-          <p>
-            <strong className="text-foreground">Consent Cockpit</strong> runs
-            Section 6 end to end: banners, purpose engine, withdrawal, cookie
-            discovery, and an immutable consent log. That is the{' '}
-            <Link href="/consent-management" className="text-foreground underline-offset-4 hover:underline">
-              consent management
-            </Link>{' '}
-            layer other modules depend on.
-          </p>
-          <p>
-            <strong className="text-foreground">TrustScope and Privacy Pitstop</strong>{' '}
-            scan public digital properties for cookies, undisclosed trackers,
-            notice gaps, and DSAR discoverability. Privacy Pitstop is the free
-            public scan; TrustScope is the deeper scored scan used in
-            assessments. Both answer a question policy reviews cannot: what does
-            this website do in a real browser?
-          </p>
-          <p>
-            <strong className="text-foreground">DSAR management</strong> automates
-            access, correction, and erasure under Sections 11–13, with
-            multi-channel intake, grievance-officer publication, and SLA
-            tracking. <strong className="text-foreground">Processor governance</strong>{' '}
-            registers vendors, maps them to purposes, and pushes consent and
-            rights actions downstream. Infrastructure and code scanning looks
-            for PII exposure and privacy misconfigurations in cloud and
-            repositories.
-          </p>
-          <p>
-            <strong className="text-foreground">AI compliance assistant</strong>{' '}
-            and the adaptive engine sit on top: guidance grounded in the Act and
-            Rules, scored audits across obligation domains, and change detection
-            when the legal baseline moves. Full module detail is on the{' '}
-            <Link href="/products" className="text-foreground underline-offset-4 hover:underline">
-              products
-            </Link>{' '}
-            page.
-          </p>
-
-          <h2 className="text-2xl font-semibold text-foreground">How the modules connect</h2>
-          <p>
-            Isolated tools create gaps. A consent event that never reaches the
-            tag manager, a DSAR that never reaches a processor, or a scan that
-            never updates the purpose list will all look “green” in their own
-            dashboard. On the DPDP Consultancy platform, purposes are shared:
-            consent changes gate tags, fan out to registered processors, and
-            sit on the same record a rights workflow reads when someone asks
-            what you hold and why.
-          </p>
-          <p>
-            Scans feed the same picture. If Privacy Pitstop or TrustScope finds
-            a tracker with no matching purpose or notice, that is a control
-            defect, not a one-off website bug. Infrastructure findings (open
-            buckets, PII in logs) belong in the same governance view as cookie
-            issues so the DPO is not running three programmes.
-          </p>
-
-          <h2 className="text-2xl font-semibold text-foreground">Platform plus advisory</h2>
-          <p>
-            Software does not replace a gap assessment. DPDP Consultancy still
-            maps which{' '}
-            <Link href="/dpdp-compliance" className="text-foreground underline-offset-4 hover:underline">
-              DPDP compliance
-            </Link>{' '}
-            domains apply, writes notices that match processing, and designs SDF
-            duties where they apply. The platform is where those designs run
-            after the workshop: consent events, scan history, rights tickets,
-            vendor delivery status. Organisations that only buy advisory stall
-            at the roadmap. Organisations that only buy a banner stall at the
-            first vendor they cannot prove.
-          </p>
-          <p>
-            Managed{' '}
-            <Link href="/services" className="text-foreground underline-offset-4 hover:underline">
-              services
-            </Link>{' '}
-            are available when you want DPDP Consultancy to operate scans,
-            consent changes, and rights SLAs rather than staffing a full privacy
-            ops team on day one.
-          </p>
-
-          <h2 className="text-2xl font-semibold text-foreground">Buying one platform versus four tools</h2>
-          <p>
-            Teams often already have a CMP, a GRC sheet, a helpdesk, and a
-            one-time pentest. None of those is a DPDP platform unless they share
-            purposes, identifiers, and evidence. Integrating them is possible;
-            it is also how programmes stall. DPDP Consultancy’s stack is opinionated
-            so a mid-size fiduciary can go live on consent, scanning, and DSAR
-            without a six-month integration project. You can still keep SIEM,
-            IAM, and existing security tools. The platform does not replace
-            those.
-          </p>
-
-          <h2 className="text-2xl font-semibold text-foreground">A typical implementation sequence</h2>
-          <p>
-            Connect the public properties, run a scan, lock the purpose list,
-            ship the consent SDK, then turn on DSAR intake. Vendor webhooks and
-            infrastructure scanning follow once the first-party controls are
-            stable. That order avoids automating rights requests against a
-            consent graph that does not exist yet. DPDP Consultancy advisory
-            stays in the loop for notice text, children’s data, and SDF extras;
-            the platform tickets are the delivery mechanism.
-          </p>
-
-          <h2 className="text-2xl font-semibold text-foreground">Who it is for</h2>
-          <p>
-            DPOs, privacy leads, CISOs, and counsel at companies that collect
-            data through websites, apps, or processors. Mid-size Indian firms
-            typically start with consent, Pitstop/TrustScope, and DSAR.
-            Significant Data Fiduciaries add DPO workflows, DPIA support, and
-            audit evidence. Foreign companies offering services into India use
-            the same stack so India-facing properties are not an afterthought on
-            a global CMP.
-          </p>
-          <p>
-            Start with a free{' '}
-            <Link href="/privacy-pitstop" className="text-foreground underline-offset-4 hover:underline">
-              Privacy Pitstop
-            </Link>{' '}
-            scan or the{' '}
-            <Link href="/questionnaire" className="text-foreground underline-offset-4 hover:underline">
-              readiness assessment
-            </Link>
-            . That gives a factual picture of the public surface and a short
-            list of modules to implement, instead of a generic platform tour.
-          </p>
-          <GuideCtas />
-        </article>
+      <SectionWrapper className="py-10 md:py-14">
+        <h2 className="text-2xl font-semibold sm:text-3xl">What the platform covers</h2>
+        <p className="mt-3 max-w-2xl text-muted-foreground">
+          Eleven modules on shared purposes and identifiers, grouped by the duty they serve.
+        </p>
+        <div className="mt-8 grid gap-6 lg:grid-cols-2">
+          {GROUPS.map((group) => (
+            <section key={group.title} className="rounded-2xl border border-border bg-background-secondary p-5">
+              <div className="mb-4 flex items-baseline justify-between gap-3">
+                <h3 className="text-base font-semibold">{group.title}</h3>
+                <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">{group.note}</span>
+              </div>
+              <ul className="grid gap-2">{group.modules.map((m) => moduleCard(m.id, m.blurb))}</ul>
+            </section>
+          ))}
+        </div>
       </SectionWrapper>
+
+      <SectionWrapper className="py-10 md:py-14">
+        <h2 className="text-2xl font-semibold sm:text-3xl">One record, connected</h2>
+        <p className="mt-3 max-w-2xl text-muted-foreground">
+          A consent change or a rights request reaches every system and vendor it should, because the modules share
+          the same purposes and inventory.
+        </p>
+        <div className="mt-8">
+          <PlatformShowcase />
+        </div>
+      </SectionWrapper>
+
+      <SectionWrapper className="py-10 md:py-14">
+        <h2 className="text-2xl font-semibold sm:text-3xl">How a rollout usually goes</h2>
+        <ol className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          {ROLLOUT.map((step, i) => (
+            <li key={step.title} className="relative rounded-2xl border border-border bg-card p-5 shadow-[var(--shadow-sm)]">
+              <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-primary">
+                Step {String(i + 1).padStart(2, '0')}
+              </span>
+              <h3 className="mt-2 text-sm font-semibold">{step.title}</h3>
+              <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">{step.body}</p>
+            </li>
+          ))}
+        </ol>
+        <p className="mt-6 max-w-2xl text-sm text-muted-foreground">
+          Advisory stays alongside: notice text, children&apos;s data, and Significant Data Fiduciary duties are worked
+          out with{' '}
+          <Link href="/services" className="text-foreground underline-offset-4 hover:underline">
+            DPDP Consultancy services
+          </Link>
+          .
+        </p>
+      </SectionWrapper>
+
+      <DemoCta
+        title="Four tools that disagree are not a platform"
+        body="A CMP, a helpdesk, a GRC sheet, and a one-time scan each look green on their own. The gaps sit between them. We run them on one record."
+      />
 
       <FaqSection title="DPDP platform questions" faqs={DPDP_PLATFORM_FAQS} />
       <RelatedGuides current="/dpdp-platform" />
