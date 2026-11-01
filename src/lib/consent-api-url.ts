@@ -11,7 +11,14 @@ const PROD_FALLBACK = 'https://consent-management-service-ywx2kc3tdq-ma.a.run.ap
 
 function trim(value: string | undefined): string | undefined {
   const v = value?.trim()
-  return v || undefined
+  if (!v) return undefined
+  if (
+    process.env.NODE_ENV === 'production' &&
+    /^https?:\/\/(localhost|127\.0\.0\.1|0\.0\.0\.0)(:\d+)?(\/|$)/i.test(v)
+  ) {
+    return undefined
+  }
+  return v
 }
 
 export function getDefaultConsentApiUrl(): string {
@@ -20,9 +27,9 @@ export function getDefaultConsentApiUrl(): string {
 
 export function getBuildTimeConsentApiUrl(): string | undefined {
   return (
+    trim(process.env.CONSENT_API_URL) ||
     trim(process.env.NEXT_PUBLIC_CONSENT_API_URL) ||
-    trim(process.env.NEXT_PUBLIC_API_URL) ||
-    trim(process.env.CONSENT_API_URL)
+    trim(process.env.NEXT_PUBLIC_API_URL)
   )
 }
 

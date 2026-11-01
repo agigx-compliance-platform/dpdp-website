@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { privacyQualityScore, qualityRatingText } from '../score-display'
+import { privacyQualityScore, qualityRatingText, isIndiaSpecificDomain } from '../score-display'
 import { getRiskRating } from '../constants'
 
 describe('privacyQualityScore', () => {
@@ -16,5 +16,14 @@ describe('privacyQualityScore', () => {
 
   it('refuses a missing score', () => {
     expect(() => privacyQualityScore(Number.NaN)).toThrow(/missing/)
+  })
+
+  it('identifies India-specific domains accurately', () => {
+    expect(isIndiaSpecificDomain('irctc.co.in')).toBe(true)
+    expect(isIndiaSpecificDomain('redbus.in')).toBe(true)
+    expect(isIndiaSpecificDomain('zomato.com')).toBe(true)
+    expect(isIndiaSpecificDomain('https://www.flipkart.com/path')).toBe(true)
+    expect(isIndiaSpecificDomain('bbc.co.uk')).toBe(false)
+    expect(isIndiaSpecificDomain('google.com')).toBe(false)
   })
 })
