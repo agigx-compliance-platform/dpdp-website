@@ -131,11 +131,28 @@ export async function submitContactForm(data: EnquiryFormData) {
   })
 }
 
-export async function getPitstopLeaderboard() {
+export interface PitstopLeaderboardItem {
+  rank: number
+  domain: string
+  score: number
+  scannedAt: string
+  detail?: unknown
+}
+
+export interface PitstopLeaderboardResponse {
+  entries: PitstopLeaderboardItem[]
+  topGainers?: PitstopLeaderboardItem[]
+  topLeaderboard?: PitstopLeaderboardItem[]
+  topLosers?: PitstopLeaderboardItem[]
+  loserBoard?: PitstopLeaderboardItem[]
+}
+
+export async function getPitstopLeaderboard(limit = 5) {
   return (await getApiClient()).get<{
-    data: {
-      entries: { rank: number; domain: string; score: number; scannedAt: string }[]
-    }
-  }>('/api/v1/sdk/website/scan/pitstop/leaderboard', { timeout: 15_000 })
+    data: PitstopLeaderboardResponse
+  }>('/api/v1/sdk/website/scan/pitstop/leaderboard', {
+    params: { limit },
+    timeout: 90_000,
+  })
 }
 

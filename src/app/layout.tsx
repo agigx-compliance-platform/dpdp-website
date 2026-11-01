@@ -14,6 +14,7 @@ import { AgigxSdkScripts } from '@/components/consent/AgigxSdkScripts'
 import { ConsentGatedGtagScripts } from '@/components/analytics/ConsentGatedGtagScripts'
 import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics'
 import { SITE_URL } from '@/lib/site-url'
+import { getBuildTimeConsentApiUrl } from '@/lib/consent-api-url'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -139,11 +140,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const consentApiUrl =
-    process.env.CONSENT_API_URL?.trim() ||
-    process.env.NEXT_PUBLIC_CONSENT_API_URL?.trim() ||
-    process.env.NEXT_PUBLIC_API_URL?.trim() ||
-    ''
+  const consentApiUrl = getBuildTimeConsentApiUrl() || ''
 
   return (
     <html lang="en-IN" suppressHydrationWarning data-scroll-behavior="smooth" data-theme="light" className={`${inter.variable} ${jetbrainsMono.variable}`}>

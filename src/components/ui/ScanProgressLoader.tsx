@@ -1,22 +1,15 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import React, { useEffect, useRef } from 'react'
+import { motion } from 'framer-motion'
 import {
   ShieldCheck,
   CheckCircle2,
   Loader2,
-  Compass,
-  Sparkles,
-  ShieldAlert,
-  Building2,
-  UserCheck,
-  ChevronLeft,
-  ChevronRight,
-  AlertTriangle,
   Lock,
 } from 'lucide-react'
 import { BrandMark } from '@/components/brand/BrandMark'
+import { ScannerProductAds } from '@/components/ui/ScannerProductAds'
 import { cn } from '@/lib/utils'
 
 export type AnalysisStep = {
@@ -31,81 +24,13 @@ interface ScanProgressLoaderProps {
   className?: string
 }
 
-interface InfoCard {
-  id: string
-  badge: string
-  title: string
-  tagline: string
-  content: string
-  icon: React.ComponentType<{ className?: string }>
-}
-
-const INFO_CARDS: InfoCard[] = [
-  {
-    id: 'approach',
-    badge: 'OUR APPROACH',
-    title: 'Our Approach to Privacy',
-    tagline: 'Practical, Structured Guidance for Real-World Workflows',
-    content:
-      'DPDP Consultancy helps organisations understand and improve their privacy and data-protection readiness through a practical, structured approach tailored to operational workflows.',
-    icon: Compass,
-  },
-  {
-    id: 'privacy-runway',
-    badge: 'FRAMEWORK',
-    title: 'Readiness path',
-    tagline: 'From obligations to a working programme',
-    content:
-      'A sequenced path from what the Act requires to the daily work of notice, consent, rights, and safeguards.',
-    icon: Sparkles,
-  },
-  {
-    id: 'dpdpa-readiness',
-    badge: 'STATUTORY RISK',
-    title: 'DPDPA Readiness',
-    tagline: 'Identify Compliance Gaps under India’s DPDP Act 2023',
-    content:
-      'Organisations can assess their readiness for India’s Digital Personal Data Protection Act, identify technical and operational gaps, and pinpoint high-priority areas needing attention.',
-    icon: ShieldAlert,
-  },
-  {
-    id: 'help-organisations',
-    badge: 'FOR ORGANISATIONS',
-    title: 'How We Help Organisations',
-    tagline: 'Actionable Services & Privacy Maturity Advancement',
-    content:
-      'We provide privacy & DPDPA readiness assessments, identify data protection gaps, clarify data-processing practices, and deliver practical guidance to build strong privacy posture.',
-    icon: Building2,
-  },
-  {
-    id: 'help-principals',
-    badge: 'FOR DATA PRINCIPALS',
-    title: 'How We Help Data Principals',
-    tagline: 'Understanding Your Personal Data Rights & Consent',
-    content:
-      'Data Principals can better understand privacy notices, consent mechanisms, and responsible data handling, enabling informed choices and effective grievance redressal.',
-    icon: UserCheck,
-  },
-]
-
 export function ScanProgressLoader({
   domain,
   activeStep,
   steps,
   className,
 }: ScanProgressLoaderProps) {
-  const [activeCardIndex, setActiveCardIndex] = useState(0)
-  const [isPaused, setIsPaused] = useState(false)
   const modalRef = useRef<HTMLDivElement>(null)
-
-  // Auto-rotate informational cards every 6 seconds unless hovered/touched
-  useEffect(() => {
-    if (isPaused) return
-    const timer = setInterval(() => {
-      setActiveCardIndex((prev) => (prev + 1) % INFO_CARDS.length)
-    }, 6000)
-    return () => clearInterval(timer)
-  }, [isPaused])
 
   // Prevent background scrolling and trap Escape key while scan is active
   useEffect(() => {
@@ -133,22 +58,6 @@ export function ScanProgressLoader({
     }
   }, [])
 
-  const currentCard = INFO_CARDS[activeCardIndex]
-  const CardIcon = currentCard.icon
-
-  const progressPercent = Math.min(
-    100,
-    Math.round(((Math.max(0, activeStep) + 1) / steps.length) * 100)
-  )
-
-  const handlePrev = () => {
-    setActiveCardIndex((prev) => (prev - 1 + INFO_CARDS.length) % INFO_CARDS.length)
-  }
-
-  const handleNext = () => {
-    setActiveCardIndex((prev) => (prev + 1) % INFO_CARDS.length)
-  }
-
   return (
     <div
       role="dialog"
@@ -172,12 +81,12 @@ export function ScanProgressLoader({
         exit={{ opacity: 0, scale: 0.96, y: 15 }}
         transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
         className={cn(
-          'w-full max-w-4xl max-h-[92vh] overflow-y-auto rounded-3xl border border-primary/30 bg-card p-6 sm:p-8 space-y-6 text-left shadow-lg backdrop-blur-2xl focus:outline-none custom-scrollbar',
+          'w-full max-w-5xl max-h-[94vh] overflow-y-auto rounded-3xl border border-primary/30 bg-card p-4 sm:p-6 space-y-4 text-left shadow-lg backdrop-blur-2xl focus:outline-none scrollbar-thin',
           className
         )}
       >
         {/* Top Header: Logo + Non-Dismissable Scanner Lock Indicator */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-3.5">
           <div className="flex items-center gap-3">
             <BrandMark priority />
             <div className="hidden sm:block w-px h-8 bg-primary/20" />
@@ -207,7 +116,7 @@ export function ScanProgressLoader({
         </div>
 
         {/* Target Domain + Prominent Main Message */}
-        <div className="space-y-2 bg-muted border border-border rounded-2xl p-4 sm:p-5">
+        <div className="space-y-1.5 bg-muted border border-border rounded-2xl p-3.5 sm:px-5 sm:py-3.5">
           <div className="flex items-center justify-between flex-wrap gap-2">
             <div className="text-xs text-primary font-semibold uppercase tracking-wider">
               Target Domain:{' '}
@@ -220,21 +129,21 @@ export function ScanProgressLoader({
             </div>
           </div>
 
-          <div id="scan-loader-desc" className="space-y-1 pt-1">
-            <p className="text-base sm:text-lg font-semibold text-primary">
+          <div id="scan-loader-desc" className="space-y-0.5 pt-0.5">
+            <p className="text-sm sm:text-base font-semibold text-primary">
               Hang on while we complete the scan.
             </p>
-            <p className="text-sm text-muted-foreground">
-              Meanwhile, here is a quick introduction to who we are and how we help.
+            <p className="text-xs sm:text-sm text-muted-foreground">
+              Meanwhile, explore our DPDP compliance products and capabilities below.
             </p>
           </div>
         </div>
 
         {/* Fancy Radar Loader Animation & Live Step Checklist */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center pt-1">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 sm:gap-5 items-center">
           {/* Fancy Animated Radar Shield (5 cols on MD+) */}
-          <div className="md:col-span-5 flex flex-col items-center justify-center p-4">
-            <div className="relative w-36 h-36 sm:w-44 sm:h-44 flex items-center justify-center">
+          <div className="md:col-span-5 flex flex-col items-center justify-center py-1 px-2">
+            <div className="relative w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center">
               {/* Outer Rotating Glowing Ring */}
               <div className="absolute inset-0 rounded-full border-2 border-dashed border-primary/40 animate-[spin_12s_linear_infinite] motion-reduce:animate-none" />
 
@@ -245,22 +154,22 @@ export function ScanProgressLoader({
               <div className="absolute inset-4 rounded-full bg-gradient-to-tr from-primary/15 via-emerald-500/10 to-transparent animate-pulse motion-reduce:animate-none" />
 
               {/* Center Shield Icon */}
-              <div className="relative z-10 p-4 rounded-full bg-background border border-primary/50 shadow-[0_0_30px_hsl(var(--primary)/0.35)] flex items-center justify-center">
-                <ShieldCheck className="w-10 h-10 sm:w-12 sm:h-12 text-primary" />
+              <div className="relative z-10 p-3.5 rounded-full bg-background border border-primary/50 shadow-[0_0_30px_hsl(var(--primary)/0.35)] flex items-center justify-center">
+                <ShieldCheck className="w-8 h-8 sm:w-9 sm:h-9 text-primary" />
               </div>
             </div>
 
-            <div className="mt-3 text-center">
-              <span className="text-sm font-mono font-medium text-primary tracking-wider">
+            <div className="mt-2 text-center">
+              <span className="text-xs sm:text-sm font-mono font-medium text-primary tracking-wider">
                 {steps[activeStep]?.label || 'Analyzing compliance signals...'}
               </span>
             </div>
           </div>
 
-          {/* Live Steps Checklist & Progress Bar (7 cols on MD+) */}
-          <div className="md:col-span-7 space-y-4">
+          {/* Live Steps Checklist (7 cols on MD+) */}
+          <div className="md:col-span-7">
             {/* Step Breakdown */}
-            <div className="space-y-2.5 bg-card p-4 rounded-2xl border border-border">
+            <div className="space-y-2 bg-card p-3.5 sm:p-4 rounded-2xl border border-border">
               {steps.map((step, i) => {
                 const Icon = step.icon
                 const isActive = i === activeStep
@@ -292,144 +201,11 @@ export function ScanProgressLoader({
                 )
               })}
             </div>
-
-            {/* Progress Bar */}
-            <div className="space-y-1.5">
-              <div className="flex justify-between text-sm text-muted-foreground font-mono">
-                <span>Scan Execution Progress</span>
-                <span className="text-primary font-bold">{progressPercent}%</span>
-              </div>
-              <div className="h-2.5 w-full bg-muted rounded-full overflow-hidden border border-border">
-                <motion.div
-                  className="h-full bg-gradient-to-r from-primary to-[hsl(var(--gradient-end))] rounded-full"
-                  initial={{ width: '0%' }}
-                  animate={{ width: `${progressPercent}%` }}
-                  transition={{ duration: 0.5 }}
-                />
-              </div>
-            </div>
           </div>
         </div>
 
-        {/* Auto-Rotating Informational Cards Section */}
-        <div
-          className="relative pt-2"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-          onTouchStart={() => setIsPaused(true)}
-          onTouchEnd={() => setIsPaused(false)}
-        >
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold uppercase tracking-widest text-primary bg-primary/10 px-2.5 py-1 rounded border border-border">
-                {currentCard.badge}
-              </span>
-              <span className="text-xs text-muted-foreground hidden sm:inline">
-                • DPDP Consultancy Overview
-              </span>
-            </div>
-
-            {/* Controls: Prev / Next Buttons */}
-            <div className="flex items-center gap-1.5">
-              <button
-                onClick={handlePrev}
-                className="p-1 rounded-md border border-border hover:border-primary/50 text-primary hover:bg-muted transition-colors"
-                aria-label="Previous slide"
-                type="button"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </button>
-              <span className="text-sm font-mono text-muted-foreground px-1">
-                {activeCardIndex + 1} / {INFO_CARDS.length}
-              </span>
-              <button
-                onClick={handleNext}
-                className="p-1 rounded-md border border-border hover:border-primary/50 text-primary hover:bg-muted transition-colors"
-                aria-label="Next slide"
-                type="button"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-
-          {/* Animated Info Card Container */}
-          <div className="relative min-h-[140px] sm:min-h-[120px] rounded-2xl border border-border bg-gradient-to-br from-muted via-card to-muted p-5 shadow-inner">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentCard.id}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.3 }}
-                className="flex items-start gap-4"
-              >
-                <div className="p-3 rounded-xl bg-primary/10 border border-primary/30 text-primary shrink-0 hidden sm:flex">
-                  <CardIcon className="w-6 h-6" />
-                </div>
-
-                <div className="space-y-1.5 text-left">
-                  <div className="flex items-center gap-2">
-                    <CardIcon className="w-4 h-4 text-primary sm:hidden shrink-0" />
-                    <h4 className="text-sm font-bold text-foreground tracking-wide">
-                      {currentCard.title}
-                    </h4>
-                  </div>
-                  <div className="text-xs font-semibold text-primary/90">
-                    {currentCard.tagline}
-                  </div>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
-                    {currentCard.content}
-                  </p>
-                </div>
-              </motion.div>
-            </AnimatePresence>
-          </div>
-
-          {/* Card Indicators (Dots) */}
-          <div className="flex justify-center gap-1.5 mt-3">
-            {INFO_CARDS.map((card, idx) => (
-              <button
-                key={card.id}
-                onClick={() => setActiveCardIndex(idx)}
-                className={cn(
-                  'h-1.5 rounded-full transition-all duration-300',
-                  idx === activeCardIndex
-                    ? 'w-6 bg-primary'
-                    : 'w-1.5 bg-primary/20 hover:bg-primary/40'
-                )}
-                aria-label={`Go to slide ${idx + 1}`}
-                type="button"
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Statutory Risk Notice (Stat Card) */}
-        <div className="relative overflow-hidden rounded-2xl border border-amber-500/25 bg-amber-500/5 p-4 sm:p-5">
-          <div className="flex items-start gap-3.5 relative z-10">
-            <div className="p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/30 shrink-0 text-amber-500">
-              <AlertTriangle className="w-5 h-5" />
-            </div>
-            <div className="space-y-1 text-left">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-xs font-semibold uppercase tracking-wider text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/30">
-                  DPDP ACT 2023 STATUTORY RISK AWARENESS
-                </span>
-              </div>
-              <p className="text-xs sm:text-sm text-foreground font-medium leading-snug">
-                DPDP fines in India can be up to{' '}
-                <span className="font-bold text-amber-500 underline decoration-amber-500/40 underline-offset-2">
-                  ₹250 Crore
-                </span>{' '}
-                per violation instance.
-              </p>
-              <p className="text-sm text-muted-foreground leading-relaxed pt-0.5">
-                Our automated scanner evaluates notice disclosures, cookie consent enforcement, user grievance redressal, and security posture against statutory DPDP requirements.
-              </p>
-            </div>
-          </div>
-        </div>
+        {/* Footer Section: Product Advertisements */}
+        <ScannerProductAds />
       </motion.div>
     </div>
   )
