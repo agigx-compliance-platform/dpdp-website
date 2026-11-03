@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Card, CardContent } from "@/components/ui/Card";
 import { submitEnquiry } from "@/lib/api";
+import { CONTACT_FORM_JOURNEY_KEY, recordFormConsent } from "@/lib/agigx-form-consent";
 import { FaqSection } from "@/components/seo/FaqSection";
 import { CONTACT_FAQS } from "@/lib/dpdp-faqs";
 
@@ -121,6 +122,11 @@ export default function ContactPage() {
         role: form.role,
         subject: form.subject,
         message: form.message,
+      });
+      // Consent is recorded only after the enquiry succeeds, and only for ticked purposes.
+      await recordFormConsent({
+        journeyKey: CONTACT_FORM_JOURNEY_KEY,
+        identity: { type: "EMAIL", value: form.email.trim() },
       });
       setSubmitted(true);
     } catch {
@@ -284,6 +290,13 @@ export default function ContactPage() {
                     </p>
                   )}
                 </div>
+                {/* Agigx form consent: SDK renders unticked checkbox cards for this journey */}
+                <div
+                  data-agigx-form-consent={CONTACT_FORM_JOURNEY_KEY}
+                  data-agigx-identity-field="email"
+                  data-agigx-identity-type="EMAIL"
+                  className="empty:hidden"
+                />
                 <Button
                   type="submit"
                   variant="primary"

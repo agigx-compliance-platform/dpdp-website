@@ -65,7 +65,18 @@ export function Footer() {
                   <li>
                     <div
                       id="agigx-policy-links"
-                      className="flex flex-col gap-2.5 text-sm text-muted-foreground [&_a]:hover:text-foreground [&_a]:transition-colors"
+                      data-agigx-layout="stack"
+                      className="flex flex-col items-start gap-2.5 text-sm text-muted-foreground [&_a]:hover:text-foreground [&_a]:transition-colors"
+                    />
+                  </li>
+                ) : null}
+                {'sdkPolicyLinks' in section && section.sdkPolicyLinks ? (
+                  <li>
+                    {/* DSAR + Grievance links injected by the Agigx rights SDK */}
+                    <span
+                      data-agigx-rights="footer"
+                      data-agigx-layout="stack"
+                      className="flex flex-col items-start gap-2.5 text-sm text-muted-foreground [&_button:hover]:text-foreground"
                     />
                   </li>
                 ) : null}
