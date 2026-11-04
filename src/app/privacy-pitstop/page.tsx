@@ -27,6 +27,7 @@ import { Button } from '@/components/ui/Button'
 import type { AnalysisResult } from '@/lib/privacy-pitstop/types'
 import { privacyQualityScore, qualityRatingText } from '@/lib/privacy-pitstop/score-display'
 import { ScanProgressLoader } from '@/components/ui/ScanProgressLoader'
+import { DiscussWithLlmSection } from '@/components/ui/DiscussWithLlmSection'
 
 /* ─── constants ────────────────────────────────────────────── */
 
@@ -460,10 +461,11 @@ function PrivacyPitstopPageInner() {
   }
 
   const scoreRingOffset = 2 * Math.PI * 54 * (1 - (displayScore / 100))
+  const hasScanReport = Boolean(result?.summary || result?.report?.executiveSummary || result?.detailedReport || result?.report?.detailedReport)
 
   return (
     <div className="min-h-screen bg-background">
-      <SectionWrapper className="pt-32 md:pt-40 pb-12">
+      <SectionWrapper className={`${view === 'results' ? 'pt-24 md:pt-28' : 'pt-32 md:pt-40'} pb-12`}>
         {/* View: Leaderboard */}
         {view === 'leaderboard' ? (
           <motion.div
@@ -561,72 +563,77 @@ function PrivacyPitstopPageInner() {
           /* View: Scanner */
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             <div className={`${view === 'results' ? 'lg:col-span-6' : 'lg:col-span-8'} space-y-6`}>
-              {/* Title Block */}
-              <div className="text-left max-w-2xl space-y-4">
-                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-                  Public scan
-                </p>
-                <h1 className="text-4xl md:text-5xl font-semibold tracking-tight text-foreground">
-                  Privacy Pitstop
-                </h1>
-                <p className="text-lg text-muted-foreground leading-relaxed">
-                  A public-page scan of notice, consent, cookies, rights, children&apos;s
-                  data, and transport security. Values from behind a login are not requested.
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Findings become questions, a grievance draft, and a complaint pack.
-                </p>
-              </div>
+              {/* Landing Header & Input Form */}
+              {view !== 'results' && (
+                <>
+                  {/* Title Block */}
+                  <div className="text-left max-w-2xl space-y-4">
+                    <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                      Public scan
+                    </p>
+                    <h1 className="text-4xl md:text-5xl font-semibold tracking-tight text-foreground">
+                      Privacy Pitstop
+                    </h1>
+                    <p className="text-lg text-muted-foreground leading-relaxed">
+                      A public-page scan of notice, consent, cookies, rights, children&apos;s
+                      data, and transport security. Values from behind a login are not requested.
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      Findings become questions, a grievance draft, and a complaint pack.
+                    </p>
+                  </div>
 
-              {/* Form Input Section */}
-              <div className="ledger-panel p-2 sm:p-2.5 flex items-center gap-2 rounded-2xl">
-                <div className="pl-3 text-muted-foreground">
-                  <Globe className="w-4 h-4" />
-                </div>
-                <form onSubmit={handleSubmit} className="flex-1 flex items-center gap-2">
-                  <input
-                    ref={inputRef}
-                    type="text"
-                    placeholder="Enter a website URL"
-                    value={domain}
-                    onChange={(e) => setDomain(e.target.value)}
-                    className="w-full bg-transparent border-0 focus:ring-0 text-sm py-2.5 px-1 focus:outline-none placeholder-muted-foreground text-foreground"
-                    autoFocus
-                  />
-                  <Button
-                    type="submit"
-                    variant="primary"
-                    size="sm"
-                    disabled={!domain.trim() || view === 'analyzing'}
-                    className="shrink-0"
-                  >
-                    {view === 'analyzing' ? (
-                      <>
-                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                        Scanning...
-                      </>
-                    ) : (
-                      'Start Free Scan'
-                    )}
-                  </Button>
-                </form>
-              </div>
+                  {/* Form Input Section */}
+                  <div className="ledger-panel p-2 sm:p-2.5 flex items-center gap-2 rounded-2xl">
+                    <div className="pl-3 text-muted-foreground">
+                      <Globe className="w-4 h-4" />
+                    </div>
+                    <form onSubmit={handleSubmit} className="flex-1 flex items-center gap-2">
+                      <input
+                        ref={inputRef}
+                        type="text"
+                        placeholder="Enter a website URL"
+                        value={domain}
+                        onChange={(e) => setDomain(e.target.value)}
+                        className="w-full bg-transparent border-0 focus:ring-0 text-sm py-2.5 px-1 focus:outline-none placeholder-muted-foreground text-foreground"
+                        autoFocus
+                      />
+                      <Button
+                        type="submit"
+                        variant="primary"
+                        size="sm"
+                        disabled={!domain.trim() || view === 'analyzing'}
+                        className="shrink-0"
+                      >
+                        {view === 'analyzing' ? (
+                          <>
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            Scanning...
+                          </>
+                        ) : (
+                          'Start Free Scan'
+                        )}
+                      </Button>
+                    </form>
+                  </div>
 
-              {/* Try Examples */}
-              <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-                <span>Try examples:</span>
-                <div className="flex flex-wrap gap-2">
-                  {EXAMPLE_DOMAINS.map((d) => (
-                    <button
-                      key={d}
-                      onClick={() => { setDomain(d); startAnalysis(d) }}
-                      className="px-3 py-1.5 rounded-lg border border-border bg-card hover:border-primary/30 hover:bg-muted text-muted-foreground hover:text-foreground transition-all cursor-pointer text-xs"
-                    >
-                      {d}
-                    </button>
-                  ))}
-                </div>
-              </div>
+                  {/* Try Examples */}
+                  <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+                    <span>Try examples:</span>
+                    <div className="flex flex-wrap gap-2">
+                      {EXAMPLE_DOMAINS.map((d) => (
+                        <button
+                          key={d}
+                          onClick={() => { setDomain(d); startAnalysis(d) }}
+                          className="px-3 py-1.5 rounded-lg border border-border bg-card hover:border-primary/30 hover:bg-muted text-muted-foreground hover:text-foreground transition-all cursor-pointer text-xs"
+                        >
+                          {d}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
 
               {/* Main Content Area */}
               <AnimatePresence mode="wait">
@@ -665,32 +672,24 @@ function PrivacyPitstopPageInner() {
                     animate={{ opacity: 1 }}
                     className="space-y-6"
                   >
-                    {/* ── Scan Result Header ──────────────────────────── */}
-                    <div className="ledger-panel p-5">
-                      <p className="text-xs font-semibold tracking-widest text-muted-foreground uppercase mb-3">Scan result</p>
-                      <div className="flex items-center justify-between flex-wrap gap-3">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-muted border border-border flex items-center justify-center">
-                            <Globe className="w-5 h-5 text-primary" />
-                          </div>
-                          <div>
-                            <div className="flex items-center gap-1.5">
-                              <h3 className="text-sm font-bold text-foreground">{result.domain}</h3>
-                              <a href={`https://${result.domain}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary">
-                                <ArrowUpRight className="w-3.5 h-3.5" />
-                              </a>
-                            </div>
-                            <div className="flex items-center gap-2 mt-0.5">
-                              <span className="text-xs px-2 py-0.5 rounded border border-border text-muted-foreground">Website</span>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-xs text-muted-foreground">
-                            Scanned on {new Date(result.analyzedAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} · India
-                          </p>
-                        </div>
+                    {/* Top Action Bar in Results */}
+                    <div className="flex items-center justify-between border-b border-border/80 pb-3">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                          Public scan
+                        </span>
+                        <span className="text-muted-foreground">·</span>
+                        <span className="text-sm font-bold text-foreground">{result.domain}</span>
                       </div>
+                      <Button
+                        onClick={resetToLanding}
+                        variant="secondary"
+                        size="sm"
+                        className="h-8 px-3 text-xs gap-1.5"
+                      >
+                        <ArrowLeft className="w-3.5 h-3.5" />
+                        Scan Another
+                      </Button>
                     </div>
 
                     {/* ── Section 1: Privacy Score Summary ──────────── */}
@@ -757,107 +756,125 @@ function PrivacyPitstopPageInner() {
                       </div>
                     </div>
 
-                    {/* ── Section 1.5: Score Justification (Score -> Why this score -> Key evidence) ── */}
+                    {/* ── Discuss this page with an LLM ──────────── */}
                     <motion.div
-                      initial={{ opacity: 0, y: 12 }}
+                      initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.12 }}
-                      className="ledger-panel p-6 md:p-8 space-y-4 text-left border-l-4 border-l-primary"
+                      transition={{ delay: 0.05 }}
                     >
-                      <div className="flex items-center gap-2 border-b border-border pb-3">
-                        <CheckCircle2 className="w-5 h-5 text-primary" />
-                        <div>
-                          <h3 className="text-base font-bold text-foreground">Score Justification ({displayScore}/100)</h3>
-                          <p className="text-xs text-muted-foreground">Direct score explanation derived from live scan evidence</p>
-                        </div>
-                      </div>
-
-                      {displayScore === 100 ? (
-                        <div className="space-y-3 bg-success/10 p-5 rounded-xl border border-success/30">
-                          <div className="flex items-center gap-2 text-success font-semibold text-sm">
-                            <ShieldCheck className="w-5 h-5" />
-                            <span>Privacy quality 100/100 on this public scan</span>
-                          </div>
-                          <p className="text-xs text-muted-foreground leading-relaxed">
-                            The detectors that ran recorded no deductions. That is not a Board finding or a legal opinion.
-                          </p>
-                          <ul className="space-y-2 text-xs text-foreground">
-                            <li className="flex items-center gap-2 bg-card p-2.5 rounded border border-border">
-                              <CheckCircle2 className="w-4 h-4 text-success shrink-0" />
-                              <span>Privacy notice published and reachable on a public path</span>
-                            </li>
-                            <li className="flex items-center gap-2 bg-card p-2.5 rounded border border-border">
-                              <CheckCircle2 className="w-4 h-4 text-success shrink-0" />
-                              <span>{result?.consentBannerPresent ? 'Cookie consent banner present with an explicit choice' : 'No pre-consent unauthenticated trackers recorded'}</span>
-                            </li>
-                            <li className="flex items-center gap-2 bg-card p-2.5 rounded border border-border">
-                              <CheckCircle2 className="w-4 h-4 text-success shrink-0" />
-                              <span>No unauthenticated third-party tracking scripts recorded on public pages</span>
-                            </li>
-                            <li className="flex items-center gap-2 bg-card p-2.5 rounded border border-border">
-                              <CheckCircle2 className="w-4 h-4 text-success shrink-0" />
-                              <span>HTTPS in use on the scanned pages</span>
-                            </li>
-                          </ul>
-                        </div>
-                      ) : (
-                        <div className="space-y-3 bg-warning/10 p-5 rounded-xl border border-warning/30">
-                          <div className="flex items-center gap-2 text-warning font-semibold text-sm">
-                            <AlertTriangle className="w-5 h-5" />
-                            <span>Why this score ({displayScore}/100)</span>
-                          </div>
-                          <p className="text-xs text-muted-foreground leading-relaxed">
-                            Deductions on this public scan came from the factors below.
-                          </p>
-                          <ul className="space-y-2 text-xs text-foreground">
-                            {gapSummary.slice(0, 4).map((gap, idx) => (
-                              <li key={idx} className="flex items-start gap-2 bg-card p-2.5 rounded border border-border">
-                                <span className="text-warning font-semibold">•</span>
-                                <span className="leading-snug">{gap}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
+                      <DiscussWithLlmSection targetUrl={result.domain || domain} />
                     </motion.div>
 
-                    {/* ── Section 2: AI Executive Summary & Detailed Report ──────── */}
-                    {(result?.summary || result?.report?.executiveSummary || result?.detailedReport || result?.report?.detailedReport) && (
+                    {/* ── Score Justification & Scan Report (Side-by-Side) ──────── */}
+                    <div className={`grid grid-cols-1 ${hasScanReport ? 'md:grid-cols-2' : ''} gap-4 items-stretch`}>
+                      {/* Score Justification */}
                       <motion.div
                         initial={{ opacity: 0, y: 12 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.15 }}
-                        className="ledger-panel p-6 md:p-8 space-y-6 text-left"
+                        transition={{ delay: 0.1 }}
+                        className="ledger-panel p-5 md:p-6 space-y-4 text-left border-l-4 border-l-primary flex flex-col justify-between"
                       >
-                        <div className="flex items-center justify-between border-b border-border pb-4">
-                          <div className="flex items-center gap-2">
-                            <FileText className="w-5 h-5 text-primary" />
-                            <h3 className="text-base font-bold text-foreground">Scan report</h3>
-                          </div>
-                          <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-                            From public pages
-                          </span>
-                        </div>
-
-                        {/* Executive Summary */}
-                        <div className="space-y-2">
-                          <h4 className="text-xs font-bold text-primary uppercase tracking-wider">Executive Summary</h4>
-                          <p className="text-sm text-foreground/90 leading-relaxed font-medium bg-muted/40 p-4 rounded-xl border border-border">
-                            {result?.report?.executiveSummary || result?.summary}
-                          </p>
-                        </div>
-
-                        {/* Detailed Prose Report */}
-                        {(result?.detailedReport || result?.report?.detailedReport) && (
-                          <div className="space-y-2 pt-2 border-t border-border/60">
-                            <h4 className="text-xs font-bold text-primary uppercase tracking-wider">Detailed Technical Assessment (DPDP Act 2023)</h4>
-                            <div className="text-xs text-muted-foreground leading-relaxed space-y-3 font-normal whitespace-pre-line bg-card/60 p-4 rounded-xl border border-border/80">
-                              {result?.detailedReport || result?.report?.detailedReport}
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between border-b border-border/70 pb-3">
+                            <div className="flex items-center gap-2">
+                              <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
+                              <h3 className="text-sm font-bold text-foreground">Score Justification ({displayScore}/100)</h3>
                             </div>
+                            <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground bg-muted/60 px-2 py-0.5 rounded border border-border">
+                              Evidence
+                            </span>
                           </div>
-                        )}
+
+                          {displayScore === 100 ? (
+                            <div className="space-y-3 bg-success/10 p-4 rounded-xl border border-success/30">
+                              <div className="flex items-center gap-2 text-success font-semibold text-xs sm:text-sm">
+                                <ShieldCheck className="w-4 h-4 shrink-0" />
+                                <span>Privacy quality 100/100 on this scan</span>
+                              </div>
+                              <p className="text-[11px] text-muted-foreground leading-relaxed">
+                                The detectors that ran recorded no deductions. That is not a Board finding or legal advice.
+                              </p>
+                              <ul className="space-y-1.5 text-xs text-foreground">
+                                <li className="flex items-center gap-2 bg-card/80 p-2 rounded-lg border border-border/60">
+                                  <CheckCircle2 className="w-3.5 h-3.5 text-success shrink-0" />
+                                  <span>Privacy notice published and reachable</span>
+                                </li>
+                                <li className="flex items-center gap-2 bg-card/80 p-2 rounded-lg border border-border/60">
+                                  <CheckCircle2 className="w-3.5 h-3.5 text-success shrink-0" />
+                                  <span>{result?.consentBannerPresent ? 'Cookie consent banner present' : 'No pre-consent trackers detected'}</span>
+                                </li>
+                                <li className="flex items-center gap-2 bg-card/80 p-2 rounded-lg border border-border/60">
+                                  <CheckCircle2 className="w-3.5 h-3.5 text-success shrink-0" />
+                                  <span>No third-party tracking scripts found</span>
+                                </li>
+                                <li className="flex items-center gap-2 bg-card/80 p-2 rounded-lg border border-border/60">
+                                  <CheckCircle2 className="w-3.5 h-3.5 text-success shrink-0" />
+                                  <span>HTTPS in use on scanned pages</span>
+                                </li>
+                              </ul>
+                            </div>
+                          ) : (
+                            <div className="space-y-2.5 bg-warning/10 p-4 rounded-xl border border-warning/30">
+                              <div className="flex items-center gap-2 text-warning font-semibold text-xs sm:text-sm">
+                                <AlertTriangle className="w-4 h-4 shrink-0" />
+                                <span>Why this score ({displayScore}/100)</span>
+                              </div>
+                              <p className="text-[11px] text-muted-foreground leading-relaxed">
+                                Deductions on this public scan came from the factors below.
+                              </p>
+                              <ul className="space-y-1.5 text-xs text-foreground">
+                                {gapSummary.slice(0, 4).map((gap, idx) => (
+                                  <li key={idx} className="flex items-start gap-2 bg-card/80 p-2 rounded-lg border border-border/60">
+                                    <span className="text-warning font-semibold">•</span>
+                                    <span className="leading-snug text-xs">{gap}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
                       </motion.div>
-                    )}
+
+                      {/* Scan Report */}
+                      {hasScanReport && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 12 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.14 }}
+                          className="ledger-panel p-5 md:p-6 space-y-4 text-left border-l-4 border-l-primary/60 flex flex-col justify-between"
+                        >
+                          <div className="space-y-3">
+                            <div className="flex items-center justify-between border-b border-border/70 pb-3">
+                              <div className="flex items-center gap-2">
+                                <FileText className="w-4 h-4 text-primary shrink-0" />
+                                <h3 className="text-sm font-bold text-foreground">Scan Report</h3>
+                              </div>
+                              <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground bg-muted/60 px-2 py-0.5 rounded border border-border">
+                                Public pages
+                              </span>
+                            </div>
+
+                            {/* Executive Summary */}
+                            <div className="space-y-1.5">
+                              <h4 className="text-[11px] font-bold text-primary uppercase tracking-wider">Executive Summary</h4>
+                              <p className="text-xs text-foreground/90 leading-relaxed font-medium bg-muted/30 p-3.5 rounded-xl border border-border/70">
+                                {result?.report?.executiveSummary || result?.summary}
+                              </p>
+                            </div>
+
+                            {/* Detailed Prose Report */}
+                            {(result?.detailedReport || result?.report?.detailedReport) && (
+                              <div className="space-y-1.5 pt-2 border-t border-border/60">
+                                <h4 className="text-[11px] font-bold text-primary uppercase tracking-wider">Technical Assessment (DPDP Act 2023)</h4>
+                                <div className="text-[11px] text-muted-foreground leading-relaxed space-y-2 font-normal whitespace-pre-line bg-card/60 p-3.5 rounded-xl border border-border/80 max-h-48 overflow-y-auto">
+                                  {result?.detailedReport || result?.report?.detailedReport}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </motion.div>
+                      )}
+                    </div>
 
                     {/* ── Scan Another CTA ──────────────────────────── */}
                     <motion.div
@@ -879,31 +896,33 @@ function PrivacyPitstopPageInner() {
                 ) : null}
               </AnimatePresence>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2">
-                {[
-                  {
-                    title: 'Cookie and consent',
-                    desc: 'Public banners, reject paths, and what loads before a choice.',
-                    icon: Cookie
-                  },
-                  {
-                    title: 'Rights and grievance',
-                    desc: 'Notice of how to ask, complain, and reach the grievance officer.',
-                    icon: Scale
-                  },
-                  {
-                    title: 'Public ranking',
-                    desc: 'Scores from the same public scan, listed for comparison.',
-                    icon: Globe
-                  },
-                ].map((c) => (
-                  <div key={c.title} className="ledger-panel p-4 space-y-2">
-                    <c.icon className="w-4 h-4 text-primary" />
-                    <h4 className="text-sm font-semibold text-foreground">{c.title}</h4>
-                    <p className="text-xs text-muted-foreground leading-relaxed">{c.desc}</p>
-                  </div>
-                ))}
-              </div>
+              {view !== 'results' && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pt-2">
+                  {[
+                    {
+                      title: 'Cookie and consent',
+                      desc: 'Public banners, reject paths, and what loads before a choice.',
+                      icon: Cookie
+                    },
+                    {
+                      title: 'Rights and grievance',
+                      desc: 'Notice of how to ask, complain, and reach the grievance officer.',
+                      icon: Scale
+                    },
+                    {
+                      title: 'Public ranking',
+                      desc: 'Scores from the same public scan, listed for comparison.',
+                      icon: Globe
+                    },
+                  ].map((c) => (
+                    <div key={c.title} className="ledger-panel p-4 space-y-2">
+                      <c.icon className="w-4 h-4 text-primary" />
+                      <h4 className="text-sm font-semibold text-foreground">{c.title}</h4>
+                      <p className="text-xs text-muted-foreground leading-relaxed">{c.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Middle Column: Your Privacy Action Journey (only on results) */}
