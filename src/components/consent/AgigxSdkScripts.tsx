@@ -31,6 +31,7 @@ export function AgigxSdkScripts() {
       data-api={CONSENT_API_BASE}
       data-dsar-api={DSAR_API_BASE}
       data-features="consent,policies,rights,form"
+      data-logo-url="/images/brand/logo-icon-color.svg"
       data-policy-container="agigx-policy-links"
       data-rights-footer="true"
       strategy="afterInteractive"
