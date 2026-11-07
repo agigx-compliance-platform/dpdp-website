@@ -53,7 +53,7 @@ export const lineageNodes: CanvasNode[] = [
       variant: 'receipt',
       eyebrow: 'Coverage',
       title: 'Edged assets 18 / 22',
-      status: 'sealed',
+      status: 'cleared',
       rows: [
         { label: 'Hint, not claim', value: 'Gaps listed' },
         { label: 'Rights scope', value: 'Only known stores' },

@@ -56,7 +56,7 @@ export function FinalCTA() {
             transition={{ duration: 0.6 }}
             className="text-3xl sm:text-4xl font-bold"
           >
-            Don&apos;t wait for the first penalty
+            Not sure where to start?
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 12 }}
@@ -65,8 +65,8 @@ export function FinalCTA() {
             transition={{ duration: 0.6, delay: 0.15 }}
             className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto"
           >
-            Start with a public-site scan or a 10-question assessment. Remediation
-            for consent, inventory, and rights typically takes months, not a weekend.
+            Start with a free website scan or a 10-question assessment. Making the
+            changes usually takes months, so it helps to start early.
           </motion.p>
         </div>
 
@@ -78,11 +78,11 @@ export function FinalCTA() {
           className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10"
         >
           <Button variant="primary" size="lg" onClick={() => useQuestionnaireStore.getState().openModal()}>
-            Start Assessment
+            Check if you&apos;re ready
           </Button>
-          <Link href="/contact">
+          <Link href="/contact?intent=demo">
             <Button variant="outline" size="lg">
-              Schedule a Call
+              Book a demo
             </Button>
           </Link>
         </motion.div>
@@ -100,7 +100,7 @@ export function FinalCTA() {
                 Message Sent Successfully
               </h3>
               <p className="text-muted-foreground">
-                Thank you for reaching out. Our team will respond within 24 hours.
+                Thank you. We aim to reply within one working day, usually to arrange a short call about what you need.
               </p>
             </div>
           ) : (
@@ -142,8 +142,15 @@ export function FinalCTA() {
                 value={form.message}
                 onChange={handleChange}
                 rows={4}
-                className="input-field mb-6 w-full resize-none"
+                className="input-field mb-4 w-full resize-none"
               />
+              <p className="mb-6 text-xs leading-relaxed text-muted-foreground">
+                We use these details only to reply to your enquiry. See our{' '}
+                <Link href="/privacy-policy" className="underline underline-offset-2 hover:text-foreground">
+                  Privacy Policy
+                </Link>
+                . We aim to reply within one working day.
+              </p>
               <div className="text-center">
                 {error ? <p className="mb-3 text-sm text-destructive">{error}</p> : null}
                 <Button type="submit" variant="primary" size="lg" disabled={isSubmitting}>

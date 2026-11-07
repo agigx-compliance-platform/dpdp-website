@@ -6,7 +6,7 @@ export const contentType = 'image/png'
 
 export default function Image() {
   return ogImage(
-    'Consent, inventory, and rights. A ledger the Board can read.',
-    'Personal data stays in your network. Receipts the Board can ask for.',
+    'Get your business ready for India’s data privacy law.',
+    'We show you what to do, help you do it, and keep the proof ready.',
   )
 }

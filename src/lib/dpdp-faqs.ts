@@ -1,104 +1,104 @@
-import { formatMilestoneDate, getEnforcementMilestone, getNextMilestone } from './dpdp-timeline'
+import { HIGHEST_PENALTY_SENTENCE, PENALTY_CAVEAT, SDF_SUMMARY } from './dpdp-facts'
+import { DPDP_TIMELINE, formatMilestoneDate, getMainDutiesMilestone } from './dpdp-timeline'
 
 export type DpdpFaqItem = {
   question: string
   answer: string
 }
 
-const nextMilestone = getNextMilestone()
-const enforcement = getEnforcementMilestone()
+const stagedDates = DPDP_TIMELINE.slice(1)
+  .map((m) => `${formatMilestoneDate(m)}: ${m.summary}`)
+  .join(' ')
+const mainDutiesDate = formatMilestoneDate(getMainDutiesMilestone())
+
+const PENALTIES_ANSWER = `The maximum depends on what went wrong. It is up to ₹250 crore for not taking reasonable security safeguards, ₹200 crore for not reporting a breach, ₹200 crore for not meeting the extra duties for children’s data, ₹150 crore for not meeting the extra duties of a Significant Data Fiduciary, and ₹50 crore for other breaches of the Act or Rules, including notice and consent. An individual who breaks their own duties can face up to ₹10,000. ${PENALTY_CAVEAT}`
+
+const APPLIES_ANSWER =
+  'It covers digital personal data handled in India, and handling outside India when it is connected with offering goods or services to people in India. That usually includes companies, employers, hospitals, banks, online stores, and software providers. Citizenship is not the test. Some situations are excluded or exempt, such as personal or household use, and data a person has chosen to make public.'
 
 export const HOME_FAQS: DpdpFaqItem[] = [
   {
     question: 'What is DPDP?',
     answer:
-      'DPDP is the Digital Personal Data Protection Act 2023, India\'s comprehensive data protection law. DPDP Consultancy (dpdpconsultancy.in) helps Data Fiduciaries comply when processing personal data of Indian Data Principals, with penalties up to ₹250 Crore per violation.',
+      'DPDP stands for Digital Personal Data Protection. The Digital Personal Data Protection Act, 2023 is India’s law on how organisations collect, use, share, and delete people’s digital personal details. The Rules that put it into practice were notified in November 2025.',
   },
   {
-    question: 'What does DPDP stand for?',
-    answer:
-      'DPDP stands for Digital Personal Data Protection. The full name of the law is the Digital Personal Data Protection Act, 2023 (also called DPDPA). The implementing rules were notified in November 2025.',
+    question: 'Who does the DPDP Act apply to?',
+    answer: APPLIES_ANSWER,
   },
   {
-    question: 'Who does the DPDP Act 2023 apply to?',
-    answer:
-      'The DPDP Act applies to any organisation that processes digital personal data of individuals in India, including Indian companies, foreign companies offering goods or services to people in India, employers, SaaS platforms, hospitals, banks, and marketplaces. Certain research, legal, and state functions have limited exemptions, but most businesses are in scope.',
+    question: 'When does it start?',
+    answer: `In stages. ${stagedDates} A business that starts early has more time to make changes, which usually take months.`,
   },
   {
-    question: 'What are the penalties under the DPDP Act?',
-    answer:
-      'The DPDP Act 2023 prescribes penalties up to ₹250 Crore for failing to implement reasonable security safeguards, ₹200 Crore for consent and notice violations, ₹150 Crore for children\'s data violations, and ₹50 Crore for Data Principal obligation breaches. Significant Data Fiduciaries face additional obligations including a DPO, DPIAs, and annual audits.',
+    question: 'What are the penalties?',
+    answer: PENALTIES_ANSWER,
   },
   {
-    question: 'When does DPDP enforcement begin?',
+    question: 'We already follow GDPR. Is that enough?',
     answer:
-      `The Digital Personal Data Protection Act received Presidential assent in August 2023. The DPDP Rules were notified in November 2025, with phased enforcement. The next milestone on this site's timeline is ${nextMilestone.label} (${formatMilestoneDate(nextMilestone)}; ${nextMilestone.citation}). Full enforcement in the timeline is ${enforcement.label} on ${formatMilestoneDate(enforcement)}. Organisations should implement consent, notice, rights, and security controls now. Remediation typically takes months.`,
+      'It helps, but it is not enough. DPDP has its own rules on notices, consent, children’s data, and breach reporting, and its own regulator. Work you did for GDPR, such as data maps and vendor lists, is a useful starting point.',
   },
   {
-    question: 'How is DPDP different from GDPR?',
+    question: 'How do we get started?',
     answer:
-      'DPDP is India-specific: it uses Data Fiduciary and Data Principal terminology, emphasises consent and notice, and is enforced by the Data Protection Board of India. Unlike GDPR, DPDP does not use the same lawful bases (legitimate interest is not a general basis), has different children\'s data rules, and sets Indian-rupee penalty caps. GDPR-aligned programmes still need DPDP-specific consent, notice, and rights controls.',
+      'Start with the free 10-question assessment or website scan to see where you stand. Then decide which gaps to fix first. You can use our software, our team, or both.',
   },
   {
-    question: 'How can my organisation become DPDP compliant?',
+    question: 'How much does it cost?',
     answer:
-      'A typical DPDP compliance journey is: (1) assess applicability and gaps, (2) design consent, notice, and rights workflows, (3) implement technical controls such as a consent platform and DSAR automation, and (4) operate continuous monitoring. DPDP Consultancy provides a free website privacy scan, a 10-question readiness assessment, advisory services, and a compliance intelligence platform for Indian enterprises.',
+      'It depends on what you need, how many systems are involved, and how you want it hosted. Tell us about your business and we will send you a quote. The website scan and assessment are free.',
   },
 ]
 
 export const SERVICE_FAQS: DpdpFaqItem[] = [
   {
-    question: 'What is DPDP compliance and why does my company need it?',
-    answer:
-      'DPDP (Digital Personal Data Protection Act 2023) is India\'s comprehensive data protection law. Every organization processing personal data of Indian citizens must comply. Non-compliance can result in penalties up to ₹250 Crore per violation. DPDP Consultancy helps you achieve and maintain compliance through advisory services, technology platforms, and managed operations.',
+    question: 'Does my company need DPDP compliance?',
+    answer: `${APPLIES_ANSWER} Our assessment can help you work out your position.`,
   },
   {
-    question: 'What are the penalties for non-compliance with DPDP Act 2023?',
-    answer:
-      'The DPDP Act 2023 prescribes penalties up to ₹250 Crore for failing to implement reasonable security safeguards, ₹200 Crore for consent and notice violations, ₹150 Crore for violations related to children\'s data, and ₹50 Crore for data principal obligation breaches. DPDP Consultancy provides penalty exposure assessments and compliance roadmaps to mitigate these risks.',
+    question: 'What are the penalties under the DPDP Act?',
+    answer: PENALTIES_ANSWER,
   },
   {
-    question: 'How long does it take to become DPDP compliant?',
+    question: 'How long does it take to get ready?',
     answer:
-      'A typical DPDP compliance journey takes 3-6 months depending on your organization\'s size and complexity. Our phased approach includes: assessment (weeks 1-2), design (weeks 3-6), implementation (months 2-3), and ongoing governance (months 3-6). DPDP Consultancy accelerates this with automated scanning, pre-built consent management, and expert advisory.',
+      'As a guide, many organisations need 3 to 6 months. It depends on your size, how many systems and vendors you have, and how much is already in place. A typical plan moves from assessment (weeks 1 to 2) to design (weeks 3 to 6), implementation (months 2 to 3), and then ongoing work.',
   },
   {
-    question: 'What is a Significant Data Fiduciary (SDF) under DPDP?',
-    answer:
-      'A Significant Data Fiduciary (SDF) is designated by the government based on data volume, sensitivity, and risk to data principals. SDFs have enhanced obligations including mandatory Data Protection Impact Assessments (DPIAs), annual audits, appointing a Data Protection Officer (DPO), and algorithmic accountability. DPDP Consultancy provides specialized SDF compliance programs.',
+    question: 'What is a Significant Data Fiduciary?',
+    answer: SDF_SUMMARY,
   },
   {
-    question: 'Does DPDP Consultancy offer a free compliance assessment?',
+    question: 'Do you offer a free assessment?',
     answer:
-      'Yes. DPDP Consultancy offers a free website privacy scan through our Privacy Pitstop tool and a 10-question compliance assessment questionnaire. These provide an indicative compliance score and personalized recommendations. For comprehensive assessments, our advisory team conducts detailed gap analysis across all DPDP obligation domains.',
+      'Yes. We offer a free website scan and a free 10-question assessment. Both give you an indication of where you stand. They are not legal advice. For a detailed review, our team can carry out a full gap assessment.',
   },
 ]
 
 export const CONTACT_FAQS: DpdpFaqItem[] = [
   {
-    question: 'When does DPDP 2023 come into effect?',
-    answer:
-      'The Digital Personal Data Protection Act 2023 received Presidential assent in August 2023. The implementation rules were notified in November 2025, with phased enforcement timelines for different provisions. Organizations should begin compliance preparation immediately to avoid penalties.',
+    question: 'When does the DPDP Act start?',
+    answer: `In stages. The main duties for businesses start on ${mainDutiesDate}. Earlier stages cover the Data Protection Board and consent managers. It is worth starting early, because the changes usually take months.`,
   },
   {
-    question: 'What are the maximum penalties under DPDP?',
-    answer:
-      'DPDP 2023 prescribes penalties up to ₹250 Crore for non-compliance with specific provisions. Different violations carry different penalty amounts, from ₹50 Crore for failure to implement security safeguards to ₹250 Crore for non-compliance with provisions relating to children\'s data or Data Protection Board orders.',
+    question: 'What is the maximum penalty?',
+    answer: `${HIGHEST_PENALTY_SENTENCE} ${PENALTY_CAVEAT}`,
   },
   {
-    question: 'How long does a typical DPDP compliance engagement take?',
+    question: 'How long does a typical project take?',
     answer:
-      'Timeline varies based on organizational complexity and current maturity. A readiness assessment typically takes 2-4 weeks. Full compliance implementation ranges from 3-9 months depending on scope, number of data systems, cross-border considerations, and whether SDF classification applies.',
+      'As a guide, a readiness assessment takes 2 to 4 weeks. Full implementation usually takes 3 to 9 months, depending on your systems, vendors, and any transfers of data outside India.',
   },
   {
     question: 'Do we need a Data Protection Officer?',
     answer:
-      'Under DPDP 2023, DPO appointment is mandatory for Significant Data Fiduciaries (Section 10(2)(b)). Even if not classified as SDF, having a designated privacy lead is strongly recommended. Consent Cockpit offers Virtual DPO services for organizations that need expert coverage without full-time hiring.',
+      'The Act requires one only if the government names your business as a Significant Data Fiduciary. Other businesses must still publish contact details for someone who can answer questions about personal data, and many choose a named privacy lead. We offer a virtual Data Protection Officer service if you need expert cover without a full-time hire.',
   },
   {
-    question: 'Is Consent Cockpit focused on DPDP?',
+    question: 'Are you focused on DPDP?',
     answer:
-      'Yes. Our platform and methodologies are built around the Digital Personal Data Protection Act 2023 and the 2025 Rules, from consent capture and privacy notices to Data Principal rights, grievance handling, and regulator-ready evidence for Indian enterprises.',
+      'Yes. Our software and services are built around the DPDP Act 2023 and the 2025 Rules, for organisations in India.',
   },
 ]
 
@@ -106,27 +106,26 @@ export const WHAT_IS_DPDP_FAQS: DpdpFaqItem[] = [
   {
     question: 'What is DPDP?',
     answer:
-      'DPDP is the Digital Personal Data Protection Act 2023. DPDP Consultancy (dpdpconsultancy.in) explains and operationalises this law for Indian enterprises: how personal data is collected, used, stored, shared, and deleted, with penalties up to ₹250 Crore per violation.',
+      'DPDP is the Digital Personal Data Protection Act 2023, India’s law on how organisations handle people’s digital personal details.',
   },
   {
     question: 'Who is DPDP Consultancy?',
     answer:
-      'DPDP Consultancy (also searched as dpdpconsultancy) is an Indian DPDP Act 2023 compliance firm based in Chennai. We provide advisory services, a consent and DSAR platform, Privacy Pitstop website scans, and managed privacy operations at dpdpconsultancy.in.',
+      'DPDP Consultancy (dpdpconsultancy.in) is a DPDP compliance company based in Chennai. We provide advice, consent and data request software, free website scans, and managed privacy services.',
   },
   {
     question: 'What does DPDP stand for?',
     answer:
-      'DPDP stands for Digital Personal Data Protection. The statute is the Digital Personal Data Protection Act, 2023 (DPDPA). The implementing rules were notified in November 2025.',
+      'DPDP stands for Digital Personal Data Protection. The law is the Digital Personal Data Protection Act, 2023, also called DPDPA. The Rules were notified in November 2025.',
   },
   {
     question: 'Who does the DPDP Act apply to?',
-    answer:
-      'The DPDP Act applies to organisations that process digital personal data of people in India, including Indian companies and foreign companies offering goods or services in India. DPDP Consultancy helps Data Fiduciaries map which obligations apply.',
+    answer: APPLIES_ANSWER,
   },
   {
-    question: 'How can DPDP Consultancy help with DPDP compliance?',
+    question: 'How can DPDP Consultancy help?',
     answer:
-      'DPDP Consultancy provides a free Privacy Pitstop scan, a 10-question readiness assessment, DPDP advisory, consent management, DSAR automation, AI governance, and managed services so compliance is continuous rather than a one-time project.',
+      'We offer a free website scan, a 10-question readiness assessment, advice, consent management, tools for handling people’s data requests, AI governance, and managed privacy services.',
   },
 ]
 
@@ -134,27 +133,26 @@ export const DPDP_COMPLIANCE_FAQS: DpdpFaqItem[] = [
   {
     question: 'What is DPDP compliance?',
     answer:
-      'DPDP compliance means a Data Fiduciary can demonstrate that digital personal data of people in India is processed lawfully under the Digital Personal Data Protection Act 2023: valid notices and consent, Data Principal rights, reasonable security, vendor oversight, and evidence the Data Protection Board can inspect.',
+      'It means your organisation follows the DPDP Act 2023 and can show it does: clear notices, valid consent, a way to handle people’s requests, reasonable security, oversight of vendors, and records you can produce if the Data Protection Board asks.',
   },
   {
     question: 'Who needs DPDP compliance in India?',
-    answer:
-      'Any organisation that processes digital personal data of individuals in India, including Indian companies and foreign companies offering goods or services here. Employers, SaaS platforms, hospitals, banks, marketplaces, and public-facing websites are typically in scope. DPDP Consultancy maps which obligation domains apply to your processing.',
+    answer: APPLIES_ANSWER,
   },
   {
-    question: 'What are the main DPDP compliance requirements?',
+    question: 'What are the main requirements?',
     answer:
-      'The operational requirements cluster into six domains: consent and notice, Data Principal rights, data minimisation and retention, security and breach, vendors and processors, and governance (including SDF duties such as a DPO, DPIAs, and audits where designated).',
+      'They fall into six areas: notice and consent, people’s rights, keeping data only as long as needed, security and breach reporting, vendors, and governance. Businesses named as Significant Data Fiduciaries have extra duties, such as a Data Protection Officer, an independent auditor, and yearly assessments and audits.',
   },
   {
     question: 'How long does DPDP compliance take?',
     answer:
-      'A typical DPDP Consultancy engagement is assessment in weeks 1–2, control design in weeks 3–6, implementation over months 2–3, and ongoing governance after that. Timeline depends on data systems, vendors, and whether Significant Data Fiduciary duties apply.',
+      'A typical project moves from assessment in weeks 1 to 2 to design in weeks 3 to 6, implementation over months 2 to 3, and ongoing work after that. It depends on your systems and vendors, and on whether you have extra duties as a Significant Data Fiduciary.',
   },
   {
-    question: 'How do I start a DPDP compliance programme?',
+    question: 'How do I start?',
     answer:
-      'Start with a public-surface scan and a gap assessment, then implement consent, notice, and rights workflows before expanding to vendors, retention, and security evidence. DPDP Consultancy offers a free Privacy Pitstop scan and a 10-question readiness assessment as the first step.',
+      'Start with a website scan and an assessment, then put notices, consent, and request handling in place before moving on to vendors, data retention, and security evidence. Our scan and 10-question assessment are free.',
   },
 ]
 
@@ -162,37 +160,37 @@ export const CONSENT_MANAGEMENT_FAQS: DpdpFaqItem[] = [
   {
     question: 'What is consent management under the DPDP Act?',
     answer:
-      'Consent management is the system that collects, records, updates, and proves consent for each purpose of processing. Under DPDP Section 6, consent must be free, specific, informed, unambiguous, and as easy to withdraw as it is to give. A banner alone is not consent management.',
+      'It is how you collect, record, update, and prove consent for each purpose you use personal details for. Under Section 6, consent must be free, specific, informed, unconditional, and unambiguous, and as easy to withdraw as it is to give. A banner on its own is not enough.',
   },
   {
-    question: 'Does DPDP require a consent management platform?',
+    question: 'Does DPDP require consent management software?',
     answer:
-      'The Act does not name a product category, but it does require purpose-level consent, notice, withdrawal, and the ability to demonstrate compliance. For any organisation with cookies, SDKs, or multiple processing purposes, a consent management platform is the practical way to meet those duties at scale.',
+      'The Act does not require any particular product. It does require notice, consent for specific purposes, an easy way to withdraw, and the ability to prove consent was given. For organisations with several purposes, cookies, or vendors, software is usually the practical way to do this.',
   },
   {
     question: 'How is DPDP consent different from GDPR consent?',
     answer:
-      'DPDP does not treat legitimate interest as a general lawful basis the way GDPR does. Notices and consent are the default path for most processing. Withdrawal must be as easy as giving consent, and purpose must be specific. Bundled “accept all” without purpose choice is a compliance risk.',
+      'GDPR has a broad "legitimate interest" basis for using data. DPDP does not. Outside the specific "legitimate uses" in Section 7, you generally need notice and consent. A single "accept all" with no choice by purpose is a compliance risk.',
   },
   {
-    question: 'What proof of consent does DPDP expect?',
+    question: 'What proof of consent should we keep?',
     answer:
-      'You should be able to show who consented, to which purposes, on which notice version, at what time, and whether they later withdrew. DPDP Consultancy’s consent platform keeps an immutable audit trail so that proof is available for grievance handling and Board inquiries.',
+      'You should be able to show who agreed, to which purposes, what notice they saw, when they agreed, and whether they later withdrew. Our software keeps a record of each of these that cannot be quietly changed.',
   },
   {
-    question: 'Do banners, notices, and rights forms need Indian languages?',
+    question: 'Do banners and notices need Indian languages?',
     answer:
-      'The person has to understand the notice and the choice. English and Hindi ship on the banner and notices today. DSAR and grievance intake use the same language table. Further languages can be added without a separate product per workflow.',
+      'People must be able to read the notice and make a real choice. Under the Act, they should have the option of English or a language listed in the Eighth Schedule. Our banner and notices support English and Hindi, and further languages can be added.',
   },
   {
-    question: 'Where does the Data Principal see and change what they granted?',
+    question: 'Where do people see and change what they agreed to?',
     answer:
-      'The privacy cockpit is the one ledger. Consent grants and withdrawals, DSAR, and grievance sit there. When a purpose is withdrawn, the fiduciary and mapped processors are notified from that same record, not from a second helpdesk tool.',
+      'In a single privacy centre. It shows their consents, data requests, and complaints. When they withdraw consent for a purpose, your business and the relevant vendors are told from that same record.',
   },
   {
-    question: 'Can I use a global CMP for DPDP consent management?',
+    question: 'Can we use a global consent tool for DPDP?',
     answer:
-      'A GDPR-oriented CMP can cover cookies, but it often misses DPDP notice content, purpose granularity, children’s data, and Indian-language or Data Principal rights hooks. DPDP Consultancy implements consent management against the DPDP Act 2023 and the 2025 Rules, not a European template.',
+      'A tool made for GDPR can handle cookies, but check whether it covers DPDP notice content, choice by purpose, children’s data, Indian languages, and people’s rights. We build ours around the DPDP Act and the 2025 Rules.',
   },
 ]
 
@@ -200,27 +198,26 @@ export const DPDP_PLATFORM_FAQS: DpdpFaqItem[] = [
   {
     question: 'What is a DPDP compliance platform?',
     answer:
-      'A DPDP compliance platform is software that runs the controls the Act requires day to day: consent and notices, website and tracker scanning, Data Principal rights (DSAR), vendor/processor propagation, and evidence for audits. DPDP Consultancy’s platform is built for Indian Data Fiduciaries, not as a GDPR add-on.',
+      'It is software for the daily work the Act requires: consent and notices, website checks, people’s data requests, keeping vendors informed, and records for audits.',
   },
   {
-    question: 'How is a DPDP platform different from a consultancy engagement?',
+    question: 'How is the platform different from consulting?',
     answer:
-      'Advisory designs the programme. The platform is where consent, scans, rights requests, and vendor actions actually run after the workshop ends. DPDP Consultancy provides both so compliance does not stall as a slide deck.',
+      'Advisers help you decide what to do. The platform is where consent, scans, requests, and vendor updates actually happen afterwards. We provide both.',
   },
   {
-    question: 'What modules are in the DPDP Consultancy platform?',
+    question: 'What is included?',
     answer:
-      'Consent Cockpit for Section 6 consent, TrustScope and Privacy Pitstop for public-surface scanning, DSAR workflows for Sections 11–13, processor governance, infrastructure scanning, and an AI compliance assistant trained on the DPDP Act and 2025 Rules.',
+      'Consent records, a cookie banner, privacy notices, website scanning, handling of people’s data requests, vendor tracking, finding personal data, tracking where it goes, cloud and code checks, and an AI assistant trained on the DPDP Act and 2025 Rules.',
   },
   {
-    question: 'Who should use a DPDP compliance platform?',
+    question: 'Who is it for?',
     answer:
-      'DPOs, privacy leads, CISOs, and legal teams at organisations that collect data through websites, apps, or vendors, especially if they cannot prove consent, meet rights timelines, or see what trackers fire on their properties. Start with a free Privacy Pitstop scan, then scope the platform.',
+      'Privacy, legal, security, and IT teams at mid-size and large organisations, especially those that collect data through websites, apps, or vendors. Start with a free website scan, then we can scope what you need.',
   },
   {
-    question: 'Is the DPDP Consultancy platform only for large enterprises?',
+    question: 'Is it only for large enterprises?',
     answer:
-      'No. Mid-size Indian companies, SaaS products, and regulated firms use the same modules with a narrower footprint. Significant Data Fiduciaries add DPO, DPIA, and audit workflows; smaller fiduciaries typically start with consent, scanning, and DSAR.',
+      'No. Smaller organisations usually start with consent, website scanning, and data requests. Businesses named as Significant Data Fiduciaries add support for their extra duties, such as yearly assessments and audits.',
   },
 ]
-

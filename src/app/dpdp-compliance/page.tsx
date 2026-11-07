@@ -3,7 +3,10 @@ import { SectionWrapper } from '@/components/ui/SectionWrapper'
 import { FaqSection } from '@/components/seo/FaqSection'
 import { GuideCtas } from '@/components/seo/GuideCtas'
 import { RelatedGuides } from '@/components/seo/RelatedGuides'
+import { PenaltyTable } from '@/components/legal/PenaltyTable'
+import { APPLICABILITY_EXCLUSIONS, APPLICABILITY_SUMMARY, SDF_SUMMARY } from '@/lib/dpdp-facts'
 import { DPDP_COMPLIANCE_FAQS } from '@/lib/dpdp-faqs'
+import { DPDP_TIMELINE, formatMilestoneDate } from '@/lib/dpdp-timeline'
 
 export default function DpdpCompliancePage() {
   return (
@@ -17,10 +20,9 @@ export default function DpdpCompliancePage() {
             <span className="gradient-text">DPDP compliance for Indian organisations</span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground leading-relaxed">
-            DPDP compliance is not a privacy policy rewrite. It is the set of
-            controls a Data Fiduciary must run so digital personal data of people
-            in India is processed lawfully under the Digital Personal Data
-            Protection Act, 2023.
+            DPDP compliance is more than rewriting a privacy policy. It means
+            handling people&apos;s personal details the way the Digital Personal Data
+            Protection Act, 2023 requires, and being able to show that you do.
           </p>
         </div>
       </SectionWrapper>
@@ -33,45 +35,28 @@ export default function DpdpCompliancePage() {
             <Link href="/what-is-dpdp" className="text-foreground underline-offset-4 hover:underline">
               DPDP Act
             </Link>
-            , a Data Fiduciary is accountable for how personal data is collected,
-            used, stored, shared, and erased. Compliance means you can show
-            notices that match processing, consent that is specific to purpose,
-            Data Principal rights that complete on time, reasonable security
-            safeguards, and oversight of processors. The Data Protection Board
-            of India can call for that evidence. A PDF checklist stored in a
-            shared drive is not the same thing.
+            , your organisation is accountable for how personal details are
+            collected, used, stored, shared, and deleted. Compliance means you can
+            show clear notices, consent for each specific purpose, people&apos;s requests
+            handled properly, reasonable security, and control over vendors. A PDF
+            checklist in a shared drive does not show that.
           </p>
           <p>
-            DPDP Consultancy (dpdpconsultancy.in) treats DPDP compliance as an
-            operating model: advisory to map obligations, software to run
-            consent and rights, and scans to see what your public website
-            actually does. That is how Indian enterprises move from “we are
-            aware of the Act” to “we can demonstrate it”.
+            We treat DPDP compliance as ongoing work: advice to work out what
+            applies, software to run consent and requests, and scans to see what
+            your public website actually does. That takes you from “we know about
+            the Act” to “we can show we follow it”.
           </p>
 
           <h2 className="text-2xl font-semibold text-foreground">Who needs DPDP compliance</h2>
-          <p>
-            If you process digital personal data of individuals in India, you
-            are in scope, whether you are incorporated here or you offer goods
-            or services into India from abroad. Employers, hospitals, banks,
-            marketplaces, SaaS products, and any site that drops analytics or
-            advertising cookies typically have DPDP duties. Limited exemptions
-            exist for specified research, legal, and state functions; most
-            commercial processing does not qualify.
-          </p>
-          <p>
-            Significant Data Fiduciaries, once designated, add a Data Protection
-            Officer, Data Protection Impact Assessments, annual audits, and
-            algorithmic accountability. Even organisations that are not SDFs
-            still need consent, notice, rights, security, and vendor controls.
-            The difference is intensity, not whether the Act applies.
-          </p>
+          <p>{APPLICABILITY_SUMMARY}</p>
+          <p>{APPLICABILITY_EXCLUSIONS}</p>
+          <p>{SDF_SUMMARY}</p>
 
-          <h2 className="text-2xl font-semibold text-foreground">The six obligation domains</h2>
+          <h2 className="text-2xl font-semibold text-foreground">The six areas to cover</h2>
           <p>
-            DPDP Consultancy organises DPDP compliance around the duties that
-            create penalty exposure, not around a generic privacy framework
-            imported from the EU.
+            We organise the work around what the DPDP Act asks for, rather than a
+            general privacy framework from another country.
           </p>
           <ul className="list-disc space-y-2 pl-5">
             <li>
@@ -84,50 +69,40 @@ export default function DpdpCompliancePage() {
               .
             </li>
             <li>
-              <strong className="text-foreground">Data Principal rights</strong>:
-              access, correction, erasure, and grievance handling within the
-              Act’s timelines, with a published grievance officer.
+              <strong className="text-foreground">People&apos;s rights</strong>: seeing,
+              correcting, and deleting their data, and a clear way to raise a
+              complaint, with contact details you publish.
             </li>
             <li>
-              <strong className="text-foreground">Minimisation and retention</strong>:
+              <strong className="text-foreground">Keeping data only as long as needed</strong>:
               collect only what the specified purpose needs, and delete it when
               that purpose ends.
             </li>
             <li>
               <strong className="text-foreground">Security and breach</strong>:
-              reasonable safeguards, and the ability to detect and report a
-              personal data breach as required.
+              reasonable safeguards, and being able to spot a breach and tell the
+              people affected and the regulator.
             </li>
             <li>
-              <strong className="text-foreground">Vendors and processors</strong>:
-              contracts, purpose mapping, and downstream action when consent
-              changes or a rights request arrives.
+              <strong className="text-foreground">Vendors</strong>: contracts, knowing who
+              receives what, and telling them when consent changes or someone makes
+              a request.
             </li>
             <li>
               <strong className="text-foreground">Governance</strong>: policies,
-              training, SDF duties where they apply, and evidence you can hand
-              to the Board.
+              training, extra duties where they apply, and evidence you can give the
+              regulator.
             </li>
           </ul>
 
-          <h2 className="text-2xl font-semibold text-foreground">Penalties and why “later” is expensive</h2>
-          <p>
-            The Act sets penalty ceilings up to ₹250 Crore for failing reasonable
-            security safeguards, with separate caps for consent and notice
-            failures, children’s data, and Data Principal obligation breaches.
-            Those figures are ceilings, not a tariff, but they are why boards
-            now ask for an operational DPDP programme rather than a policy
-            refresh. Remediation of consent, trackers, and rights workflows
-            typically takes months, which is why waiting for a notice from the
-            Board is the slowest path.
-          </p>
+          <h2 className="text-2xl font-semibold text-foreground">Penalties</h2>
+          <PenaltyTable />
 
           <h2 className="text-2xl font-semibold text-foreground">A practical DPDP compliance path</h2>
           <p>
-            Programmes that finish share a sequence. First, establish
-            applicability and a gap picture: what you collect, which vendors
-            touch it, and what your website discloses versus what it loads.
-            DPDP Consultancy’s free{' '}
+            Most projects follow the same order. First, work out what applies and
+            where the gaps are: what you collect, which vendors receive it, and what
+            your website says compared with what it does. Our free{' '}
             <Link href="/privacy-pitstop" className="text-foreground underline-offset-4 hover:underline">
               Privacy Pitstop
             </Link>{' '}
@@ -138,60 +113,57 @@ export default function DpdpCompliancePage() {
             are built for that first pass.
           </p>
           <p>
-            Second, design notices, consent purposes, and rights SLAs against
-            the Act and the 2025 Rules, not against a GDPR template. Third,
-            implement technical controls: a consent platform, DSAR automation,
-            and scanner coverage, which live on the{' '}
+            Second, design your notices, consent, and request handling for the Act
+            and the 2025 Rules, rather than from a GDPR template. Third, put the tools
+            in place for consent, people&apos;s requests, and website checks, using the{' '}
             <Link href="/dpdp-platform" className="text-foreground underline-offset-4 hover:underline">
               DPDP compliance platform
             </Link>
-            . Fourth, operate: monitor trackers, honour withdrawals, close
-            rights tickets, and refresh vendor maps when processing changes.
+            . Fourth, keep it running: check your website, act on withdrawals, answer
+            requests, and update vendor lists when things change.
           </p>
           <p>
-            Advisory without software leaves you with a roadmap you cannot
-            execute. Software without advisory leaves you with banners that do
-            not match your processing. DPDP Consultancy runs both, including{' '}
+            Advice without tools leaves you with a plan you cannot carry out. Tools
+            without advice leave you with banners that do not match what you do. We
+            provide both, including{' '}
             <Link href="/services" className="text-foreground underline-offset-4 hover:underline">
               DPDP services
             </Link>{' '}
-            for organisations that want managed operations after go-live.
+            for organisations that want us to run the daily work.
           </p>
 
-          <h2 className="text-2xl font-semibold text-foreground">DPDP Rules 2025 and phased enforcement</h2>
+          <h2 className="text-2xl font-semibold text-foreground">When it starts</h2>
+          <ul className="list-disc space-y-2 pl-5">
+            {DPDP_TIMELINE.map((m) => (
+              <li key={m.date}>
+                <strong className="text-foreground">{formatMilestoneDate(m)}</strong>: {m.summary}
+              </li>
+            ))}
+          </ul>
           <p>
-            The Act received assent in 2023. The implementing Rules were
-            notified in November 2025, with duties switching on in phases rather
-            than on a single day. That is not a reason to wait. Consent banners,
-            tracker inventories, rights inboxes, and processor contracts are
-            slow to change, and “we will start when the last phase lands” is how
-            organisations miss the board’s first question: can you show the
-            control today?
+            Banners, data lists, request handling, and vendor contracts are slow to
+            change, so it is worth starting well before the main date.
           </p>
           <p>
-            A GDPR programme is useful raw material: data maps, processors,
-            security. It is not DPDP compliance. Lawful bases, children’s
-            data, notice content, and the Data Protection Board’s process are
-            different. Treat the Rules as the operating calendar and the Act as
-            the obligation set, then implement against both.
+            If you already follow GDPR, your data maps, vendor lists, and security
+            work are a useful start. They are not DPDP compliance on their own. The
+            legal grounds for using data, children’s data, notices, and the
+            regulator&apos;s process are all different.
           </p>
 
           <h2 className="text-2xl font-semibold text-foreground">What “good” evidence looks like</h2>
           <p>
-            When counsel or a DPO asks whether you are DPDP compliant, the
-            useful answer is a packet: current notices and purpose list, consent
-            logs, scan results for public properties, open and closed rights
-            requests with timestamps, processor register, and security control
-            summaries. DPDP Consultancy’s platform stores those artefacts so
-            they are not rebuilt from email every quarter.
+            When your lawyer or privacy lead asks whether you comply, a useful answer
+            is a set of records: current notices, consent records, website scan
+            results, people&apos;s requests with dates, a vendor list, and a summary of your
+            security measures. Our platform keeps these so nobody has to rebuild them
+            from email.
           </p>
 
           <h2 className="text-2xl font-semibold text-foreground">How to start</h2>
           <p>
-            Scan a public website, complete the readiness questions, then talk
-            to DPDP Consultancy about the domains that actually apply. That is
-            faster than commissioning a 200-page gap report before anyone has
-            seen what your site loads in a browser.
+            Scan your website, answer the readiness questions, then talk to us about
+            what applies to you.
           </p>
           <GuideCtas />
         </article>

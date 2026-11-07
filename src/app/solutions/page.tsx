@@ -41,8 +41,8 @@ const SOLUTIONS = [
       'End-to-end DPDP compliance for e-commerce platforms handling high-volume consumer data, payment information, and behavioural tracking across web and mobile properties.',
     keyOfferings: [
       'Consent Management Platform with cookie discovery',
-      'TrustScope external compliance scanning',
-      'DSAR automation for customer rights',
+      'Website compliance scanning',
+      'Handling customer data requests',
       'Retention policy for transaction data',
       'Third-party tracker governance',
     ],
@@ -54,15 +54,15 @@ const SOLUTIONS = [
     industry: 'Healthcare',
     icon: 'Heart',
     description:
-      'Specialised compliance for healthcare providers and health-tech companies processing sensitive health data, patient records, and clinical research information under enhanced DPDP obligations.',
+      'Specialised compliance for healthcare providers and health-tech companies handling health data, patient records, and clinical research information.',
     keyOfferings: [
       'Sensitive data classification and mapping',
-      'Patient consent workflows (Section 9 children)',
-      'Breach readiness with 72-hour response',
+      'Patient consent, including parental consent for children',
+      'Breach response plan for people affected and the regulator',
       'Vendor governance for health-tech partners',
       'Privacy Impact Assessments',
     ],
-    dpdpFocus: ['Sensitive data safeguards (Section 8(5))', 'Breach notification (Section 8(6))', 'Children\'s data protection (Section 9)'],
+    dpdpFocus: ['Reasonable security safeguards (Section 8(5))', 'Breach notification (Section 8(6))', 'Children\'s data protection (Section 9)'],
   },
   {
     id: 'financial-services',
@@ -73,12 +73,12 @@ const SOLUTIONS = [
       'DPDP compliance integrated with existing RBI, SEBI, and IRDAI regulatory frameworks for banks, NBFCs, insurance companies, and fintech platforms processing financial personal data.',
     keyOfferings: [
       'Cross-regulatory compliance mapping (DPDP + RBI)',
-      'SDF readiness assessment and DPO advisory',
+      'Significant Data Fiduciary readiness and DPO advice',
       'Data sovereignty for financial data',
       'AI governance for credit scoring models',
       'Managed compliance operations',
     ],
-    dpdpFocus: ['SDF obligations (Section 10)', 'Cross-border restrictions (Section 16)', 'Algorithmic accountability'],
+    dpdpFocus: ['Significant Data Fiduciary duties, if named (Section 10)', 'Cross-border restrictions (Section 16)', 'Algorithm due diligence for Significant Data Fiduciaries (Rule 13)'],
   },
   {
     id: 'saas-platform',
@@ -102,15 +102,15 @@ const SOLUTIONS = [
     industry: 'Regulated Enterprise',
     icon: 'Building2',
     description:
-      'Comprehensive DPDP program for large enterprises likely classified as Significant Data Fiduciaries, requiring mandatory DPIAs, annual audits, DPO appointment, and algorithmic accountability.',
+      'A full DPDP programme for large enterprises that could be named Significant Data Fiduciaries, which have extra duties such as a Data Protection Officer, an independent auditor, and yearly assessments and audits.',
     keyOfferings: [
-      'SDF classification and DPIA execution',
+      'Significant Data Fiduciary readiness and impact assessments',
       'Annual audit preparation and evidence',
       'DPO appointment and governance design',
-      'AI governance and algorithmic accountability',
+      'AI governance and algorithm due diligence',
       'Board-level privacy reporting',
     ],
-    dpdpFocus: ['SDF mandatory obligations (Section 10)', 'DPIA requirements', 'DPO appointment (Section 10(2)(b))'],
+    dpdpFocus: ['Significant Data Fiduciary duties, if named (Section 10)', 'Yearly assessments and audits (Rule 13)', 'Data Protection Officer (Section 10(2)(a))'],
   },
   {
     id: 'gcc-captive',
@@ -118,7 +118,7 @@ const SOLUTIONS = [
     industry: 'GCC/Captive',
     icon: 'Globe2',
     description:
-      'Cross-border data governance for Global Capability Centres processing Indian personal data for overseas parent entities, with focus on Section 16 transfer compliance and sovereign architecture.',
+      'Cross-border data governance for Global Capability Centres processing Indian personal data for overseas parent entities, with a focus on any government restrictions on transfers (Section 16) and hosting choices.',
     keyOfferings: [
       'Cross-border transfer impact assessment',
       'Data sovereignty architecture advisory',
@@ -136,13 +136,13 @@ const SOLUTIONS = [
     description:
       'White-label DPDP compliance tools and methodology for consulting firms, law firms, and advisory practices building privacy practices or offering DPDP services to their clients.',
     keyOfferings: [
-      'White-label TrustScope scanning',
+      'White-label website scanning',
       'AI Compliance Assistant for advisors',
       'DPDP training and certification programs',
       'Client assessment methodology',
       'Co-managed delivery support',
     ],
-    dpdpFocus: ['Full DPDP coverage', 'Multi-client management', 'Training & capability (Section 8(1))'],
+    dpdpFocus: ['Full DPDP coverage', 'Multi-client management', 'Training and capability'],
   },
 ]
 

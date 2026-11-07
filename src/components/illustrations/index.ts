@@ -1,5 +1,5 @@
 export { HeroBackground } from './HeroBackground'
-export { LedgerScene } from './LedgerScene'
+export { ConsentStoryScene } from './ConsentStoryScene'
 export { LifecycleDiagram } from './LifecycleDiagram'
 export { DiscoveryPassesDiagram } from './DiscoveryPassesDiagram'
 export { DiscoveryScene } from './DiscoveryScene'

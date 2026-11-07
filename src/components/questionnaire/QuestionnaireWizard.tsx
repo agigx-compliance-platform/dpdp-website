@@ -331,10 +331,10 @@ export function QuestionnaireWizard() {
                 </div>
                 <div className="space-y-1">
                   <span className="inline-block font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-                    Schedule to the Act
+                    About penalties
                   </span>
                   <p className="text-xs leading-snug text-muted-foreground sm:text-sm">
-                    Specified penalties in the Schedule go up to ₹250 crore for listed failures. This scan does not compute a fine.
+                    The Act sets maximum penalties, the highest being ₹250 crore. This scan does not estimate a fine.
                   </p>
                 </div>
               </div>

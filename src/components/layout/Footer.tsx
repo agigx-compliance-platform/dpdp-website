@@ -7,22 +7,22 @@ const footerSections = [
       { label: 'About DPDP Consultancy', href: '/about' },
       { label: 'Contact', href: '/contact' },
       { label: 'Partnership', href: '/partnership' },
+      { label: 'Pricing', href: '/pricing' },
     ],
   },
   {
     title: 'Products',
     links: [
       { label: 'All Products', href: '/products' },
-      { label: 'Privacy Pitstop', href: '/privacy-pitstop' },
-      { label: 'Consent Management', href: '/consent-management' },
-      { label: 'Cookie consent', href: '/cookie-consent' },
-      { label: 'Policy and notice', href: '/policy-notice' },
-      { label: 'DPDP Platform', href: '/dpdp-platform' },
-      { label: 'Compliance Scanner', href: '/products#trustscope' },
-      { label: 'DSAR Platform', href: '/products#dsar-platform' },
-      { label: 'Data Discovery', href: '/data-discovery' },
-      { label: 'Data Lineage', href: '/data-lineage' },
-      { label: 'Infrastructure posture', href: '/infra-posture' },
+      { label: 'Website scan', href: '/privacy-pitstop' },
+      { label: 'Consent records', href: '/consent-management' },
+      { label: 'Cookie banner', href: '/cookie-consent' },
+      { label: 'Privacy notices', href: '/policy-notice' },
+      { label: 'Platform overview', href: '/dpdp-platform' },
+      { label: 'Personal data requests', href: '/products#dsar-platform' },
+      { label: 'Find personal data', href: '/data-discovery' },
+      { label: 'Track where data goes', href: '/data-lineage' },
+      { label: 'Cloud and code checks', href: '/infra-posture' },
     ],
   },
   {
@@ -32,7 +32,7 @@ const footerSections = [
       { label: 'Solutions by Industry', href: '/solutions' },
       { label: 'What is DPDP?', href: '/what-is-dpdp' },
       { label: 'DPDP Compliance', href: '/dpdp-compliance' },
-      { label: 'Start Assessment', href: '/questionnaire' },
+      { label: 'Free readiness check', href: '/questionnaire' },
     ],
   },
   {
@@ -50,8 +50,8 @@ export function Footer() {
           <Link href="/" className="text-lg font-semibold text-foreground hover:text-primary transition-colors">
             DPDP Consultancy
           </Link>
-          <p className="mt-2 whitespace-nowrap text-[clamp(0.7rem,1.15vw,0.875rem)] text-muted-foreground">
-            DPDP Consultancy (dpdpconsultancy.in) helps Indian enterprises turn DPDP Act 2023 obligations into enforceable privacy, consent, and AI governance controls.
+          <p className="mt-2 text-sm text-muted-foreground">
+            DPDP Consultancy (dpdpconsultancy.in) helps organisations in India get ready for the DPDP Act 2023 with software and expert help.
           </p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
@@ -99,7 +99,7 @@ export function Footer() {
       <div className="border-t border-border">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
           <p className="text-sm text-muted-foreground text-center sm:text-left">
-            Copyright © 2026 DPDP Consultancy (dpdpconsultancy.in), India. All rights reserved.
+            Copyright © 2026 DPDP Consultancy Pvt Ltd, India. All rights reserved.
           </p>
         </div>
       </div>

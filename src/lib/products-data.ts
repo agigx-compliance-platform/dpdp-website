@@ -5,11 +5,11 @@ export const PRODUCTS = [
   {
     id: "consent-platform",
     href: "/consent-management",
-    name: "Consent Cockpit Platform",
+    name: "Consent Records",
     tagline:
-      "Consent that satisfies Section 6, from capture to withdrawal to proof",
+      "Record every yes, no, and change of mind",
     description:
-      "A full-lifecycle consent management platform that handles banner deployment, preference collection, version tracking, and immutable audit trails. Built specifically for DPDP Section 6 compliance with purpose-based granular consent and one-click withdrawal.",
+      "Collect consent for each purpose, let people withdraw it easily, and keep a record of what they agreed to and when. Built for Section 6 of the DPDP Act.",
     icon: "Fingerprint",
     features: [
       {
@@ -23,9 +23,9 @@ export const PRODUCTS = [
           "See cookies and tags on the live property, then map them to purposes",
       },
       {
-        title: "Immutable Audit Trail",
+        title: "Proof of consent",
         description:
-          "Append-only consent logs for legal proof with tamper-evident timestamps",
+          "Records of each choice, with the date and time, that cannot be quietly changed",
       },
       {
         title: "Cookie Policy Lifecycle",
@@ -33,17 +33,17 @@ export const PRODUCTS = [
           "Versioned policy publishing linked to consent with automatic invalidation",
       },
       {
-        title: "Purpose-Based Engine",
+        title: "Consent by purpose",
         description:
-          "Granular consent per data type and purpose with dependency mapping",
+          "Separate consent for each purpose, with links between purposes that depend on each other",
       },
       {
         title: "SDK Integration",
         description:
-          "Single script tag embed with programmatic API for custom implementations",
+          "Add it to your site with one script tag, or build on the API",
       },
     ],
-    dpdpSections: ["5", "6(1)", "6(2)", "6(4)", "8(5)", "8(7)"],
+    dpdpSections: ["5", "6(1)", "6(4)", "6(10)"],
     complianceDomains: ["Consent & Notice"],
   },
   {
@@ -52,7 +52,7 @@ export const PRODUCTS = [
     name: "Cookie Consent",
     tagline: "Two banner layouts now. More can be added.",
     description:
-      "Bar and modal ship today. Scan what the page sets, block non-essential tags until a grant, and keep a receipt. Further layouts, languages, and location rules can be added.",
+      "Two banner layouts today, a bar and a pop-up. See what your page sets, hold back non-essential cookies until a visitor agrees, and keep a record. More layouts, languages, and location rules can be added.",
     icon: "Cookie",
     features: [
       {
@@ -64,8 +64,8 @@ export const PRODUCTS = [
         description: "Further layouts use the same consent record.",
       },
       {
-        title: "Block until grant",
-        description: "Non-essential tags wait. Decline is as easy as accept.",
+        title: "Wait for a choice",
+        description: "Non-essential cookies wait. Saying no is as easy as saying yes.",
       },
       {
         title: "Preference centre",
@@ -78,10 +78,10 @@ export const PRODUCTS = [
   {
     id: "policy-notice",
     href: "/policy-notice",
-    name: "Policy and Notice",
+    name: "Privacy Notices",
     tagline: "Two notice types now. More can be added.",
     description:
-      "Privacy notice and cookie policy ship today, with versioning and purpose mapping. Children’s notices, processor lists, and AI disclosures can be added on the same history.",
+      "Privacy notice and cookie policy today, with a saved copy of every version. Children’s notices, vendor lists, and AI disclosures can be added.",
     icon: "FileText",
     features: [
       {
@@ -98,7 +98,7 @@ export const PRODUCTS = [
       },
       {
         title: "Version history",
-        description: "The text the visitor saw, not a CMS guess.",
+        description: "Keep the exact wording each visitor saw.",
       },
     ],
     dpdpSections: ["5", "6"],
@@ -106,31 +106,31 @@ export const PRODUCTS = [
   },
   {
     id: "trustscope",
-    name: "TrustScope Compliance Scanner",
-    tagline: "See your privacy posture the way a regulator would",
+    name: "Website Scan",
+    tagline: "See what your public website collects and says",
     description:
-      "An external compliance scanner that evaluates your public-facing digital properties across 7 categories. Generates a 0-100 health score with A-F grading, identifies undisclosed trackers, analyses privacy policies, and produces audit-ready PDF reports.",
+      "Checks your public websites across 7 categories. Gives a score from 0 to 100 with an A to F grade, finds trackers you may not have disclosed, reviews your privacy policy, and produces a PDF report.",
     icon: "ScanSearch",
     features: [
       {
-        title: "5-Phase Scan",
+        title: "Five-part scan",
         description:
-          "Cookie discovery, legal page discovery, policy analysis, DSAR check, subpage scan",
+          "Cookies, legal pages, privacy policy review, data request options, and other pages on the site",
       },
       {
         title: "Health Score",
         description:
-          "0-100 with A-F grading across 7 categories for instant compliance visibility",
+          "0 to 100 with an A to F grade across 7 categories",
       },
       {
         title: "Policy Analysis",
         description:
-          "Detects DPDP compliance signals with gap identification",
+          "Looks for what the DPDP Act expects and highlights what seems to be missing",
       },
       {
-        title: "DSAR Discovery",
+        title: "Data request check",
         description:
-          "Finds DSAR forms and privacy emails to validate rights accessibility",
+          "Finds request forms and privacy contacts, so you can see if people can reach you",
       },
       {
         title: "Tracker Intelligence",
@@ -153,31 +153,31 @@ export const PRODUCTS = [
   {
     id: "data-discovery",
     href: "/data-discovery",
-    name: "Data Discovery",
-    tagline: "A live inventory of personal data, built from catalogs, not spreadsheets",
+    name: "Find Personal Data",
+    tagline: "See which systems hold personal data",
     description:
-      "Locate stores, classify personal data, and mark what a rights request can look up. Records stay in your network. Further connectors can be added.",
+      "Find the systems holding personal data, label what is there, and mark what can be looked up when someone makes a request. Your records stay in your network. More systems can be added.",
     icon: "Database",
     features: [
       {
-        title: "Locate, classify, confirm",
+        title: "Find, label, confirm",
         description:
-          "Find the stores, name the personal data, then mark exact lookups.",
+          "Find the systems, label the personal data, then mark what can be looked up exactly.",
       },
       {
         title: "Records stay with you",
         description:
-          "The inventory is systems and fields. It is not a copy of the rows.",
+          "We list systems and fields. We do not take a copy of your records.",
       },
       {
         title: "Classification",
         description:
-          "Contact, financial, child, and other labels a fiduciary can act on.",
+          "Labels such as contact, financial, and children’s data.",
       },
       {
-        title: "Connectors",
+        title: "Supported systems",
         description:
-          "Databases, warehouses, SaaS, streams, and cloud stores today. More can be added.",
+          "Databases, data warehouses, business apps, and cloud storage. More can be added.",
       },
     ],
     dpdpSections: ["8(5)", "8(7)"],
@@ -186,27 +186,27 @@ export const PRODUCTS = [
   {
     id: "data-lineage",
     href: "/data-lineage",
-    name: "Data Lineage",
-    tagline: "How data moved, and what is still unknown",
+    name: "Track Where Data Goes",
+    tagline: "See how data moves, and what is still unknown",
     description:
-      "A coverage view of known stores. Pipeline definitions, infrastructure, query history, and job runs feed the map. Missing pieces are not invented.",
+      "A map of how personal data moves between systems, built from your existing technical records. It also shows what is still unknown, rather than guessing.",
     icon: "GitBranch",
     features: [
       {
-        title: "Pipeline definitions",
-        description: "Transforms and sources become edges, not a completeness claim.",
+        title: "Data pipelines",
+        description: "Uses your data pipelines to show where data flows.",
       },
       {
-        title: "Infrastructure definitions",
-        description: "Stores and processors that exist in infrastructure show up here.",
+        title: "Infrastructure settings",
+        description: "Shows systems and vendors listed in your infrastructure.",
       },
       {
         title: "Query history and job runs",
-        description: "How data actually moved, not how someone remembered it.",
+        description: "Show how data actually moved.",
       },
       {
-        title: "Coverage view",
-        description: "Known versus unknown stores. Gaps stay listed.",
+        title: "What is known and unknown",
+        description: "Shows which systems are known and which are not.",
       },
     ],
     dpdpSections: ["8(5)", "12", "8(2)"],
@@ -214,31 +214,31 @@ export const PRODUCTS = [
   },
   {
     id: "dsar-platform",
-    name: "DSAR Management Platform",
-    tagline: "Rights workflows that meet Section 11-13 timelines",
+    name: "Personal Data Requests",
+    tagline: "Handle requests to see, correct, or delete data",
     description:
-      "Automate Data Subject Access Request workflows with configurable process builders, multi-channel intake, grievance officer management, and SLA tracking. Ensures compliance with Section 11-13 rights obligations within mandated timelines.",
+      "When someone asks to see, correct, or delete their data, or makes a complaint, track it through to the end. Requests can come in by web form, email, or API.",
     icon: "FileCheck",
     features: [
       {
-        title: "Automated Workflows",
+        title: "Request steps",
         description:
-          "Configurable workflow builder for access, correction, erasure with approval chains",
+          "Set up the steps and approvals for each type of request",
       },
       {
-        title: "Grievance Management",
+        title: "Complaints",
         description:
-          "Named grievance officer publication with SLA tracking and escalation rules",
+          "Publish who handles complaints, and track deadlines and escalations",
       },
       {
-        title: "Multi-Channel Intake",
+        title: "Requests from any channel",
         description:
-          "Web forms, email, API with automated routing and deduplication",
+          "Web forms, email, and API, sent to the right team, without duplicates",
       },
       {
         title: "Evidence and Reporting",
         description:
-          "Complete audit trail with compliance reporting and response analytics",
+          "A full record of each request, with reports",
       },
     ],
     dpdpSections: ["11", "12", "13", "13(3)"],
@@ -246,41 +246,41 @@ export const PRODUCTS = [
   },
   {
     id: "processor-governance",
-    name: "Vendor & Processor Governance",
-    tagline: "Section 8(2) processor oversight from registry to downstream action",
+    name: "Vendor Tracking",
+    tagline: "Know which vendors hold data, and keep them informed",
     description:
-      "Register third-party processors and vendors, map them to processing purposes, orchestrate consent and DSAR propagation via webhooks, and monitor delivery health, with vendor risk visibility on your organisation dashboard.",
+      "List your vendors and what they use data for. When consent changes or someone makes a request, they are told automatically, and you can see whether the message arrived.",
     icon: "Network",
     features: [
       {
-        title: "Processor Registry",
+        title: "Vendor list",
         description:
-          "Central register of vendors and processors with category, lifecycle status, and webhook credentials",
+          "One list of your vendors, what they do, and their current status",
       },
       {
-        title: "Downstream Orchestration",
+        title: "Automatic updates",
         description:
-          "Automated propagation when consent changes or DSAR workflows require processor action",
+          "Vendors are told when consent changes or a request needs action",
       },
       {
-        title: "Integration Monitoring",
+        title: "Delivery tracking",
         description:
-          "Delivery status, failures, and retries for processor webhook integrations in one view",
+          "See which updates arrived, which failed, and which are being retried",
       },
       {
-        title: "Vendor Risk Matrix",
+        title: "Vendor risk",
         description:
-          "Risk classification and processor counts surfaced on the organisation compliance dashboard",
+          "See vendor risk levels and numbers on your dashboard",
       },
       {
         title: "Purpose Mapping",
         description:
-          "Link processors to lawful purposes so preference centres and audits show who receives data",
+          "Link each vendor to its purposes, so you can show who receives what",
       },
       {
-        title: "Lifecycle Governance",
+        title: "Vendor status history",
         description:
-          "Draft, review, active, and archived processor states with audit-ready change history",
+          "Draft, review, active, and archived statuses, with a history of changes",
       },
     ],
     dpdpSections: ["8(2)", "8(5)", "8(7)"],
@@ -289,37 +289,37 @@ export const PRODUCTS = [
   {
     id: "infra-scanner",
     href: "/infra-posture",
-    name: "Infrastructure Posture",
-    tagline: "Cloud and code, seen as a privacy duty",
+    name: "Cloud and Code Checks",
+    tagline: "Spot risky settings that could expose personal data",
     description:
-      "Open storage, over-broad identity, and identifiers left in repositories, on AWS, Azure, GCP, and Kubernetes. More estates can be added.",
+      "Find open storage, accounts with too much access, and personal details left in code, on AWS, Azure, GCP, and Kubernetes. More environments can be added.",
     icon: "Server",
     features: [
       {
         title: "Cloud accounts",
         description:
-          "AWS, Azure, and GCP findings that put personal data in reach",
+          "AWS, Azure, and GCP settings that could expose personal data",
       },
       {
         title: "Code repositories",
         description:
-          "Identifiers left in the open, and flows that skip a consent check",
+          "Personal details left in code, and paths that skip a consent check",
       },
       {
-        title: "One posture list",
+        title: "One list of issues",
         description:
-          "Open items and owners, next to the inventory those stores belong to",
+          "Open issues and who owns them, next to your list of data systems",
       },
     ],
-    dpdpSections: ["8(5)", "8(6)", "10"],
+    dpdpSections: ["8(5)", "8(6)"],
     complianceDomains: ["Data Security & Breach"],
   },
   {
     id: "ai-assistant",
-    name: "AI Compliance Assistant",
-    tagline: "Expert DPDP guidance in minutes, not days",
+    name: "AI Assistant",
+    tagline: "Get answers about the DPDP Act quickly",
     description:
-      "An AI-powered advisory tool trained on the DPDP 2023 Act, November 2025 Rules, and the IT Act. Provides instant guidance, runs 18-question compliance audits with penalty calculation, and delivers industry-specific recommendations.",
+      "An AI tool trained on the DPDP Act, the 2025 Rules, and the IT Act. Ask questions, run an 18-question audit with a risk score, and get suggestions for your industry. It is not a replacement for legal advice.",
     icon: "Bot",
     features: [
       {
@@ -330,7 +330,7 @@ export const PRODUCTS = [
       {
         title: "DPDPA Compliance Audit",
         description:
-          "18-question audit across 6 domains with penalty calculation and scoring",
+          "18-question audit across 6 areas, with a risk score",
       },
       {
         title: "Contextual Recommendations",
@@ -343,10 +343,10 @@ export const PRODUCTS = [
   },
   {
     id: "adaptive-engine",
-    name: "Adaptive Compliance Engine",
-    tagline: "Compliance that evolves with the law",
+    name: "Rule Change Alerts",
+    tagline: "Know when the rules change, and what it means for you",
     description:
-      "A self-learning compliance engine that monitors DPDP and related Indian regulatory changes, adapts policies automatically, and maintains continuous compliance with real-time scoring and trend analysis.",
+      "Watches for changes to DPDP and related Indian rules, shows what they could affect, and suggests updates for you to approve.",
     icon: "RefreshCw",
     features: [
       {
@@ -355,9 +355,9 @@ export const PRODUCTS = [
           "Monitors amendments and new rules with impact assessment on existing controls",
       },
       {
-        title: "Adaptive Policy Updates",
+        title: "Suggested policy updates",
         description:
-          "Self-learning system adapting to changes with version control and rollback",
+          "Suggested policy updates for you to approve, with version history",
       },
       {
         title: "Multi-Framework Support",
@@ -367,7 +367,7 @@ export const PRODUCTS = [
       {
         title: "Continuous Monitoring",
         description:
-          "Real-time scoring with trend analysis and early warning alerts",
+          "Scores over time, with early warnings",
       },
     ],
     dpdpSections: ["All"],

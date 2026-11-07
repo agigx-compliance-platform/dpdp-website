@@ -15,45 +15,45 @@ const GROUPS: { title: string; note: string; modules: { id: string; blurb: strin
     title: 'Notice and consent',
     note: 'Sections 5 and 6',
     modules: [
-      { id: 'consent-platform', blurb: 'Purpose consent, withdrawal, and the record behind it.' },
-      { id: 'cookie-consent', blurb: 'Web and mobile banners that block tags until a grant.' },
-      { id: 'policy-notice', blurb: 'Versioned notices tied to the consent they collected.' },
+      { id: 'consent-platform', blurb: 'Consent by purpose, withdrawal, and the record behind it.' },
+      { id: 'cookie-consent', blurb: 'Banners that hold back non-essential cookies until a visitor agrees.' },
+      { id: 'policy-notice', blurb: 'Notices saved with the consent they collected.' },
     ],
   },
   {
     title: 'Know your data',
     note: 'Sections 8(5) to 8(7)',
     modules: [
-      { id: 'data-discovery', blurb: 'An inventory of personal data, built from your catalogs.' },
-      { id: 'data-lineage', blurb: 'Where that data flows, and which stores are still unknown.' },
-      { id: 'infra-scanner', blurb: 'Cloud and code settings that put personal data in reach.' },
+      { id: 'data-discovery', blurb: 'A list of the systems that hold personal data.' },
+      { id: 'data-lineage', blurb: 'Where that data goes, and what is still unknown.' },
+      { id: 'infra-scanner', blurb: 'Cloud and code settings that could expose personal data.' },
     ],
   },
   {
-    title: 'Rights and vendors',
+    title: 'People’s requests and vendors',
     note: 'Sections 8(2) and 11 to 13',
     modules: [
-      { id: 'dsar-platform', blurb: 'Access, correction, and erasure inside the deadline.' },
-      { id: 'processor-governance', blurb: 'Processors registered, mapped, and kept in step.' },
+      { id: 'dsar-platform', blurb: 'Requests to see, correct, or delete data, tracked to the end.' },
+      { id: 'processor-governance', blurb: 'Know which vendors hold data, and keep them informed.' },
     ],
   },
   {
-    title: 'Assurance',
+    title: 'Checks and updates',
     note: 'Across the Act',
     modules: [
-      { id: 'trustscope', blurb: 'Your public sites, scored the way a regulator would look.' },
-      { id: 'ai-assistant', blurb: 'Answers grounded in the Act, plus a readiness audit.' },
-      { id: 'adaptive-engine', blurb: 'Rule changes turned into control updates to approve.' },
+      { id: 'trustscope', blurb: 'See what your public websites collect and say.' },
+      { id: 'ai-assistant', blurb: 'Answers about the Act, plus a readiness audit.' },
+      { id: 'adaptive-engine', blurb: 'Know when rules change, and approve suggested updates.' },
     ],
   },
 ]
 
 const ROLLOUT = [
-  { title: 'Scan', body: 'Connect public properties and see what they load today.' },
-  { title: 'Lock purposes', body: 'Agree the purpose list and the notice that explains it.' },
-  { title: 'Ship consent', body: 'Banner and SDK live, tags gated on the grant.' },
-  { title: 'Open rights', body: 'DSAR intake on, backed by the data inventory.' },
-  { title: 'Extend', body: 'Vendor webhooks and infrastructure scanning follow.' },
+  { title: 'Scan', body: 'See what your websites and apps collect today.' },
+  { title: 'Agree the purposes', body: 'Agree why you use people’s details, and write the notice.' },
+  { title: 'Start asking', body: 'Banner goes live, and non-essential cookies wait for consent.' },
+  { title: 'Open requests', body: 'People can make requests, backed by your list of data.' },
+  { title: 'Extend', body: 'Vendor updates and cloud and code checks follow.' },
 ] as const
 
 const productById = new Map(PRODUCTS.map((p) => [p.id, p]))
@@ -94,14 +94,14 @@ export default function DpdpPlatformPage() {
         <div className="mx-auto max-w-3xl text-center">
           <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">DPDP compliance platform</p>
           <h1 className="text-balance text-4xl font-semibold tracking-tight sm:text-5xl md:text-6xl">
-            <span className="gradient-text">Every DPDP duty, run every day</span>
+            <span className="gradient-text">One place for your daily privacy work</span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-            Consent, data inventory, rights requests, vendors, and evidence on one platform built for the DPDP Act 2023
-            and the 2025 Rules. Not a GDPR suite with an India flag turned on.
+            Consent, finding personal data, people&apos;s requests, vendors, and proof, in one platform built for the DPDP
+            Act 2023 and the 2025 Rules.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link href="/contact">
+            <Link href="/contact?intent=demo">
               <Button variant="primary" size="lg">
                 Book a demo
                 <ArrowRight className="h-4 w-4" />
@@ -119,7 +119,7 @@ export default function DpdpPlatformPage() {
       <SectionWrapper className="py-10 md:py-14">
         <h2 className="text-2xl font-semibold sm:text-3xl">What the platform covers</h2>
         <p className="mt-3 max-w-2xl text-muted-foreground">
-          Eleven modules on shared purposes and identifiers, grouped by the duty they serve.
+          Eleven tools that work together, grouped by what they help you do.
         </p>
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
           {GROUPS.map((group) => (
@@ -169,8 +169,8 @@ export default function DpdpPlatformPage() {
       </SectionWrapper>
 
       <DemoCta
-        title="Four tools that disagree are not a platform"
-        body="A CMP, a helpdesk, a GRC sheet, and a one-time scan each look green on their own. The gaps sit between them. We run them on one record."
+        title="Separate tools leave gaps between them"
+        body="A banner, a helpdesk, a spreadsheet, and a one-time scan can each look fine alone. The gaps sit between them. We keep them on one record."
       />
 
       <FaqSection title="DPDP platform questions" faqs={DPDP_PLATFORM_FAQS} />

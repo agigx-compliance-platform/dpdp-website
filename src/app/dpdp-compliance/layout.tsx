@@ -7,7 +7,7 @@ import { pageSeo } from '@/lib/page-metadata'
 export const metadata: Metadata = pageSeo({
   title: 'DPDP Compliance for Indian Organisations',
   description:
-    'DPDP compliance for Indian Data Fiduciaries: obligation domains, penalties, and a practical path from assessment to consent, DSAR, and governance.',
+    'What DPDP compliance means for Indian organisations: who it covers, when it starts, the penalties, and a practical way to get ready.',
   path: '/dpdp-compliance',
   keywords: [
     'DPDP compliance',

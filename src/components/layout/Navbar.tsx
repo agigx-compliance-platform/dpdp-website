@@ -9,22 +9,22 @@ import { BrandMark } from '@/components/brand/BrandMark'
 import { useQuestionnaireStore } from '@/store/questionnaireStore'
 
 const platformLinks = [
-  { href: '/cookie-consent', label: 'Cookie consent', blurb: 'Two banner layouts now. More can be added.' },
-  { href: '/policy-notice', label: 'Policy and notice', blurb: 'Privacy notice and cookie policy. More types can be added.' },
-  { href: '/consent-management', label: 'Consent lifecycle', blurb: 'Purpose grant, withdrawal, receipt' },
-  { href: '/products#dsar-platform', label: 'DSAR and rights', blurb: 'Access, correction, erasure' },
-  { href: '/data-discovery', label: 'Data discovery', blurb: 'Inventory of systems and fields' },
-  { href: '/data-lineage', label: 'Data lineage', blurb: 'How data moved, and what is still unknown' },
-  { href: '/infra-posture', label: 'Infra posture', blurb: 'Cloud and code, seen as a privacy duty' },
-  { href: '/products#processor-governance', label: 'Vendor governance', blurb: 'Registry and downstream action' },
-  { href: '/products#trustscope', label: 'Scanner', blurb: 'Public-site posture' },
-  { href: '/products#ai-assistant', label: 'AI assistant', blurb: 'Guidance grounded in the Act and Rules' },
+  { href: '/cookie-consent', label: 'Cookie banner', blurb: 'Ask visitors before cookies run' },
+  { href: '/policy-notice', label: 'Privacy notices', blurb: 'Keep your notices clear and up to date' },
+  { href: '/consent-management', label: 'Consent records', blurb: 'Record every yes, no, and change of mind' },
+  { href: '/products#dsar-platform', label: 'Personal data requests', blurb: 'Handle requests to see, correct, or delete data' },
+  { href: '/data-discovery', label: 'Find personal data', blurb: 'See which systems hold personal data' },
+  { href: '/data-lineage', label: 'Track where data goes', blurb: 'See how data moves between systems' },
+  { href: '/infra-posture', label: 'Cloud and code checks', blurb: 'Spot risky settings that could expose data' },
+  { href: '/products#processor-governance', label: 'Vendor tracking', blurb: 'Know which vendors hold data, and keep them informed' },
+  { href: '/products#trustscope', label: 'Website scan', blurb: 'See what your public website collects' },
+  { href: '/products#ai-assistant', label: 'AI assistant', blurb: 'Get answers about the DPDP Act quickly' },
 ]
 
 const resourceLinks = [
   { href: '/what-is-dpdp', label: 'What is DPDP' },
   { href: '/dpdp-compliance', label: 'DPDP compliance guide' },
-  { href: '/privacy-pitstop', label: 'Privacy Pitstop' },
+  { href: '/privacy-pitstop', label: 'Free website scan' },
 ]
 
 const companyLinks = [
@@ -59,10 +59,10 @@ export function Navbar() {
           <div className="flex h-16 items-center justify-between">
             <BrandMark priority size="default" />
 
-            <div className="hidden items-center gap-1 lg:flex">
+            <div className="hidden items-center gap-1 xl:flex">
               <Mega
                 id="platform"
-                label="Platform"
+                label="Product"
                 open={openMenu === 'platform'}
                 onOpen={() => setOpenMenu('platform')}
                 onClose={() => setOpenMenu(null)}
@@ -86,6 +86,9 @@ export function Navbar() {
               </Link>
               <Link href="/services" className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground">
                 Services
+              </Link>
+              <Link href="/pricing" className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground">
+                Pricing
               </Link>
               <Mega
                 id="resources"
@@ -129,7 +132,7 @@ export function Navbar() {
               </Mega>
             </div>
 
-            <div className="hidden items-center gap-3 lg:flex">
+            <div className="hidden items-center gap-3 xl:flex">
               <button
                 onClick={toggleTheme}
                 className="rounded-lg p-2 text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
@@ -137,14 +140,20 @@ export function Navbar() {
               >
                 {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
               </button>
-              <button onClick={openModal} className="btn-primary text-sm">
-                Start Assessment
+              <Link
+                href="/contact?intent=demo"
+                className="whitespace-nowrap px-2 py-2 text-sm font-medium text-foreground hover:text-primary"
+              >
+                Book a demo
+              </Link>
+              <button onClick={openModal} className="btn-primary whitespace-nowrap text-sm">
+                Check readiness
               </button>
             </div>
 
             <button
               onClick={() => setMobileOpen(true)}
-              className="rounded-lg p-2 text-muted-foreground hover:text-foreground lg:hidden"
+              className="rounded-lg p-2 text-muted-foreground hover:text-foreground xl:hidden"
               aria-label="Open menu"
             >
               <Menu size={22} />
@@ -154,7 +163,7 @@ export function Navbar() {
       </nav>
 
       {mobileOpen && (
-        <div className="fixed inset-0 z-[60] lg:hidden">
+        <div className="fixed inset-0 z-[60] xl:hidden">
           <div className="absolute inset-0 bg-black/60" onClick={() => setMobileOpen(false)} />
           <div className="absolute top-0 right-0 flex h-full w-80 flex-col overflow-y-auto border-l border-border bg-background p-6">
             <div className="mb-6 flex items-center justify-between">
@@ -167,7 +176,7 @@ export function Navbar() {
                 <X size={20} />
               </button>
             </div>
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Platform</p>
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Product</p>
             {platformLinks.map((link) => (
               <Link key={link.href} href={link.href} onClick={() => setMobileOpen(false)} className="px-2 py-2 text-sm text-muted-foreground">
                 {link.label}
@@ -175,6 +184,7 @@ export function Navbar() {
             ))}
             <Link href="/solutions" onClick={() => setMobileOpen(false)} className="mt-4 px-2 py-2 text-sm">Industries</Link>
             <Link href="/services" onClick={() => setMobileOpen(false)} className="px-2 py-2 text-sm">Services</Link>
+            <Link href="/pricing" onClick={() => setMobileOpen(false)} className="px-2 py-2 text-sm">Pricing</Link>
             <p className="mt-4 mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Resources</p>
             {resourceLinks.map((link) => (
               <Link key={link.href} href={link.href} onClick={() => setMobileOpen(false)} className="px-2 py-2 text-sm text-muted-foreground">
@@ -202,8 +212,15 @@ export function Navbar() {
                 }}
                 className="btn-primary text-sm"
               >
-                Start Assessment
+                Check readiness
               </button>
+              <Link
+                href="/contact?intent=demo"
+                onClick={() => setMobileOpen(false)}
+                className="btn-secondary text-center text-sm"
+              >
+                Book a demo
+              </Link>
             </div>
           </div>
         </div>

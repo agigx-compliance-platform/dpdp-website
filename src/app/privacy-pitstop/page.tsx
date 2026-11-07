@@ -940,7 +940,7 @@ function PrivacyPitstopPageInner() {
                   {[
                     { step: 1, icon: Search, title: 'Scan', desc: 'Public pages only. No login, no private APIs.' },
                     { step: 2, icon: Eye, title: 'Understand', desc: 'Privacy quality score, category bars, and gap reasons from the scan.' },
-                    { step: 3, icon: HelpCircle, title: 'Question', desc: 'Ask the fiduciary about notice, consent, retention, and AI use.' },
+                    { step: 3, icon: HelpCircle, title: 'Question', desc: 'Ask the company about notice, consent, retention, and AI use.' },
                     { step: 4, icon: AlertTriangle, title: 'Grieve', desc: 'Raise a privacy grievance using the generated draft.' },
                     { step: 5, icon: BarChart3, title: 'Track', desc: 'Keep the follow-up template until a response arrives.' },
                     { step: 6, icon: ArrowUpRight, title: 'Escalate', desc: 'Use the complaint pack if the grievance stays unresolved.' },

@@ -6,7 +6,7 @@ const STAGES = [
   { id: 'discover', icon: Search, title: 'Discover', body: 'Exact-key lookup across every store in the inventory.', meta: 'Locate' },
   { id: 'review', icon: BadgeCheck, title: 'Review', body: 'A named approver checks scope and any legal hold.', meta: 'Approval' },
   { id: 'erase', icon: Trash2, title: 'Erase and notify', body: 'Delete in each store. Processors told to do the same.', meta: 'Fulfil' },
-  { id: 'evidence', icon: FileCheck2, title: 'Evidence', body: 'Response sent. Every step sealed in the rights ledger.', meta: 'Closed' },
+  { id: 'evidence', icon: FileCheck2, title: 'Evidence', body: 'Response sent. Every step saved in the request record.', meta: 'Closed' },
 ] as const
 
 type Outcome = 'removed' | 'retained' | 'notified'
@@ -97,7 +97,7 @@ export function DsarLifecycle() {
         </ul>
         <p className="border-t border-border bg-background-secondary/60 px-4 py-2.5 text-[11px] text-muted-foreground">
           If a source cannot be read, the request shows as a partial locate, not as complete. Anything kept under another
-          law is named in the response to the Data Principal.
+          law is named in the response to the person.
         </p>
       </div>
     </figure>

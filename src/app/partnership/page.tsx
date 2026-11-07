@@ -23,9 +23,9 @@ const PARTNERSHIP_MODELS = [
     title: 'Advisory Partnership',
     icon: Lightbulb,
     description:
-      'For consulting firms, law firms, and advisory practices looking to offer DPDP compliance services powered by Consent Cockpit technology and methodology.',
+      'For consulting firms, law firms, and advisory practices looking to offer DPDP compliance services using our technology and methods.',
     included: [
-      'White-label TrustScope compliance scanning',
+      'White-label website scanning',
       'AI Compliance Assistant access for your consultants',
       'DPDP readiness assessment methodology',
       'Co-branded compliance reports',
@@ -41,9 +41,9 @@ const PARTNERSHIP_MODELS = [
     description:
       'For system integrators and technology consultancies that implement privacy solutions for enterprise clients and need a robust DPDP compliance technology stack.',
     included: [
-      'Full Consent Cockpit platform integration access',
+      'Full platform integration access',
       'Consent Management Platform for client deployments',
-      'DSAR and rights automation tooling',
+      'Tools for handling people’s data requests',
       'Implementation playbooks and documentation',
       'Technical training and solution architecture support',
       'Revenue-share model on platform deployments',
@@ -55,7 +55,7 @@ const PARTNERSHIP_MODELS = [
     title: 'Managed Services Partnership',
     icon: Headphones,
     description:
-      'For organisations wanting to offer ongoing managed privacy operations including DPO services, compliance monitoring, and incident response, backed by Consent Cockpit infrastructure.',
+      'For organisations that want to offer ongoing managed privacy services, including DPO services, monitoring, and incident response, with our platform and team behind them.',
     included: [
       'Managed operations playbook and SLA templates',
       'Continuous compliance monitoring dashboard',
@@ -82,7 +82,7 @@ const BENEFITS = [
   {
     icon: Users,
     title: 'Expert Support',
-    description: 'Access Consent Cockpit privacy engineers and compliance experts for complex client engagements.',
+    description: 'Access our privacy engineers and compliance experts for complex client engagements.',
   },
   {
     icon: Zap,
@@ -228,7 +228,7 @@ export default function PartnershipPage() {
               <span className="gradient-text">Become a Partner</span>
             </h2>
             <p className="text-muted-foreground mb-8 max-w-2xl">
-              Ready to explore how Consent Cockpit can power your DPDP compliance
+              Ready to explore how we can support your DPDP compliance
               practice? Let&apos;s discuss the right partnership model for your
               organization.
             </p>

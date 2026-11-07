@@ -18,25 +18,25 @@ const VALUES = [
     icon: Target,
     title: 'Precision',
     description:
-      'Every control, every assessment, every recommendation is grounded in the specific text of DPDP 2023. We map to sections, not abstractions.',
+      'Our advice and tools are based on the text of the DPDP Act and Rules, not on general privacy assumptions.',
   },
   {
     icon: Zap,
     title: 'Adaptability',
     description:
-      'Regulatory landscapes evolve. Our platforms self-adapt to amendments, new rules, and enforcement guidance, keeping you compliant without manual rework.',
+      'The rules will change over time. We watch for changes and help you update your work when they do.',
   },
   {
     icon: Eye,
     title: 'Transparency',
     description:
-      'Full audit trails, immutable evidence, and clear scoring. You see exactly where you stand, what gaps exist, and what actions close them.',
+      'Clear records and plain reports, so you can see where you stand, what the gaps are, and what to do next.',
   },
   {
     icon: Heart,
     title: 'Client-First',
     description:
-      'We design for your context: your industry, your data patterns, your maturity level. No one-size-fits-all frameworks. Compliance that fits how you actually operate.',
+      'We start from your industry, your data, and how far along you are, so the work fits how you actually operate.',
   },
 ]
 
@@ -54,9 +54,8 @@ export default function AboutPage() {
             <span className="gradient-text">About DPDP Consultancy</span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-            We&apos;re building the compliance infrastructure India needs where
-            regulatory obligations become executable systems, not static
-            documents gathering dust.
+            We help organisations in India get ready for the DPDP Act, with
+            software that does the daily work and people who can advise you.
           </p>
         </motion.div>
       </SectionWrapper>
@@ -71,14 +70,13 @@ export default function AboutPage() {
         >
           <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-6">Our Mission</h2>
           <p className="text-xl md:text-2xl text-muted-foreground leading-relaxed font-medium italic">
-            &ldquo;We believe compliance should be an executable engine, not a
-            checkbox exercise.&rdquo;
+            &ldquo;Following the law on personal data should be part of daily
+            work, not a once-a-year checklist.&rdquo;
           </p>
           <p className="text-muted-foreground mt-6 leading-relaxed max-w-3xl mx-auto">
-            DPDP 2023 represents a fundamental shift in how Indian organisations
-            must treat personal data. DPDP Consultancy (dpdpconsultancy) exists to make that transition
-            achievable through technology that automates controls, services
-            that build capability, and products that provide continuous assurance.
+            The DPDP Act changes how organisations in India must treat personal
+            data. DPDP Consultancy exists to make that change manageable, with
+            clear advice, practical services, and software your team can use.
           </p>
         </motion.div>
       </SectionWrapper>

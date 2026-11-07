@@ -14,7 +14,7 @@ export default function QuestionnairePage() {
           Map your DPDP path
         </h1>
         <p className="mt-3 text-lg text-muted-foreground leading-relaxed">
-          Eight questions, optional public-site scan, then a ledger of products and services that match the answers.
+          Answer a few questions, and scan your website if you like. We then suggest the products and services that fit.
         </p>
       </div>
       <div className="mx-auto max-w-5xl ledger-panel overflow-hidden">

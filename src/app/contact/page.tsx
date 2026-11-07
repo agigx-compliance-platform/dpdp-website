@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { Mail, MapPin, Send, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -51,6 +52,30 @@ function isValidIndianPhone(phone: string): boolean {
   return /^(?:\+?91|0)?[6-9]\d{9}$/.test(phone.replace(/[\s-]/g, ""));
 }
 
+/** Links elsewhere on the site say why the visitor came, so the form can start with the right subject. */
+const SUBJECT_BY_INTENT: Record<string, string> = {
+  demo: "Book a demo",
+  pricing: "Pricing enquiry",
+  services: "Services enquiry",
+};
+
+const NEXT_STEPS = [
+  "We aim to reply within one working day.",
+  "We arrange a short call to understand what you need.",
+  "We show you a demo or send you a quote, if that is what you asked for.",
+];
+
+const subscribeToNothing = () => () => {};
+
+/** The subject a link asked for. Empty on the server, so the first render matches. */
+function useIntentSubject(): string {
+  return useSyncExternalStore(
+    subscribeToNothing,
+    () => SUBJECT_BY_INTENT[new URLSearchParams(window.location.search).get("intent") ?? ""] ?? "",
+    () => "",
+  );
+}
+
 interface FormState {
   name: string;
   email: string;
@@ -84,6 +109,9 @@ export default function ContactPage() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const intentSubject = useIntentSubject();
+  const [subjectEdited, setSubjectEdited] = useState(false);
+  const subject = subjectEdited ? form.subject : intentSubject;
 
   function validate(): boolean {
     const newErrors: FormErrors = {};
@@ -102,7 +130,7 @@ export default function ContactPage() {
     }
     if (!form.company.trim()) newErrors.company = "Company is required";
     if (!form.role) newErrors.role = "Please select a role";
-    if (!form.subject.trim()) newErrors.subject = "Subject is required";
+    if (!subject.trim()) newErrors.subject = "Subject is required";
     if (!form.message.trim()) newErrors.message = "Message is required";
 
     setErrors(newErrors);
@@ -120,7 +148,7 @@ export default function ContactPage() {
         phone: form.phone,
         company: form.company,
         role: form.role,
-        subject: form.subject,
+        subject,
         message: form.message,
       });
       // Consent is recorded only after the enquiry succeeds, and only for ticked purposes.
@@ -142,6 +170,7 @@ export default function ContactPage() {
     >,
   ) {
     const { name, value } = e.target;
+    if (name === "subject") setSubjectEdited(true);
     setForm((prev) => ({ ...prev, [name]: value }));
     if (errors[name as keyof FormErrors]) {
       setErrors((prev) => ({ ...prev, [name]: undefined }));
@@ -161,8 +190,9 @@ export default function ContactPage() {
             <span className="gradient-text">Contact DPDP Consultancy</span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-            Ready to start your DPDP compliance journey? Our team of experts is
-            here to help you navigate the path to full compliance.
+            Book a demo, ask about pricing, or ask us a question. Larger
+            organisations can tell us about their systems and we will bring the
+            right people to the call.
           </p>
         </motion.div>
       </SectionWrapper>
@@ -184,8 +214,8 @@ export default function ContactPage() {
                   Message Sent Successfully
                 </h3>
                 <p className="text-muted-foreground">
-                  Thank you for reaching out. Our team will review your enquiry
-                  and respond within 24 hours.
+                  Thank you. We aim to reply within one working day, usually to
+                  arrange a short call about what you need.
                 </p>
               </div>
             ) : (
@@ -262,7 +292,7 @@ export default function ContactPage() {
                   <Input
                     label="Subject"
                     name="subject"
-                    value={form.subject}
+                    value={subject}
                     onChange={handleChange}
                     error={errors.subject}
                     placeholder="How can we help?"
@@ -282,7 +312,7 @@ export default function ContactPage() {
                       errors.message &&
                         "border-destructive focus:ring-destructive/50",
                     )}
-                    placeholder="Tell us about your compliance needs..."
+                    placeholder="What would you like help with?"
                   />
                   {errors.message && (
                     <p className="mt-1.5 text-xs text-destructive">
@@ -290,6 +320,13 @@ export default function ContactPage() {
                     </p>
                   )}
                 </div>
+                <p className="mb-6 text-xs leading-relaxed text-muted-foreground">
+                  We use these details only to reply to your enquiry. See our{" "}
+                  <Link href="/privacy-policy" className="underline underline-offset-2 hover:text-foreground">
+                    Privacy Policy
+                  </Link>
+                  .
+                </p>
                 {/* Agigx form consent: SDK renders unticked checkbox cards for this journey */}
                 <div
                   data-agigx-form-consent={CONTACT_FORM_JOURNEY_KEY}
@@ -317,6 +354,22 @@ export default function ContactPage() {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="space-y-4"
           >
+            <Card>
+              <CardContent className="p-5">
+                <h3 className="text-sm font-semibold text-foreground mb-3">
+                  What happens next
+                </h3>
+                <ol className="space-y-2">
+                  {NEXT_STEPS.map((step, i) => (
+                    <li key={step} className="flex gap-2 text-sm text-muted-foreground">
+                      <span className="font-semibold text-primary">{i + 1}.</span>
+                      {step}
+                    </li>
+                  ))}
+                </ol>
+              </CardContent>
+            </Card>
+
             <Card>
               <CardContent className="p-5 flex items-start gap-4">
                 <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">

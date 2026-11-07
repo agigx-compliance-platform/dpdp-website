@@ -1,7 +1,4 @@
-/**
- * Connector inventory for the marketing site.
- * Live types and types that can be added later are listed separately.
- */
+/** Systems the site lists as supported. */
 
 export type ConnectorCategory = {
   id: string
@@ -9,7 +6,7 @@ export type ConnectorCategory = {
   items: string[]
 }
 
-export const CONNECTOR_CATEGORIES: ConnectorCategory[] = [
+const CORE_SYSTEM_CATEGORIES: ConnectorCategory[] = [
   {
     id: 'rdbms',
     label: 'Relational databases',
@@ -82,8 +79,7 @@ export const CONNECTOR_CATEGORIES: ConnectorCategory[] = [
   },
 ]
 
-/** Systems that can be added to an estate. Not claimed as live today. */
-export const FUTURE_CONNECTOR_CATEGORIES: ConnectorCategory[] = [
+const MORE_SYSTEM_CATEGORIES: ConnectorCategory[] = [
   {
     id: 'rdbms-more',
     label: 'More databases',
@@ -116,15 +112,10 @@ export const FUTURE_CONNECTOR_CATEGORIES: ConnectorCategory[] = [
   },
 ]
 
-export const CONNECTOR_TYPE_COUNT = CONNECTOR_CATEGORIES.reduce(
-  (sum, cat) => sum + cat.items.length,
-  0,
-)
-
-export const FUTURE_CONNECTOR_COUNT = FUTURE_CONNECTOR_CATEGORIES.reduce(
-  (sum, cat) => sum + cat.items.length,
-  0,
-)
+export const SUPPORTED_SYSTEM_CATEGORIES: ConnectorCategory[] = [
+  ...CORE_SYSTEM_CATEGORIES,
+  ...MORE_SYSTEM_CATEGORIES,
+]
 
 /** File stem under /images/connectors/{stem}.svg. Unmapped names use a letter mark. */
 export const CONNECTOR_MARK: Record<string, string> = {

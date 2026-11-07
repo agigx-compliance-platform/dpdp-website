@@ -4,24 +4,24 @@ import { FaqSection } from '@/components/seo/FaqSection'
 import { GuideCtas } from '@/components/seo/GuideCtas'
 import { RelatedGuides } from '@/components/seo/RelatedGuides'
 import { DiscoveryPassesDiagram, DiscoveryScene, HubCollectorBoundary } from '@/components/illustrations'
-import { CONNECTOR_CATEGORIES, FUTURE_CONNECTOR_CATEGORIES } from '@/lib/connectors'
+import { SUPPORTED_SYSTEM_CATEGORIES } from '@/lib/connectors'
 import { ConnectorLogoRail } from '@/components/ui/ConnectorFamilyRails'
 
 const FAQS = [
   {
     question: 'Do you copy our records out of our network?',
     answer:
-      'No. Discovery builds an inventory of systems and fields. The records themselves stay where they already are.',
+      'No. We build a list of systems and fields. The records themselves stay where they already are.',
   },
   {
     question: 'What does a discovery run produce?',
     answer:
-      'A live list of where personal data sits, how it is classified, and whether a rights request can look it up exactly. It is not a spreadsheet of system names someone typed last year.',
+      'A current list of where personal data sits, how it is labelled, and whether it can be looked up exactly when someone makes a request.',
   },
   {
-    question: 'Which systems are covered today?',
+    question: 'Which systems do you support?',
     answer:
-      'Relational databases, warehouses, catalogs, NoSQL, object storage, streams, major SaaS, cloud inventory, logs, and backup vaults. Further systems can be added without changing how the inventory is read.',
+      'Databases, data warehouses, cloud storage, business apps, cloud accounts, logs, and backups. Tell us if you run something else and we can add it.',
   },
 ]
 
@@ -34,11 +34,12 @@ export default function DataDiscoveryPage() {
             Platform
           </p>
           <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">
-            See where personal data lives
+            See which systems hold personal data
           </h1>
           <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
-            An inventory of systems and fields, built from the catalogs you already
-            run. Records stay in your network. Further connectors can be added.
+            Get a list of the systems and fields that hold personal details, using
+            information your systems already have. Your records stay in your network.
+            More systems can be added.
           </p>
         </div>
         <div className="mt-12">
@@ -47,10 +48,10 @@ export default function DataDiscoveryPage() {
       </SectionWrapper>
 
       <SectionWrapper>
-        <h2 className="text-2xl font-semibold">Locate, classify, confirm</h2>
+        <h2 className="text-2xl font-semibold">Find, label, confirm</h2>
         <p className="mt-3 max-w-2xl text-muted-foreground">
-          First find the stores. Then name the personal data. Then mark what a
-          rights request can look up exactly. A guess is not filed as found.
+          First find the systems. Then label the personal data. Then mark what can be
+          looked up exactly when someone makes a request. A guess is not counted as a find.
         </p>
         <div className="mt-8">
           <DiscoveryPassesDiagram />
@@ -58,10 +59,10 @@ export default function DataDiscoveryPage() {
       </SectionWrapper>
 
       <SectionWrapper>
-        <h2 className="text-2xl font-semibold">Your network keeps the records</h2>
+        <h2 className="text-2xl font-semibold">Your records stay in your network</h2>
         <p className="mt-3 max-w-2xl text-muted-foreground">
-          The control plane holds names of systems and fields. It does not take a
-          copy of the rows.
+          We keep the names of systems and fields. We do not take a copy of your
+          records.
         </p>
         <div className="mt-8">
           <HubCollectorBoundary />
@@ -69,23 +70,12 @@ export default function DataDiscoveryPage() {
       </SectionWrapper>
 
       <SectionWrapper>
-        <h2 className="text-2xl font-semibold">Connectors today</h2>
+        <h2 className="text-2xl font-semibold">Supported systems</h2>
         <p className="mt-3 max-w-2xl text-muted-foreground">
-          Live types on the moving rail. Records stay in your network.
+          Don&apos;t see yours? Tell us what you run and we can add it.
         </p>
         <div className="mt-8">
-          <ConnectorLogoRail families={CONNECTOR_CATEGORIES} />
-        </div>
-      </SectionWrapper>
-
-      <SectionWrapper>
-        <h2 className="text-2xl font-semibold">Further systems</h2>
-        <p className="mt-3 max-w-2xl text-muted-foreground">
-          Further stores use the same inventory. They are not claimed as live
-          until they are connected on an estate.
-        </p>
-        <div className="mt-8">
-          <ConnectorLogoRail families={FUTURE_CONNECTOR_CATEGORIES} direction="rtl" />
+          <ConnectorLogoRail families={SUPPORTED_SYSTEM_CATEGORIES} />
         </div>
       </SectionWrapper>
 
@@ -94,13 +84,13 @@ export default function DataDiscoveryPage() {
         <ul className="mt-4 max-w-2xl space-y-3 text-sm text-muted-foreground">
           <li>
             <span className="font-medium text-foreground">Reasonable security.</span>{' '}
-            Safeguards start with knowing which fields hold personal data and who
-            can reach them.
+            To protect personal data, you first need to know where it is and who can
+            reach it.
           </li>
           <li>
-            <span className="font-medium text-foreground">Rights.</span> Access and
-            erasure use exact lookups. A sampled search that misses a row is not
-            a completed request.
+            <span className="font-medium text-foreground">People&apos;s requests.</span>{' '}
+            To show or delete someone&apos;s data, you need to find all of it. A search
+            that misses some of it does not complete the request.
           </li>
         </ul>
       </SectionWrapper>

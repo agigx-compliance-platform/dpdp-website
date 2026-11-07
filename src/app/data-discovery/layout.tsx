@@ -7,19 +7,19 @@ const FAQS = [
   {
     question: 'Do you copy our records out of our network?',
     answer:
-      'No. Discovery builds an inventory of systems and fields. The records themselves stay where they already are.',
+      'No. We build a list of systems and fields. The records themselves stay where they already are.',
   },
   {
     question: 'What does a discovery run produce?',
     answer:
-      'A live list of where personal data sits, how it is classified, and whether a rights request can look it up exactly.',
+      'A current list of where personal data sits, how it is labelled, and whether it can be looked up exactly when someone makes a request.',
   },
 ]
 
 export const metadata: Metadata = pageSeo({
   title: 'Data Discovery for DPDP',
   description:
-    'A live inventory of where personal data sits. Records stay in your network. Further connectors can be added.',
+    'See which systems hold personal data. Your records stay in your network. More systems can be added.',
   path: '/data-discovery',
   keywords: ['DPDP data discovery', 'personal data inventory India'],
 })

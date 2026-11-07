@@ -56,7 +56,7 @@ export const discoveryNodes: CanvasNode[] = [
       variant: 'receipt',
       eyebrow: 'Inventory',
       title: 'customers.email',
-      status: 'sealed',
+      status: 'cleared',
       rows: [
         { label: 'Class', value: 'Contact identifier' },
         { label: 'Rights lookup', value: 'Indexed' },

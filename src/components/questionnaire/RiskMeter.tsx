@@ -42,7 +42,7 @@ export function RiskMeter({ formData, isVisible }: RiskMeterProps) {
     >
       <div className="mb-2 flex items-center justify-between">
         <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
-          Self-reported exposure
+          Risk based on your answers
         </span>
         <span className={cn('text-xs font-bold uppercase tracking-wider', riskLabelClass)}>
           {riskLabel}
@@ -55,7 +55,7 @@ export function RiskMeter({ formData, isVisible }: RiskMeterProps) {
         />
       </div>
       <p className="mt-2 text-[10px] text-muted-foreground">
-        Derived from answers on this form, not a statutory penalty.
+        Based on your answers here. It is not legal advice or an estimate of any fine.
       </p>
     </motion.div>
   )

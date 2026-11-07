@@ -7,6 +7,6 @@ export const contentType = 'image/png'
 export default function Image() {
   return ogImage(
     'DPDP Consultancy products',
-    'Consent, discovery, lineage, rights, processors, and evidence.',
+    'Consent, finding personal data, people’s requests, vendors, and proof.',
   )
 }

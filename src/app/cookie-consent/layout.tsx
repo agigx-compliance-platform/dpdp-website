@@ -7,19 +7,19 @@ const FAQS = [
   {
     question: 'Is a cookie banner the same as consent?',
     answer:
-      'No. The banner is how a visitor is asked. Consent is the purpose grant, the block on non-essential tags, and the record you can produce later.',
+      'No. The banner is how you ask. Consent also means holding back non-essential cookies until the visitor agrees, and keeping a record you can show later.',
   },
   {
-    question: 'How many banner layouts do you ship today?',
+    question: 'How many banner layouts do you offer?',
     answer:
-      'Two: a bar and a modal. More layouts, languages, and location rules can be added for the same consent record.',
+      'Two: a bar and a pop-up. More layouts, languages, and location rules can be added.',
   },
 ]
 
 export const metadata: Metadata = pageSeo({
   title: 'Cookie Consent for DPDP',
   description:
-    'Cookie consent for Indian sites. Two banner layouts now (bar and modal), with scan, block-until-grant, and a receipt. More layouts can be added.',
+    'A cookie banner for websites in India. Ask visitors before non-essential cookies run, give them a real choice, and keep a record.',
   path: '/cookie-consent',
   keywords: ['DPDP cookie consent', 'cookie banner India', 'consent management DPDP'],
 })

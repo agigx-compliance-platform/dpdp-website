@@ -81,7 +81,7 @@ export function InfraPostureFindings() {
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border px-4 py-3">
           <p className="flex items-center gap-2 text-xs font-semibold text-foreground">
             <ShieldAlert className="h-4 w-4 text-primary" aria-hidden="true" />
-            Posture list
+            Issues to fix
           </p>
           <span className="text-[10px] text-muted-foreground">Ranked by what personal data is in reach</span>
         </div>

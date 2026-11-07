@@ -12,19 +12,19 @@ const COVERAGE = [
   {
     icon: FileText,
     title: 'Notice',
-    body: 'Plain-language notice of purposes, versioned and stored with every choice.',
+    body: 'A clear explanation of why you need the details, saved with every choice.',
     section: 'Section 5',
   },
   {
     icon: ListChecks,
-    title: 'Purpose consent',
+    title: 'Consent by purpose',
     body: 'Each purpose asked separately. Nothing bundled into sign-up.',
     section: 'Section 6(1)',
   },
   {
     icon: Cookie,
     title: 'Banner and cookies',
-    body: 'Web and mobile banners that block non-essential tags until a grant.',
+    body: 'Web and mobile banners that hold back non-essential cookies until the visitor agrees.',
     section: 'Section 6',
   },
   {
@@ -36,13 +36,13 @@ const COVERAGE = [
   {
     icon: Network,
     title: 'Third parties',
-    body: 'Changes reach every processor that uses the purpose, with delivery tracked.',
+    body: 'Changes reach every vendor that uses the details for that purpose, and you can see that they arrived.',
     section: 'Section 8(2)',
   },
   {
     icon: ScrollText,
     title: 'Proof',
-    body: 'Append-only record of who agreed to what, on which notice, and when.',
+    body: 'A record of who agreed to what, which notice they saw, and when.',
     section: 'Section 6(10)',
   },
 ] as const
@@ -53,13 +53,13 @@ export default function ConsentManagementPage() {
       <SectionWrapper className="pb-10 pt-32 md:pt-40">
         <div className="max-w-3xl">
           <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">Consent management</p>
-          <h1 className="text-balance text-4xl font-semibold tracking-tight sm:text-5xl">Consent the DPDP Act will accept</h1>
+          <h1 className="text-balance text-4xl font-semibold tracking-tight sm:text-5xl">Record every yes, no, and change of mind</h1>
           <p className="mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-            From the first notice to a withdrawal that reaches your vendors, one platform covers every consent duty
-            under the Act, with the proof the Board can ask for.
+            Tell people what you need their details for, ask for consent, let them change their mind, and tell your
+            vendors when they do. You keep the proof if the regulator asks.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link href="/contact">
+            <Link href="/contact?intent=demo">
               <Button variant="primary" size="lg">
                 Book a demo
                 <ArrowRight className="h-4 w-4" />
@@ -76,7 +76,7 @@ export default function ConsentManagementPage() {
 
       <SectionWrapper className="py-10 md:py-14">
         <h2 className="text-2xl font-semibold sm:text-3xl">What we cover</h2>
-        <p className="mt-3 max-w-2xl text-muted-foreground">Six consent duties, one record behind all of them.</p>
+        <p className="mt-3 max-w-2xl text-muted-foreground">Six things to get right, with one record behind them all.</p>
         <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {COVERAGE.map((item) => {
             const Icon = item.icon
@@ -112,8 +112,8 @@ export default function ConsentManagementPage() {
       </SectionWrapper>
 
       <DemoCta
-        title="A banner is not consent management"
-        body="A banner shows a choice. DPDP asks you to honour it everywhere: in your tags, your systems, and your vendors, and to prove it later. That is the part we automate."
+        title="A banner alone is not enough"
+        body="A banner shows a choice. The law expects you to respect it across your cookies, systems, and vendors, and to prove it later. That is the part we automate."
       />
 
       <FaqSection title="Questions" faqs={CONSENT_MANAGEMENT_FAQS} />

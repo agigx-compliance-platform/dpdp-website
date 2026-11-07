@@ -16,7 +16,7 @@ export function ServicesPlatformStrip() {
           transition={{ duration: 0.5 }}
           className="text-xs font-semibold uppercase tracking-[0.2em] text-primary mb-3"
         >
-          Platform in practice
+          Software and people together
         </motion.p>
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
@@ -26,7 +26,7 @@ export function ServicesPlatformStrip() {
           className="text-3xl sm:text-4xl font-bold mb-4"
         >
           Services backed by{" "}
-          <span className="gradient-text">Consent Cockpit</span>
+          <span className="gradient-text">our platform</span>
         </motion.h2>
         <motion.p
           initial={{ opacity: 0, y: 16 }}
@@ -35,8 +35,8 @@ export function ServicesPlatformStrip() {
           transition={{ duration: 0.5, delay: 0.1 }}
           className="text-muted-foreground"
         >
-          Our advisory and operations services are delivered on the same platform
-          you see here: theme-matched admin console screenshots throughout.
+          Our team uses the same software you get, so advice and daily work stay
+          in one place.
         </motion.p>
       </div>
 

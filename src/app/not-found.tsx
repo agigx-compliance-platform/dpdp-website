@@ -12,7 +12,7 @@ export default function NotFound() {
         <h1 className="text-3xl sm:text-4xl font-bold mb-4">Page not found</h1>
         <p className="text-muted-foreground mb-8 leading-relaxed">
           The page you are looking for does not exist or may have moved. Use
-          the links below to continue exploring Consent Cockpit.
+          the links below to continue exploring DPDP Consultancy.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link href="/">

@@ -5,21 +5,21 @@ import { pageSeo } from '@/lib/page-metadata'
 
 const FAQS = [
   {
-    question: 'Does lineage claim the map is complete?',
+    question: 'Will the map be complete?',
     answer:
-      'No. A coverage view lists stores that are connected and stores that are still unknown. Gaps stay visible.',
+      'Not always. We show which systems are connected and which are still unknown, so gaps stay visible.',
   },
   {
     question: 'Where does the map come from?',
     answer:
-      'Pipeline definitions, infrastructure definitions, query history, and job runs. Missing pieces are not invented.',
+      'From technical records you already have: data pipelines, infrastructure settings, database query history, and scheduled job runs. We do not invent missing pieces.',
   },
 ]
 
 export const metadata: Metadata = pageSeo({
   title: 'Data Lineage for DPDP',
   description:
-    'How personal data moved, and which stores are still unknown. Coverage, not a completeness claim. Feeds rights scope.',
+    'See how personal data moves between your systems, and what is still unknown. Helps you answer people’s requests.',
   path: '/data-lineage',
   keywords: ['DPDP data lineage', 'personal data mapping India', 'DSAR scope'],
 })

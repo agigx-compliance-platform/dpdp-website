@@ -47,7 +47,7 @@ export const processorNodes: CanvasNode[] = [
     card: {
       eyebrow: 'Risk',
       title: 'Vendor matrix',
-      status: 'sealed',
+      status: 'cleared',
       rows: [
         { label: 'Class', value: 'High · personal data' },
         { label: 'DPA', value: 'On file' },

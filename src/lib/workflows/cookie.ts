@@ -50,9 +50,8 @@ export const cookieNodes: CanvasNode[] = [
     card: {
       variant: 'receipt',
       eyebrow: 'Proof',
-      title: 'Cookie consent receipt',
-      status: 'sealed',
-      recordId: 'ck-4b19e2',
+      title: 'Cookie consent record',
+      status: 'cleared',
       timestamp: '15 Oct 2026, 21:04 IST',
       tearLine: true,
       footer: 'More banner layouts can be added.',

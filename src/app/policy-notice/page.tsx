@@ -5,7 +5,7 @@ const FAQS = [
   {
     question: 'Which notices do you support today?',
     answer:
-      'Two: the privacy notice and the cookie policy. Children’s notices, processor notices, AI disclosures, and in-product notices can be added on the same version history.',
+      'Two: the privacy notice and the cookie policy. Children’s notices, vendor notices, AI disclosures, and in-product notices can be added on the same version history.',
   },
   {
     question: 'Why is a notice not just a page on the website?',
@@ -23,24 +23,24 @@ export default function PolicyNoticePage() {
   return (
     <ProductLanding
       current="/policy-notice"
-      eyebrow="Platform"
-      title="Policy and notice management"
-      lead="Two notice types ship today: the privacy notice and the cookie policy. Version them, map them to purposes, and keep the text the visitor actually saw. More notice types can be added."
+      eyebrow="Product"
+      title="Keep your privacy notices clear and up to date"
+      lead="Manage your privacy notice and cookie policy in one place, and keep a copy of the exact wording each visitor saw. More notice types can be added."
       nodes={noticeNodes}
       edges={noticeEdges}
       center={noticeCenter}
       capabilities={[
         {
-          title: 'Two types now',
+          title: 'Two notice types',
           body: 'Privacy notice and cookie policy. Draft, review, and publish from one place.',
         },
         {
           title: 'More types can be added',
-          body: 'Children’s notice, processor list, AI disclosure, and in-product notices use the same versioning when you add them.',
+          body: 'Children’s notices, vendor lists, AI disclosures, and in-product notices can use the same version history.',
         },
         {
-          title: 'Purpose mapping',
-          body: 'Each published notice points at the purposes the fiduciary actually runs, not a generic paragraph.',
+          title: 'Linked to your purposes',
+          body: 'Each notice links to the actual reasons you use people’s details, not a generic paragraph.',
         },
         {
           title: 'Version history',
@@ -52,22 +52,22 @@ export default function PolicyNoticePage() {
         },
         {
           title: 'Proof of what was shown',
-          body: 'If a grievance asks which notice the person saw, the answer is a version, not a CMS guess.',
+          body: 'If someone complains, you can show which notice they saw.',
         },
       ]}
       notes={[
         {
           title: 'Notice',
-          body: 'The Act requires the Data Principal to be informed of personal data, purposes, rights, and how to complain, before or at the time of collection.',
+          body: 'When you ask for consent, the Act requires you to tell people what data you collect, why, how to use their rights, and how to complain.',
         },
         {
           title: 'Consent depends on that notice',
-          body: 'A grant against a notice that omitted a purpose is not informed. Cookie policy and privacy notice have to stay aligned with what the site loads.',
+          body: 'If your notice leaves out a purpose, consent for it is not informed. Your notices also need to match what your site actually does.',
         },
       ]}
       faqs={FAQS}
       nextHref="/consent-management"
-      nextLabel="consent lifecycle after the notice"
+      nextLabel="consent records after the notice"
     />
   )
 }

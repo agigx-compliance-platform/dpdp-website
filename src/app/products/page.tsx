@@ -19,12 +19,11 @@ export default function ProductsPage() {
           className="text-center max-w-4xl mx-auto"
         >
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
-            DPDP Consultancy products
+            Tools for the daily privacy work
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-            Purpose-built technology products that automate DPDP compliance,
-            from consent management and scanning to AI-assisted advisory and
-            adaptive governance.
+            Start with what you need most: consent records, website scans, requests
+            from people about their data, vendor tracking, and more.
           </p>
         </motion.div>
       </SectionWrapper>
@@ -44,8 +43,8 @@ export default function ProductsPage() {
             Find the right product
           </h2>
           <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Take our guided questionnaire and receive personalised product
-            recommendations based on your compliance gaps and priorities.
+            Answer a few questions and we will suggest which tools fit your
+            business.
           </p>
           <Button
             variant="primary"

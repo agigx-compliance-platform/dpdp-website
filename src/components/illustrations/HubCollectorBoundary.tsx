@@ -3,7 +3,7 @@ export function HubCollectorBoundary() {
     <div
       className="grid gap-4 md:grid-cols-[1fr_auto_1fr] md:items-center"
       role="img"
-      aria-label="Personal data stays in your network. The control plane holds an inventory, not rows."
+      aria-label="Personal data stays in your network. Our service holds a list of systems and fields, not your records."
     >
       <div className="rounded-xl border border-border bg-card p-5 shadow-[var(--shadow-sm)]">
         <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
@@ -22,7 +22,7 @@ export function HubCollectorBoundary() {
       </div>
       <div className="rounded-xl border border-dashed border-border bg-background-secondary p-5">
         <p className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-          Control plane
+          Our service
         </p>
         <h3 className="mt-2 text-base font-semibold text-foreground">What we keep</h3>
         <p className="mt-2 text-sm text-muted-foreground">

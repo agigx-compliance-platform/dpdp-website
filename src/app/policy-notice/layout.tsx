@@ -14,7 +14,7 @@ const FAQS = [
 export const metadata: Metadata = pageSeo({
   title: 'Policy and Notice Management for DPDP',
   description:
-    'Privacy notice and cookie policy today, with versioning and purpose mapping. Children’s, processor, and AI notices can be added.',
+    'Keep your privacy notice and cookie policy clear and up to date, with a copy of the exact wording each visitor saw.',
   path: '/policy-notice',
   keywords: ['DPDP notice', 'privacy notice India', 'cookie policy DPDP'],
 })

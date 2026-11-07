@@ -11,12 +11,12 @@ export function unwrapConsentApiEnvelope<T>(axiosResponse: { data: unknown }): T
   return body as T
 }
 
-export function penaltyExposureForScore(score: number): string {
-  if (score >= 90) return '₹0, low risk'
-  if (score >= 75) return 'Up to ₹50 Crore'
-  if (score >= 60) return 'Up to ₹150 Crore'
-  if (score >= 40) return 'Up to ₹250 Crore'
-  return 'Up to ₹750 Crore (cumulative)'
+/** A rough level from what the scan saw on the public site. It is not a fine estimate. */
+export function riskLevelForScore(score: number): string {
+  if (score >= 90) return 'Low'
+  if (score >= 75) return 'Moderate'
+  if (score >= 40) return 'High'
+  return 'Very high'
 }
 
 export function mapScanReportToResult(report: ScanReportResponse, scanId?: string): ScanResult {
@@ -34,7 +34,7 @@ export function mapScanReportToResult(report: ScanReportResponse, scanId?: strin
     totalTrackers: report.totalTrackers,
     consentBannerPresent: report.consentBannerPresent,
     consentRejectOption: report.consentRejectOption,
-    penaltyExposure: penaltyExposureForScore(report.score),
+    riskLevel: riskLevelForScore(report.score),
   }
 }
 

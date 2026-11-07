@@ -124,7 +124,7 @@ export interface ScanResult {
   totalTrackers: number
   consentBannerPresent: boolean
   consentRejectOption: boolean
-  penaltyExposure: string
+  riskLevel: string
 }
 
 export interface Recommendation {

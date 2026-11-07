@@ -363,13 +363,14 @@ export function ResultsView({ responses, scanResult }: ResultsViewProps) {
           transition={{ duration: 0.5 }}
           className="space-y-8"
         >
-          <h2 className="text-2xl font-semibold tracking-tight text-foreground">Scan ledger</h2>
+          <h2 className="text-2xl font-semibold tracking-tight text-foreground">Website scan results</h2>
           <div className="flex flex-col items-center gap-8 sm:flex-row sm:items-start">
             <ScoreRing score={scanResult.overallScore} grade={scanResult.grade} />
             <div className="flex-1 space-y-4">
               <h3 className="font-semibold text-foreground">{scanResult.scannedUrl}</h3>
               <p className="text-sm text-muted-foreground">
-                Penalty exposure: <span className="font-medium text-destructive">{scanResult.penaltyExposure}</span>
+                Risk level: <span className="font-medium text-foreground">{scanResult.riskLevel}</span>. This is based only on
+                what the scan could see on your public website. It is not legal advice or an estimate of any fine.
               </p>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                 <div className="rounded-lg border border-border bg-muted p-3 text-center">

@@ -122,7 +122,7 @@ function Audit() {
 
       <div className="mt-auto flex items-start gap-2 pt-4 text-[11px] text-muted-foreground">
         <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-warning" aria-hidden="true" />
-        Highest exposure: security safeguards, up to ₹250 crore under the Schedule.
+        Highest legal maximum: security safeguards, up to ₹250 crore. This is not a fine estimate.
       </div>
     </div>
   )

@@ -38,9 +38,7 @@ export const consentLifecycleNodes: CanvasNode[] = [
       variant: 'receipt',
       eyebrow: 'Withdraw',
       title: 'Marketing purpose closed',
-      status: 'sealed',
-      recordId: 'wd-3c91aa',
-      hash: 'b04c…91e2',
+      status: 'cleared',
       timestamp: '19 Oct 2026, 21:12 IST',
       tearLine: true,
       footer: 'Withdrawal is as reachable as the original grant.',
@@ -71,5 +69,5 @@ export const consentLifecycleEdges: CanvasEdge[] = [
 
 export const consentLifecycleCenter: CanvasCenterNode = {
   label: 'Cockpit',
-  sublabel: 'One activity ledger',
+  sublabel: 'One activity record',
 }

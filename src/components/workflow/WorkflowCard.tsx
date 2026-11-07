@@ -64,7 +64,6 @@ export function WorkflowCard({
         relative overflow-hidden rounded-xl border border-border bg-card p-4
         shadow-[var(--shadow-sm)] transition-all duration-200
         hover:shadow-[var(--shadow-md)] hover:border-primary/20
-        ${variant === 'receipt' ? 'font-mono' : ''}
         ${className}
       `}
     >

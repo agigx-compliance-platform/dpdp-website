@@ -9,7 +9,7 @@ const PASSES = [
     id: 'classify',
     title: 'Classify',
     read: 'Which fields hold personal data',
-    leaves: 'Labels the fiduciary can act on: contact, financial, child.',
+    leaves: 'Labels you can act on: contact, financial, children’s data.',
   },
   {
     id: 'confirm',

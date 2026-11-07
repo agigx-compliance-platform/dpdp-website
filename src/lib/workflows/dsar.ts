@@ -50,9 +50,8 @@ export const dsarNodes: CanvasNode[] = [
     card: {
       variant: 'receipt',
       eyebrow: 'Evidence',
-      title: 'Rights ledger',
-      status: 'sealed',
-      recordId: 'dsar-b72c48e',
+      title: 'Request record',
+      status: 'cleared',
       timestamp: '15 Oct 2026, 18:41 IST',
       tearLine: true,
       footer: 'Grievance officer named. Response time recorded.',

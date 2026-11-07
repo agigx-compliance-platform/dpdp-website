@@ -118,7 +118,7 @@ function LedgerReceipt() {
     <div className="relative rounded-2xl border-2 border-primary/40 bg-card p-4 shadow-[var(--shadow-glow-primary)]">
       <div className="flex items-center gap-2">
         <ScrollText className="h-4 w-4 text-primary" aria-hidden="true" />
-        <p className="text-xs font-semibold text-foreground">Consent ledger</p>
+        <p className="text-xs font-semibold text-foreground">Consent record</p>
         <span className="ml-auto rounded-full bg-success/15 px-2 py-0.5 text-[9px] font-medium text-success">Sealed</span>
       </div>
       <dl className="mt-3 grid grid-cols-2 gap-x-3 gap-y-2">
@@ -130,7 +130,7 @@ function LedgerReceipt() {
         ))}
       </dl>
       <div className="mt-3 border-t border-dashed border-border pt-2 font-mono text-[9px] text-muted-foreground">
-        cr-41d9e07 · 21 Oct 2026, 10:12 IST
+        Saved 21 Oct 2026, 10:12 IST
       </div>
     </div>
   )
@@ -152,7 +152,7 @@ export function PurposeConsentCapture() {
     <figure
       className="relative overflow-hidden rounded-3xl border border-border bg-background-secondary px-4 py-8 sm:px-8"
       role="img"
-      aria-label="Purpose consent is captured at registration with separate checkboxes, and changed later in the Consent Cockpit. Both write to the same consent ledger record."
+      aria-label="Purpose consent is captured at registration with separate checkboxes, and changed later in the privacy centre. Both write to the same consent ledger record."
     >
       <div className="grid items-center gap-4 lg:grid-cols-[1fr_auto_minmax(0,0.9fr)]">
         <div className="grid gap-6 sm:grid-cols-2">
@@ -161,7 +161,7 @@ export function PurposeConsentCapture() {
             <RegistrationForm />
           </div>
           <div>
-            <SourceLabel icon={LayoutDashboard} step="Any time later" title="Consent Cockpit" />
+            <SourceLabel icon={LayoutDashboard} step="Any time later" title="Privacy centre" />
             <CockpitPanel />
           </div>
         </div>

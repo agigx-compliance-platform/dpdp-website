@@ -1,37 +1,20 @@
 const STAGES = [
-  { id: 'discover', label: 'Discover', note: 'Inventory' },
-  { id: 'map', label: 'Map', note: 'Lineage' },
-  { id: 'consent', label: 'Consent', note: 'Notice and grant' },
-  { id: 'rights', label: 'Rights', note: 'Access and erasure' },
-  { id: 'evidence', label: 'Evidence', note: 'Ledger' },
+  { id: 'find', label: 'Find your data', note: 'We help you see what personal details you hold and where they are.' },
+  { id: 'ask', label: 'Ask properly', note: 'Your website and forms explain why you need the details and ask for consent.' },
+  { id: 'respond', label: 'Respond to people', note: 'When someone changes their mind or makes a request, the right teams and vendors act on it.' },
+  { id: 'prove', label: 'Keep the proof', note: 'Records of what happened are saved, so you can show them when asked.' },
 ] as const
 
 export function LifecycleDiagram() {
   return (
-    <div role="img" aria-label="Compliance lifecycle: Discover, Map, Consent, Rights, Evidence">
-      <svg viewBox="0 0 720 28" className="mb-4 hidden h-auto w-full sm:block" aria-hidden="true">
-        <path
-          d="M 40 14 H 680"
-          fill="none"
-          stroke="hsl(var(--primary))"
-          strokeOpacity="0.35"
-          strokeWidth="2"
-        />
-        {STAGES.map((_, i) => (
-          <circle key={i} cx={40 + i * 160} cy="14" r="6" fill="hsl(var(--primary))" />
-        ))}
-      </svg>
-      <ol className="grid gap-3 sm:grid-cols-5">
-        {STAGES.map((stage, i) => (
-          <li key={stage.id} className="p-1">
-            <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-              {String(i + 1).padStart(2, '0')}
-            </span>
-            <p className="mt-2 text-sm font-semibold text-foreground">{stage.label}</p>
-            <p className="mt-1 font-mono text-[11px] text-primary">{stage.note}</p>
-          </li>
-        ))}
-      </ol>
-    </div>
+    <ol className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      {STAGES.map((stage, i) => (
+        <li key={stage.id} className="border-t-2 border-primary/40 pt-4">
+          <span className="text-sm font-semibold text-primary">Step {i + 1}</span>
+          <p className="mt-2 text-base font-semibold text-foreground">{stage.label}</p>
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{stage.note}</p>
+        </li>
+      ))}
+    </ol>
   )
 }

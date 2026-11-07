@@ -5,16 +5,16 @@ import { pageSeo } from '@/lib/page-metadata'
 
 const FAQS = [
   {
-    question: 'What does infrastructure posture cover?',
+    question: 'What do these checks cover?',
     answer:
-      'Cloud accounts and clusters where personal data may sit. Findings are misconfigurations that make that data reachable.',
+      'Cloud accounts and clusters where personal data may be kept, on AWS, Azure, GCP, and Kubernetes. We look for settings that could expose that data.',
   },
 ]
 
 export const metadata: Metadata = pageSeo({
-  title: 'Infrastructure Posture for DPDP',
+  title: 'Cloud and Code Checks for DPDP',
   description:
-    'Cloud and code posture for personal data: AWS, Azure, GCP, and Kubernetes. Open storage and leaked identifiers in one list. More estates can be added.',
+    'Spot cloud and code settings that could expose personal data, across AWS, Azure, GCP, and Kubernetes. More environments can be added.',
   path: '/infra-posture',
   keywords: ['DPDP infrastructure', 'cloud privacy posture', 'reasonable security safeguards'],
 })

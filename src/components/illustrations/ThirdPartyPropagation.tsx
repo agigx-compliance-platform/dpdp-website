@@ -16,8 +16,8 @@ const DELIVERY_STYLES: Record<Delivery, { pill: string; dot: string; label: stri
 }
 
 const STEPS = [
-  { icon: MousePointerClick, eyebrow: '1 · Withdraw', title: 'Offers switched off', body: 'Data Principal, in the Consent Cockpit' },
-  { icon: ScrollText, eyebrow: '2 · Record', title: 'Ledger updated', body: 'Grant on notice v3 marked withdrawn' },
+  { icon: MousePointerClick, eyebrow: '1 · Withdraw', title: 'Offers switched off', body: 'The customer, in their privacy centre' },
+  { icon: ScrollText, eyebrow: '2 · Record', title: 'Record updated', body: 'Grant on notice v3 marked withdrawn' },
   { icon: Send, eyebrow: '3 · Fan out', title: 'Signed webhooks', body: 'Only to processors mapped to Offers' },
 ] as const
 
@@ -26,7 +26,7 @@ export function ThirdPartyPropagation() {
     <figure
       className="relative overflow-hidden rounded-3xl border border-border bg-background-secondary px-4 py-8 sm:px-8"
       role="img"
-      aria-label="Third-party consent: a withdrawal in the Consent Cockpit updates the ledger, then signed webhooks go only to processors mapped to that purpose. Each processor confirms, retries, or is unaffected."
+      aria-label="Third-party consent: a withdrawal in the privacy centre updates the record, then signed webhooks go only to processors mapped to that purpose. Each processor confirms, retries, or is unaffected."
     >
       <div
         className="pointer-events-none absolute inset-0"
@@ -113,7 +113,7 @@ export function ThirdPartyPropagation() {
       </div>
 
       <div className="relative mt-6 flex flex-col gap-2 rounded-2xl border border-border bg-card/70 px-4 py-3 text-xs text-muted-foreground sm:flex-row sm:items-center">
-        <span className="font-semibold text-foreground">Back to the ledger</span>
+        <span className="font-semibold text-foreground">Back to the record</span>
         <ArrowRight className="hidden h-3.5 w-3.5 text-primary sm:block" aria-hidden="true" />
         <span>
           Each callback is written to the same record, so the DPO can show which processor stopped, when, and which one

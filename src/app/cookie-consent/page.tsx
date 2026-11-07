@@ -7,17 +7,17 @@ const FAQS = [
   {
     question: 'Is a cookie banner the same as consent?',
     answer:
-      'No. The banner is how a visitor is asked. Consent is the purpose grant, the block on non-essential tags, and the record you can produce later. A banner that cannot reject as easily as it accepts is not a working control.',
+      'No. The banner is how you ask. Consent also means holding back non-essential cookies until the visitor agrees, and keeping a record you can show later.',
   },
   {
-    question: 'How many banner layouts do you ship today?',
+    question: 'How many banner layouts do you offer?',
     answer:
-      'Two: a bar and a modal. More layouts, languages, and location rules can be added for the same consent record.',
+      'Two: a bar and a pop-up. More layouts, languages, and location rules can be added.',
   },
   {
     question: 'Does the tool work for DPDP, not only GDPR templates?',
     answer:
-      'Yes. Purpose split, a real reject path, and a notice that names what actually loads are the tests. A European “legitimate interest” default does not carry over.',
+      'Yes. It offers choice by purpose, a real way to say no, and a notice that says what actually loads.',
   },
 ]
 
@@ -25,32 +25,32 @@ export default function CookieConsentPage() {
   return (
     <ProductLanding
       current="/cookie-consent"
-      eyebrow="Platform"
-      title="Cookie consent for Indian sites"
-      lead="Two banner layouts ship today: bar and modal. Scan what the page actually sets, block non-essential tags until a grant, and keep a receipt. More layouts can be added without changing the consent record."
+      eyebrow="Product"
+      title="Cookie banner for websites in India"
+      lead="Ask visitors before non-essential cookies run, give them a real choice, and keep a record. Two banner layouts today, a bar and a pop-up. More can be added."
       nodes={cookieNodes}
       edges={cookieEdges}
       center={cookieCenter}
       capabilities={[
         {
-          title: 'Two layouts now',
-          body: 'Bar and modal. Brand colour, copy, and button labels follow your notice. Further layouts can be added.',
+          title: 'Two layouts',
+          body: 'A bar and a pop-up, with your colours and wording. More layouts can be added.',
         },
         {
-          title: 'Scan what loaded',
-          body: 'See cookies and tags on the live page. Categories that fire before a choice stay visible as a finding, not a guess.',
+          title: 'See what your page sets',
+          body: 'See the cookies and trackers on your live page, including any that run before a visitor chooses.',
         },
         {
-          title: 'Block until grant',
-          body: 'Non-essential scripts wait. A decline is as easy to reach as an accept. Withdrawal uses the same purpose IDs.',
+          title: 'Wait for a choice',
+          body: 'Non-essential cookies wait. Saying no is as easy as saying yes, and visitors can change their mind later.',
         },
         {
           title: 'Languages and regions',
           body: 'English and Hindi on the two layouts today. More languages and location rules can be added.',
         },
         {
-          title: 'Preference centre',
-          body: 'The visitor can reopen the same purposes later. The record is the same one the banner wrote.',
+          title: 'Change of mind',
+          body: 'Visitors can come back and change their choices at any time.',
         },
         {
           title: 'Proof',
@@ -60,11 +60,11 @@ export default function CookieConsentPage() {
       notes={[
         {
           title: 'Notice and consent',
-          body: 'The Act requires a clear notice of purposes and consent that is free, specific, informed, and unambiguous. The cookie banner is one place that duty shows up.',
+          body: 'The Act requires a clear notice and consent that is free, specific, informed, unconditional, and unambiguous. The cookie banner is one place that applies.',
         },
         {
           title: 'Withdrawal',
-          body: 'A grant that cannot be withdrawn as easily as it was given is not a complete control. The preference centre uses the same purposes.',
+          body: 'Withdrawing consent must be as easy as giving it, so visitors can change their choices at any time.',
         },
       ]}
       faqs={FAQS}
@@ -74,7 +74,7 @@ export default function CookieConsentPage() {
       <IllustrationSection
         eyebrow="What visitors see"
         title="The same banner on desktop and mobile web"
-        lead="A bar on wide screens and a purpose sheet on phones. Both write the same consent record, and both put reject next to accept."
+        lead="A bar on wide screens and a sheet on phones. Both save the same record, and both put No next to Yes."
       >
         <ConsentBannerMockup />
       </IllustrationSection>

@@ -9,13 +9,13 @@ export function ConsentCockpitHighlights() {
     <SectionWrapper className="border-y border-border bg-background-secondary/30 py-12 md:py-16">
       <div className="mb-10 max-w-2xl">
         <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">
-          Consent Cockpit
+          Consent records
         </p>
         <h2 className="text-2xl font-semibold sm:text-3xl">
-          Notice, grant, withdrawal, receipt.
+          Notice, choice, change of mind, proof.
         </h2>
         <p className="mt-3 text-sm text-muted-foreground">
-          A Section 6 event as a ledger. Not a screenshot of a demo tenant.
+          How one person&apos;s consent is handled from start to finish.
         </p>
       </div>
       <ConnectorCanvas

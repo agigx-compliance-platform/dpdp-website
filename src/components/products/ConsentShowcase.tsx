@@ -13,7 +13,7 @@ const VIEWS: readonly IllustrationView[] = [
   {
     id: 'purposes',
     label: 'Purposes',
-    summary: 'Asked one by one at sign-up, changed any time in the Consent Cockpit.',
+    summary: 'Asked one by one at sign-up, changed any time in their privacy centre.',
     Illustration: PurposeConsentCapture,
   },
   {

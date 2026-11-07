@@ -7,7 +7,7 @@ import { pageSeo } from '@/lib/page-metadata'
 export const metadata: Metadata = pageSeo({
   title: 'Terms of Service',
   description:
-    'Terms of service for DPDP Consultancy, Consent Cockpit, and dpdpconsultancy.in.',
+    'Terms of service for DPDP Consultancy and dpdpconsultancy.in.',
   path: '/terms',
   keywords: ['DPDP Consultancy terms of service'],
 })
@@ -22,7 +22,7 @@ export default function TermsPage() {
         Last updated: July 2026
       </p>
       <p>
-        By accessing this website or using Consent Cockpit assessment and
+        By accessing this website or using DPDP Consultancy assessment and
         scanning tools, you agree to these terms. If you do not agree, please
         do not use our services.
       </p>

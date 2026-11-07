@@ -54,7 +54,6 @@ export const metadata: Metadata = {
     'DPDP compliance software',
     'DPDP compliance tool',
     'DPDP penalty',
-    'DPDP Act penalty ₹250 crore',
     'consent management India',
     'consent management platform',
     'privacy compliance India',
@@ -110,7 +109,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'DPDP Consultancy (dpdpconsultancy): DPDP Compliance Platform India',
     description:
-      'DPDP Consultancy (dpdpconsultancy.in): assessments, consent management, DSAR automation & AI governance. Avoid ₹250 Crore penalties.',
+      'DPDP Consultancy (dpdpconsultancy.in): get your business ready for India’s data privacy law with software and expert help.',
     images: ['/images/brand/og-1200x630.png'],
   },
   robots: {

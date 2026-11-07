@@ -20,7 +20,7 @@ export function ConsentStep({ value, onChange, error }: ConsentStepProps) {
 
       <div className="rounded-xl border border-border bg-secondary/30 p-5">
         <Checkbox
-          label="I consent to Consent Cockpit scanning the provided website URL, storing my contact information, and receiving a compliance report via email. I understand my data will be processed in accordance with Consent Cockpit's privacy policy."
+          label="I consent to DPDP Consultancy scanning the provided website URL, storing my contact information, and receiving a compliance report via email. I understand my data will be processed in accordance with DPDP Consultancy's privacy policy."
           checked={value}
           onChange={onChange}
         />

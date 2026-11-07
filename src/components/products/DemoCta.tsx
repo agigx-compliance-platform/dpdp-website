@@ -13,7 +13,7 @@ export function DemoCta({ title, body }: { title: string; body: string }) {
           <p className="mt-4 leading-relaxed text-muted-foreground">{body}</p>
         </div>
         <div className="flex flex-col justify-center gap-3 md:items-end">
-          <Link href="/contact">
+          <Link href="/contact?intent=demo">
             <Button variant="primary" size="lg">
               See it in a demo
               <ArrowRight className="h-4 w-4" />

@@ -9,12 +9,8 @@ export function LifecycleSection() {
           How it works
         </p>
         <h2 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-          Discover, map, consent, fulfil, then prove.
+          Four steps, in plain terms.
         </h2>
-        <p className="mt-4 text-base text-muted-foreground">
-          Each stage writes to the same ledger. A rights ticket cannot close on
-          stores the inventory never edged.
-        </p>
       </div>
       <div className="mt-10">
         <LifecycleDiagram />

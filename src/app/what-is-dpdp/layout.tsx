@@ -7,7 +7,7 @@ import { pageSeo } from '@/lib/page-metadata'
 export const metadata: Metadata = pageSeo({
   title: 'What is DPDP? Explained by DPDP Consultancy',
   description:
-    'What is DPDP? DPDP Consultancy (dpdpconsultancy.in) explains the Digital Personal Data Protection Act 2023, penalties, and how Indian organisations comply.',
+    'What is DPDP? DPDP Consultancy (dpdpconsultancy.in) explains India’s Digital Personal Data Protection Act 2023 in plain language: who it covers, when it starts, and what the penalties are.',
   path: '/what-is-dpdp',
   keywords: [
     'what is DPDP',

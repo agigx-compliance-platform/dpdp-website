@@ -21,7 +21,7 @@ export const consentNodes: CanvasNode[] = [
     y: 28,
     card: {
       eyebrow: 'Consent',
-      title: 'Granular purpose grant',
+      title: 'Choice by purpose',
       status: 'live',
       rows: [
         { label: 'KYC', value: 'Granted' },
@@ -35,11 +35,9 @@ export const consentNodes: CanvasNode[] = [
     y: 74,
     card: {
       variant: 'receipt',
-      eyebrow: 'Evidence',
-      title: 'Consent receipt',
-      status: 'sealed',
-      recordId: 'cr-8f2c48a',
-      hash: 'a91e…c3d4',
+      eyebrow: 'Proof',
+      title: 'Consent record',
+      status: 'cleared',
       timestamp: '15 Oct 2026, 21:04 IST',
       tearLine: true,
       footer: 'Append-only log. Withdrawal invalidates this version.',
@@ -50,8 +48,8 @@ export const consentNodes: CanvasNode[] = [
     x: 82,
     y: 74,
     card: {
-      eyebrow: 'Processor',
-      title: 'Downstream signal',
+      eyebrow: 'Vendor',
+      title: 'Vendor told',
       status: 'cleared',
       rows: [
         { label: 'Vendor', value: 'KYC screening' },
@@ -70,5 +68,5 @@ export const consentEdges: CanvasEdge[] = [
 
 export const consentCenter: CanvasCenterNode = {
   label: 'Consent',
-  sublabel: 'Grant, then prove',
+  sublabel: 'Ask, then prove',
 }
