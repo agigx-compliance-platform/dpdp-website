@@ -28,6 +28,7 @@ import type { AnalysisResult } from '@/lib/privacy-pitstop/types'
 import { privacyQualityScore, qualityRatingText } from '@/lib/privacy-pitstop/score-display'
 import { ScanProgressLoader } from '@/components/ui/ScanProgressLoader'
 import { DiscussWithLlmSection } from '@/components/ui/DiscussWithLlmSection'
+import { EmailBreachCheckSection } from '@/components/ui/EmailBreachCheckSection'
 
 /* ─── constants ────────────────────────────────────────────── */
 
@@ -923,6 +924,9 @@ function PrivacyPitstopPageInner() {
                   ))}
                 </div>
               )}
+
+              {/* Email Data Breach Check */}
+              <EmailBreachCheckSection />
             </div>
 
             {/* Middle Column: Your Privacy Action Journey (only on results) */}
