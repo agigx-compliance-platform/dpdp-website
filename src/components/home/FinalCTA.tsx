@@ -1,44 +1,11 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { useQuestionnaireStore } from '@/store/questionnaireStore'
 import { Button } from '@/components/ui/Button'
-import { submitEnquiry } from '@/lib/api'
-
 
 export function FinalCTA() {
-  const [form, setForm] = useState({ name: '', email: '', company: '', message: '' })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitted, setSubmitted] = useState(false)
-  const [error, setError] = useState('')
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-    setError('')
-    try {
-      await submitEnquiry({
-        name: form.name,
-        email: form.email,
-        company: form.company,
-        role: '',
-        subject: 'Get in Touch',
-        message: form.message,
-      })
-      setSubmitted(true)
-    } catch {
-      setError('Message was not sent. Try again or email operations@dpdpconsultancy.in.')
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
   return (
     <section
       id="final-cta"
@@ -48,7 +15,6 @@ export function FinalCTA() {
 
       <div className="relative z-10 max-w-5xl mx-auto">
         <div className="text-center mb-12">
-
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -75,83 +41,16 @@ export function FinalCTA() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10"
+          className="flex flex-col sm:flex-row items-center justify-center gap-4"
         >
           <Button variant="primary" size="lg" onClick={() => useQuestionnaireStore.getState().openModal()}>
             Start Assessment
           </Button>
           <Link href="/contact">
             <Button variant="outline" size="lg">
-              Schedule a Call
+              Contact us
             </Button>
           </Link>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="mx-auto max-w-2xl rounded-xl border border-border bg-card p-6 shadow-[var(--shadow-sm)] sm:p-8"
-        >
-          {submitted ? (
-            <div className="text-center py-6">
-              <h3 className="text-lg font-semibold mb-3 text-foreground">
-                Message Sent Successfully
-              </h3>
-              <p className="text-muted-foreground">
-                Thank you for reaching out. Our team will respond within 24 hours.
-              </p>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit}>
-              <h3 className="text-lg font-semibold mb-6 text-center">
-                Get in Touch
-              </h3>
-              <div className="grid sm:grid-cols-2 gap-4 mb-4">
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="Your name"
-                  value={form.name}
-                  onChange={handleChange}
-                  className="input-field"
-                  required
-                />
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Work email"
-                  value={form.email}
-                  onChange={handleChange}
-                  className="input-field"
-                  required
-                />
-              </div>
-              <input
-                type="text"
-                name="company"
-                placeholder="Company"
-                value={form.company}
-                onChange={handleChange}
-                className="input-field mb-4 w-full"
-              />
-              <textarea
-                name="message"
-                placeholder="Tell us about your compliance needs…"
-                value={form.message}
-                onChange={handleChange}
-                rows={4}
-                className="input-field mb-6 w-full resize-none"
-              />
-              <div className="text-center">
-                {error ? <p className="mb-3 text-sm text-destructive">{error}</p> : null}
-                <Button type="submit" variant="primary" size="lg" disabled={isSubmitting}>
-                  {isSubmitting ? 'Sending...' : 'Send Message'}
-                </Button>
-              </div>
-            </form>
-          )}
         </motion.div>
       </div>
     </section>
