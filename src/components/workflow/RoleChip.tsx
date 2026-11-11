@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * RoleChip — small chip indicating a role (DPO, Operator, Analyst, etc.)
+ * RoleChip - small chip indicating a role (DPO, Operator, Analyst, etc.)
  */
 
 interface RoleChipProps {

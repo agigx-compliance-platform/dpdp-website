@@ -23,7 +23,7 @@ function finding(
 
 /**
  * Children's Privacy detector.
- * NEW module — extracted from POLICY_SECTIONS keyword check.
+ * NEW module - extracted from POLICY_SECTIONS keyword check.
  * Detects: child privacy policy, parental consent, child data handling,
  * age verification, Section 9 compliance.
  */

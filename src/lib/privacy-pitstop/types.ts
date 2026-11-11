@@ -32,7 +32,7 @@ export interface Evidence {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   Finding (extended — backward compatible)
+   Finding (extended - backward compatible)
    ═══════════════════════════════════════════════════════════════ */
 
 export interface Finding {
@@ -186,7 +186,7 @@ export interface CitizenActions {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   Legacy types (backward compatible — preserved from original)
+   Legacy types (backward compatible - preserved from original)
    ═══════════════════════════════════════════════════════════════ */
 
 export interface PillarResult {

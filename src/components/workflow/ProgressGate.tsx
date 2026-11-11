@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * ProgressGate — shows approval gate progress, e.g. "2/3 approved".
+ * ProgressGate - shows approval gate progress, e.g. "2/3 approved".
  */
 
 interface ProgressGateProps {

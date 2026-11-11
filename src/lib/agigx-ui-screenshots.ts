@@ -1,13 +1,13 @@
-/** Admin CMP / platform UI — dark theme. Run `npm run capture:agigx-ui`. */
+/** Admin CMP / platform UI - dark theme. Run `npm run capture:agigx-ui`. */
 export const AGIGX_UI_SCREENSHOT_DIR = '/images/products/agigx-ui'
 
-/** Admin CMP / platform UI — light theme (paired captures). */
+/** Admin CMP / platform UI - light theme (paired captures). */
 export const AGIGX_UI_LIGHT_SCREENSHOT_DIR = '/images/products/agigx-ui-light'
 
-/** Privacy Assistant widget — light UI. */
+/** Privacy Assistant widget - light UI. */
 export const CONSENT_COCKPIT_CHAT_LIGHT_DIR = '/images/products/consent-cockpit-chat'
 
-/** Privacy Assistant widget — dark UI (paired with light chat captures). */
+/** Privacy Assistant widget - dark UI (paired with light chat captures). */
 export const CONSENT_COCKPIT_CHAT_DARK_DIR = '/images/products/consent-cockpit-chat-dark'
 
 /** @deprecated use CONSENT_COCKPIT_CHAT_LIGHT_DIR */
@@ -55,7 +55,7 @@ function adminHighlight(file: string, label: string): ProductHighlight {
   return { ...adminShot(file), label }
 }
 
-/** Privacy Assistant chat — dark widget in dark site theme, light widget in light theme. */
+/** Privacy Assistant chat - dark widget in dark site theme, light widget in light theme. */
 export function chatShot(
   lightFile: string,
   darkFile: string = lightFile,
@@ -147,7 +147,7 @@ export const productScreenshots = {
 
 export type ProductScreenshotKey = keyof typeof productScreenshots
 
-/** Best-of Consent Cockpit features — theme-matched admin console screens. */
+/** Best-of Consent Cockpit features - theme-matched admin console screens. */
 export const consentCockpitBestFeatures = [
   {
     ...adminShot('cmp-dashboard.png'),
@@ -251,7 +251,7 @@ export const productPreviewThumbs = [
   },
 ] as const
 
-/** Privacy Assistant gallery — six chat mockups; dark/light paired via chatShot(). */
+/** Privacy Assistant gallery - six chat mockups; dark/light paired via chatShot(). */
 export const privacyAssistantGallery = [
   {
     ...chatShot('cockpit-chat-welcome.png'),

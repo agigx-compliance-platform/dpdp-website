@@ -1,5 +1,5 @@
 /**
- * DPDP timeline — phased milestones with Gazette citations.
+ * DPDP timeline - phased milestones with Gazette citations.
  *
  * All dates use IST (+05:30). The countdown targets the next upcoming
  * milestone. After the last one, the site reads "In force since …".

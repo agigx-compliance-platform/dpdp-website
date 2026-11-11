@@ -11,4 +11,4 @@
 #   CONSENT_API_URL                = same value                             (scope: Builds + Functions)
 #   NEXT_PUBLIC_CONSENT_DOMAIN     = dpdpconsultancy.in                     (scope: Builds)
 #   NEXT_PUBLIC_GA_MEASUREMENT_ID  = G-S52KHLM8Q0                           (scope: Builds)
-# Re-deploy after changing env vars — NEXT_PUBLIC_* values are baked in at build time.
+# Re-deploy after changing env vars - NEXT_PUBLIC_* values are baked in at build time.

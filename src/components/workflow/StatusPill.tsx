@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * StatusPill — coloured status indicator.
+ * StatusPill - coloured status indicator.
  * Statuses: Live, Cleared, In review, Blocked, Sealed.
  */
 

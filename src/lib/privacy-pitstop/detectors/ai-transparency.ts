@@ -39,7 +39,7 @@ const AI_SIGNALS: AISignal[] = [
 
 /**
  * AI Transparency detector.
- * NEW module — scans privacy pages and dedicated AI policy pages for
+ * NEW module - scans privacy pages and dedicated AI policy pages for
  * disclosures about AI usage, training, profiling, automated decisions,
  * human review, explainability, and opt-out.
  */
@@ -53,7 +53,7 @@ export function detectAITransparency(ctx: ScanContext): Finding[] {
 
   // Check for dedicated AI policy page
   const hasAIPage = aiPages.length > 0
-  // Not a finding per se — just context for other checks
+  // Not a finding per se - just context for other checks
 
   if (allRelevantPages.length === 0) {
     // Can't check AI transparency without any policy/AI pages

@@ -23,7 +23,7 @@ function finding(
 
 /**
  * Security Signals detector.
- * NEW module — checks HTTPS, security headers, security.txt presence.
+ * NEW module - checks HTTPS, security headers, security.txt presence.
  */
 export function detectSecurity(ctx: ScanContext): Finding[] {
   const { pages, domain, scanId } = ctx

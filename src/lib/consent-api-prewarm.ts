@@ -14,7 +14,7 @@ function isLocalhostUrl(url: string): boolean {
 /**
  * Fire-and-forget health ping to wake a scaled-to-zero Cloud Run instance.
  * Free-tier friendly: only runs when a real user opens the questionnaire, not on a schedule.
- * CORS errors in the browser are OK — the request still reaches the server and starts the JVM.
+ * CORS errors in the browser are OK - the request still reaches the server and starts the JVM.
  */
 export function prewarmConsentApi(_reason?: string): Promise<void> {
   if (typeof window === 'undefined') return Promise.resolve()
@@ -43,7 +43,7 @@ export function prewarmConsentApi(_reason?: string): Promise<void> {
         cache: 'no-store',
       })
     } catch {
-      // Expected when cold-starting or when health lacks CORS — instance may still be waking.
+      // Expected when cold-starting or when health lacks CORS - instance may still be waking.
     } finally {
       window.clearTimeout(timer)
       inFlight = null

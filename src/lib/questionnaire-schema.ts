@@ -39,7 +39,7 @@ export const step7Schema = z.object({
   wantsScan: z.boolean(),
 })
 
-/** @deprecated Use launchStepSchema — wizard launch is step 0, not step 8. */
+/** @deprecated Use launchStepSchema - wizard launch is step 0, not step 8. */
 export const step8Schema = launchStepSchema
 
 export const consentStepSchema = z.object({
@@ -48,7 +48,7 @@ export const consentStepSchema = z.object({
   }),
 })
 
-/** @deprecated Use consentStepSchema — wizard consent is step 7. */
+/** @deprecated Use consentStepSchema - wizard consent is step 7. */
 export const step9Schema = consentStepSchema
 
 export const questionnaireSchema = z.object({

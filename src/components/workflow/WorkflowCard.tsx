@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * WorkflowCard — eyebrow label, title, key/value rows, and a footer.
+ * WorkflowCard - eyebrow label, title, key/value rows, and a footer.
  * Used inside ConnectorCanvas to represent product states.
  *
  * The receipt/ledger motif: monospaced record ID, hash fragment,

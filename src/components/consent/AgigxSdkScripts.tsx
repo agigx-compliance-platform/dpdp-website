@@ -15,10 +15,10 @@ const DSAR_API_BASE = process.env.NEXT_PUBLIC_DSAR_API_URL?.trim() || undefined
 
 /**
  * Loads the unified Agigx SDK:
- *   consent  — cookie consent banner
- *   policies — Privacy / Cookie policy links in the footer (#agigx-policy-links)
- *   rights   — DSAR + Grievance links/modals in the footer ([data-agigx-rights="footer"])
- *   form     — anonymous form consent (checkbox cards on [data-agigx-form-consent]);
+ *   consent - cookie consent banner
+ *   policies - Privacy / Cookie policy links in the footer (#agigx-policy-links)
+ *   rights - DSAR + Grievance links/modals in the footer ([data-agigx-rights="footer"])
+ *   form - anonymous form consent (checkbox cards on [data-agigx-form-consent]);
  *              ignored by SDK builds that do not ship form mode yet.
  */
 export function AgigxSdkScripts() {

@@ -144,7 +144,7 @@ const SHOTS = [
 ]
 
 const SANITIZE_STYLE = `
-  /* Marketing capture — hide account / support chrome */
+  /* Marketing capture - hide account / support chrome */
   [data-marketing-hide="true"],
   button[aria-label="Open AI Setup Guide"],
   button[aria-label="Open AI setup"],
@@ -269,7 +269,7 @@ async function injectMarketingProcessorTable(page) {
         return `<tr>
           <td class="px-4 py-2.5 font-mono text-[12px]">${p.processorKey}</td>
           <td class="px-4 py-2.5">${p.name}</td>
-          <td class="px-4 py-2.5 text-muted-foreground text-[12px]">${p.contactEmail || '—'}</td>
+          <td class="px-4 py-2.5 text-muted-foreground text-[12px]">${p.contactEmail || '-'}</td>
           <td class="px-4 py-2.5 max-w-[240px] truncate">${p.webhookUrl || 'Not configured'}</td>
           <td class="px-4 py-2.5"><span class="inline-flex px-2 py-0.5 rounded text-[9px] font-bold uppercase border ${statusClass(st)}">${st}</span></td>
           <td class="px-4 py-2.5 text-[12px] text-muted-foreground whitespace-nowrap">30 days ago</td>

@@ -28,7 +28,7 @@ export interface PersistedQuestionnaireState {
   issuesFound: number
   scanDone: boolean
   scanResult: ScanResult | null
-  /** Monotonic write counter — prevents stale cross-instance sync from rolling back state. */
+  /** Monotonic write counter - prevents stale cross-instance sync from rolling back state. */
   _seq?: number
 }
 

@@ -575,7 +575,7 @@ function detectP10(pages: FetchedPage[]): Finding[] {
 
   // Check GPC header recognition
   if (homepage && homepage.headers['sec-gpc'] === undefined) {
-    // We sent Sec-GPC: 1 — check if site acknowledges it (very few do, so low confidence)
+    // We sent Sec-GPC: 1 - check if site acknowledges it (very few do, so low confidence)
     findings.push(finding('P10', 'gpc', 'GPC signal recognition not confirmed',
       'The website did not return a Sec-GPC response header, suggesting it may not recognize Global Privacy Control signals.',
       'low', 'low', 'inferred',

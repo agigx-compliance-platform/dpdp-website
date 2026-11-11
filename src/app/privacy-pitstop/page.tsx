@@ -552,7 +552,7 @@ function PrivacyPitstopPageInner() {
             {visitorPlacement && !visitorPlacement.listed && (
               <div className="ledger-panel p-4 flex items-center justify-between border border-warning/30 bg-warning/5">
                 <div className="flex items-center gap-3">
-                  <span className="text-sm font-bold text-warning">{visitorPlacement.rank ?? '—'}</span>
+                  <span className="text-sm font-bold text-warning">{visitorPlacement.rank ?? '-'}</span>
                   <span className="text-sm font-semibold text-foreground">{visitorPlacement.domain}</span>
                 </div>
                 <span className={`text-sm font-bold ${getScoreColor(visitorPlacement.score)}`}>{visitorPlacement.score}/100</span>
@@ -1036,7 +1036,7 @@ function PrivacyPitstopPageInner() {
                   {visitorPlacement && !visitorPlacement.listed ? (
                     <div className="flex items-center justify-between text-xs py-1 px-2 rounded-md border border-warning/30 bg-warning/5">
                       <div className="flex items-center gap-3">
-                        <span className="text-warning w-4 text-xs">{visitorPlacement.rank ?? '—'}</span>
+                        <span className="text-warning w-4 text-xs">{visitorPlacement.rank ?? '-'}</span>
                         <span className="font-semibold text-foreground">{visitorPlacement.domain}</span>
                       </div>
                       <span className="font-bold text-foreground text-sm">{visitorPlacement.score}</span>

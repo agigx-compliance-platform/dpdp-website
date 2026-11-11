@@ -118,7 +118,7 @@ function generateRecommendations(allFindings: Finding[]): string[] {
 
 /**
  * Generates a structured, evidence-backed scan report.
- * Consumes ONLY structured findings — no AI generation.
+ * Consumes ONLY structured findings - no AI generation.
  */
 export function generateReport(
   scanId: string,

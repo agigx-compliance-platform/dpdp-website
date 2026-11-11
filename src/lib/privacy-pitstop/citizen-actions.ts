@@ -1,7 +1,7 @@
 import type { Finding, CitizenQuestion, GrievanceDraft, CitizenActions } from './types'
 
 /* ═══════════════════════════════════════════════════════════════
-   Question Templates — keyed by finding module
+   Question Templates - keyed by finding module
    ═══════════════════════════════════════════════════════════════ */
 
 const QUESTION_TEMPLATES: Record<string, (f: Finding, domain: string) => string> = {
