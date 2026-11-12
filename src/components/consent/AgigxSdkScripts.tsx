@@ -34,7 +34,7 @@ export function AgigxSdkScripts() {
       // Consent checkboxes only exist in English. Without this the form follows the browser
       // language, finds no checkboxes for other languages, and submits with no consent recorded.
       data-locale="en"
-      data-logo-url="/images/brand/logo-icon-color.svg"
+      data-logo-url="/images/brand/logo-icon.png"
       data-policy-container="agigx-policy-links"
       data-rights-footer="true"
       strategy="afterInteractive"

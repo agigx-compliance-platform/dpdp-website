@@ -20,7 +20,7 @@ export function JsonLd() {
     ],
     legalName: 'DPDP Consultancy Pvt Ltd',
     url: BASE_URL,
-    logo: `${BASE_URL}/images/brand/logo-icon-color.svg`,
+    logo: `${BASE_URL}/images/brand/logo-icon-512.png`,
     description:
       'DPDP Consultancy (dpdpconsultancy.in) is India\'s DPDP compliance intelligence platform: automated assessments, consent management, DSAR automation, and AI-powered governance for Indian enterprises.',
     foundingDate: '2024',
