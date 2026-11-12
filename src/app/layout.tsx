@@ -11,7 +11,6 @@ import { QuestionnaireModal } from '@/components/questionnaire/QuestionnaireModa
 import { FloatingBlob } from '@/components/questionnaire/FloatingBlob'
 import { PrivacyPitstopCallout } from '@/components/ui/PrivacyPitstopCallout'
 import { AgigxSdkScripts } from '@/components/consent/AgigxSdkScripts'
-import { ConsentGatedGtagScripts } from '@/components/analytics/ConsentGatedGtagScripts'
 import { GoogleAnalytics } from '@/components/analytics/GoogleAnalytics'
 import { SITE_URL } from '@/lib/site-url'
 import { getBuildTimeConsentApiUrl } from '@/lib/consent-api-url'
@@ -161,7 +160,6 @@ export default function RootLayout({
             }}
           />
         ) : null}
-        <ConsentGatedGtagScripts />
         <JsonLd />
       </head>
       <body className={`${inter.className} antialiased font-sans`}>

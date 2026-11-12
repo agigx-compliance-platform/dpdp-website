@@ -67,7 +67,11 @@ export function Footer() {
                       id="agigx-policy-links"
                       data-agigx-layout="stack"
                       className="flex flex-col items-start gap-2.5 text-sm text-muted-foreground [&_a]:hover:text-foreground [&_a]:transition-colors"
-                    />
+                    >
+                      {/* Crawlable fallback; the Agigx policy-links SDK swaps in the configured links. */}
+                      <a href="/privacy-policy">Privacy Policy</a>
+                      <a href="/cookie-policy">Cookie Policy</a>
+                    </div>
                   </li>
                 ) : null}
                 {'sdkPolicyLinks' in section && section.sdkPolicyLinks ? (

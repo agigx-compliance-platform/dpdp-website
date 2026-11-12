@@ -17,12 +17,15 @@ interface EmbeddedPolicyViewProps {
   policyType: 'privacy_policy' | 'cookie_policy'
   containerId: string
   scriptId: string
+  /** Policy HTML fetched on the server, so the text is in the page before the SDK runs. */
+  initialHtml?: string | null
 }
 
 export function EmbeddedPolicyView({
   policyType,
   containerId,
   scriptId,
+  initialHtml,
 }: EmbeddedPolicyViewProps) {
   useEffect(() => {
     if (!CONSENT_API) return
@@ -43,6 +46,21 @@ export function EmbeddedPolicyView({
       document.getElementById(scriptId)?.remove()
     }
   }, [policyType, containerId, scriptId])
+
+  const hostClass =
+    'min-h-[320px] w-full prose prose-invert max-w-none prose-headings:text-foreground prose-p:text-muted-foreground prose-a:text-primary agigx-embed-policy-host'
+
+  if (initialHtml) {
+    // embed-policy.js replaces this content after load (adding the language selector).
+    return (
+      <div
+        id={containerId}
+        className={hostClass}
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{ __html: initialHtml }}
+      />
+    )
+  }
 
   return (
     <div

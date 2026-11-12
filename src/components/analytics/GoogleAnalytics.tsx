@@ -9,9 +9,35 @@ function hasAnalyticsConsent(): boolean {
   return window.AgigxConsent?.getConsent()?.consentData?.analytics === true
 }
 
+const GTAG_SCRIPT_ID = 'gtag-js'
+
+/**
+ * Loads gtag.js only once analytics consent exists. Nothing on the page references
+ * googletagmanager.com before then (next/script used to emit a preload link for it,
+ * which consent scanners count as a tracker loaded before consent).
+ */
+function loadGtag() {
+  if (!GA_MEASUREMENT_ID || typeof window.gtag === 'function') return
+  window.dataLayer = window.dataLayer || []
+  window.gtag = function gtag() {
+    // gtag.js expects the Arguments object, not an array.
+    window.dataLayer!.push(arguments)
+  }
+  window.gtag('js', new Date())
+  window.gtag('config', GA_MEASUREMENT_ID, { send_page_view: false })
+  if (!document.getElementById(GTAG_SCRIPT_ID)) {
+    const script = document.createElement('script')
+    script.id = GTAG_SCRIPT_ID
+    script.async = true
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`
+    document.head.appendChild(script)
+  }
+}
+
 function sendPageView(pagePath: string) {
-  if (!GA_MEASUREMENT_ID || typeof window.gtag !== 'function') return
-  window.gtag('config', GA_MEASUREMENT_ID, { page_path: pagePath })
+  if (!GA_MEASUREMENT_ID) return
+  loadGtag()
+  window.gtag?.('config', GA_MEASUREMENT_ID, { page_path: pagePath })
 }
 
 function GoogleAnalyticsTracker() {
