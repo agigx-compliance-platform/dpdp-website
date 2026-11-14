@@ -43,7 +43,7 @@ type StoredScanDetail = {
   pagesAnalyzed?: number
   summary?: string
   gapReasons?: string[]
-  categories?: { id?: string; name?: string; score?: number; findings?: unknown[] }[]
+  categories?: { id?: string; name?: string; score?: number; evaluated?: boolean; findings?: unknown[] }[]
   complianceFlags?: unknown[]
 }
 
@@ -57,7 +57,9 @@ function storedDetailToResult(domain: string, qualityScore: number, detail: Stor
   const categories = (detail.categories ?? []).map((category) => ({
     id: category.id,
     name: category.name ?? '',
-    score: Number.isFinite(category.score) ? privacyQualityScore(Number(category.score)) : qualityScore,
+    score: category.evaluated === false
+      ? null
+      : Number.isFinite(category.score) ? privacyQualityScore(Number(category.score)) : qualityScore,
     pillarIds: [] as string[],
     findings: category.findings ?? [],
   }))
@@ -724,7 +726,16 @@ function PrivacyPitstopPageInner() {
 
                         {/* Category bars */}
                         <div className="md:col-span-7 space-y-3 text-left">
-                          {(result?.report?.categories ?? result?.categories ?? []).map((cat) => {
+                          {/* report.categories carry category RISK (0 = clean); the fallback
+                              categories from stored leaderboard detail are already quality. Bars show
+                              quality, like the overall score. */}
+                          {(result?.report?.categories
+                            ? result.report.categories.map((c) => ({
+                                ...c,
+                                score: c.evaluated === false || !Number.isFinite(c.score) ? null : privacyQualityScore(c.score),
+                              }))
+                            : result?.categories ?? []
+                          ).map((cat) => {
                             const iconMap: Record<string, any> = {
                               notice: FileText,
                               consent: ShieldCheck,
@@ -736,7 +747,7 @@ function PrivacyPitstopPageInner() {
                             }
                             const catId = 'id' in cat ? String(cat.id) : cat.name
                             const IconComp = iconMap[catId] || FileText
-                            const score = Number.isFinite(cat.score) ? Math.round(cat.score) : null
+                            const score = typeof cat.score === 'number' && Number.isFinite(cat.score) ? Math.round(cat.score) : null
                             return (
                               <div key={cat.name} className="space-y-1">
                                 <div className="flex justify-between items-center text-xs font-semibold text-muted-foreground">

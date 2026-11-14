@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type JSX } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Fingerprint } from "lucide-react";
 import { cn } from "@/lib/utils";

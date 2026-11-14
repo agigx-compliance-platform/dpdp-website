@@ -86,6 +86,8 @@ export interface ScanCategoryResult {
   maxSeverity: Severity
   findingCount: number
   findings: Finding[]
+  /** false when the scan ran no checks for this category; score is then meaningless. */
+  evaluated?: boolean
 }
 
 /* ═══════════════════════════════════════════════════════════════
