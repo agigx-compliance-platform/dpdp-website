@@ -33,6 +33,8 @@ const companyLinks = [
   { href: '/contact', label: 'Contact' },
 ]
 
+const APP_URL = 'https://app.dpdpconsultancy.in/'
+
 export function Navbar() {
   const { theme, toggleTheme } = useTheme()
   const [scrolled, setScrolled] = useState(false)
@@ -137,6 +139,9 @@ export function Navbar() {
               >
                 {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
               </button>
+              <a href={APP_URL} className="btn-secondary text-sm">
+                Login
+              </a>
               <button onClick={openModal} className="btn-primary text-sm">
                 Start Assessment
               </button>
@@ -195,6 +200,9 @@ export function Navbar() {
                 {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
                 {theme === 'dark' ? 'Light mode' : 'Dark mode'}
               </button>
+              <a href={APP_URL} className="btn-secondary text-sm" onClick={() => setMobileOpen(false)}>
+                Login
+              </a>
               <button
                 onClick={() => {
                   setMobileOpen(false)
