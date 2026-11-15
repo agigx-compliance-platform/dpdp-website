@@ -24,7 +24,7 @@ const products = [
     icon: ScanSearch,
     name: "Compliance Scanner",
     tagline: "Find violations before regulators do.",
-    href: "/privacy-pitstop",
+    href: "/privacy-exposed",
     features: [
       "Automated website crawling",
       "Cookie & tracker detection",

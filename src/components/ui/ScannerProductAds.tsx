@@ -55,7 +55,7 @@ const HOME_SECTION_HREFS: Record<string, string> = {
   'consent-platform': '/consent-management',
   'cookie-consent': '/cookie-consent',
   'policy-notice': '/policy-notice',
-  trustscope: '/privacy-pitstop',
+  trustscope: '/privacy-exposed',
   'data-discovery': '/data-discovery',
   'data-lineage': '/data-lineage',
   'dsar-platform': '/products#dsar-platform',

@@ -574,7 +574,7 @@ function PrivacyPitstopPageInner() {
                       Public scan
                     </p>
                     <h1 className="text-4xl md:text-5xl font-semibold tracking-tight text-foreground">
-                      Privacy Pitstop
+                      Privacy Exposed
                     </h1>
                     <p className="text-lg text-muted-foreground leading-relaxed">
                       A public-page scan of notice, consent, cookies, rights, children&apos;s

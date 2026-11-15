@@ -16,7 +16,7 @@ Legal name: DPDP Consultancy Pvt Ltd. Based in Chennai, India. Official site: ht
 
 ## Products and tools
 
-- [Privacy Pitstop](https://dpdpconsultancy.in/privacy-pitstop): Free website privacy scan by DPDP Consultancy for cookies, trackers, and DPDP-related risks
+- [Privacy Exposed](https://dpdpconsultancy.in/privacy-exposed): Free website privacy scan by DPDP Consultancy for cookies, trackers, and DPDP-related risks
 - [Products](https://dpdpconsultancy.in/products): Consent management, TrustScope scanner, DSAR automation, and AI compliance tools
 - [Cookie consent](https://dpdpconsultancy.in/cookie-consent): Banner and modal layouts that block tracking until a grant. More layouts can be added
 - [Policy and notice](https://dpdpconsultancy.in/policy-notice): Privacy notice and cookie policy, served as notices a principal can actually read. More notice types can be added

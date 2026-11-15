@@ -95,7 +95,7 @@ export function ScanProgressLoader({
                 id="scan-loader-title"
                 className="text-xs text-primary font-bold tracking-widest uppercase"
               >
-                Privacy Pitstop Scanner
+                Privacy Exposed Scanner
               </div>
               <div className="text-xs text-muted-foreground">
                 Public Assessment Engine

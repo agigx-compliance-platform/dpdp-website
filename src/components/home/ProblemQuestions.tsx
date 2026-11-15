@@ -15,7 +15,7 @@ const QUESTIONS = [
   },
   {
     q: 'The public site says one thing. The tags load another.',
-    a: 'A scan that never opens the page will miss tags that fire before a choice. Pitstop and TrustScope run against the live property.',
+    a: 'A scan that never opens the page will miss tags that fire before a choice. Privacy Exposed and TrustScope run against the live property.',
   },
 ] as const
 

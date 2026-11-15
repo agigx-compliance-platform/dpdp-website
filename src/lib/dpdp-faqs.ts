@@ -70,7 +70,7 @@ export const SERVICE_FAQS: DpdpFaqItem[] = [
   {
     question: 'Does DPDP Consultancy offer a free compliance assessment?',
     answer:
-      'Yes. DPDP Consultancy offers a free website privacy scan through our Privacy Pitstop tool and a 10-question compliance assessment questionnaire. These provide an indicative compliance score and personalized recommendations. For comprehensive assessments, our advisory team conducts detailed gap analysis across all DPDP obligation domains.',
+      'Yes. DPDP Consultancy offers a free website privacy scan through our Privacy Exposed tool and a 10-question compliance assessment questionnaire. These provide an indicative compliance score and personalized recommendations. For comprehensive assessments, our advisory team conducts detailed gap analysis across all DPDP obligation domains.',
   },
 ]
 
@@ -111,7 +111,7 @@ export const WHAT_IS_DPDP_FAQS: DpdpFaqItem[] = [
   {
     question: 'Who is DPDP Consultancy?',
     answer:
-      'DPDP Consultancy (also searched as dpdpconsultancy) is an Indian DPDP Act 2023 compliance firm based in Chennai. We provide advisory services, a consent and DSAR platform, Privacy Pitstop website scans, and managed privacy operations at dpdpconsultancy.in.',
+      'DPDP Consultancy (also searched as dpdpconsultancy) is an Indian DPDP Act 2023 compliance firm based in Chennai. We provide advisory services, a consent and DSAR platform, Privacy Exposed website scans, and managed privacy operations at dpdpconsultancy.in.',
   },
   {
     question: 'What does DPDP stand for?',
@@ -126,7 +126,7 @@ export const WHAT_IS_DPDP_FAQS: DpdpFaqItem[] = [
   {
     question: 'How can DPDP Consultancy help with DPDP compliance?',
     answer:
-      'DPDP Consultancy provides a free Privacy Pitstop scan, a 10-question readiness assessment, DPDP advisory, consent management, DSAR automation, AI governance, and managed services so compliance is continuous rather than a one-time project.',
+      'DPDP Consultancy provides a free Privacy Exposed scan, a 10-question readiness assessment, DPDP advisory, consent management, DSAR automation, AI governance, and managed services so compliance is continuous rather than a one-time project.',
   },
 ]
 
@@ -154,7 +154,7 @@ export const DPDP_COMPLIANCE_FAQS: DpdpFaqItem[] = [
   {
     question: 'How do I start a DPDP compliance programme?',
     answer:
-      'Start with a public-surface scan and a gap assessment, then implement consent, notice, and rights workflows before expanding to vendors, retention, and security evidence. DPDP Consultancy offers a free Privacy Pitstop scan and a 10-question readiness assessment as the first step.',
+      'Start with a public-surface scan and a gap assessment, then implement consent, notice, and rights workflows before expanding to vendors, retention, and security evidence. DPDP Consultancy offers a free Privacy Exposed scan and a 10-question readiness assessment as the first step.',
   },
 ]
 
@@ -210,12 +210,12 @@ export const DPDP_PLATFORM_FAQS: DpdpFaqItem[] = [
   {
     question: 'What modules are in the DPDP Consultancy platform?',
     answer:
-      'Consent Cockpit for Section 6 consent, TrustScope and Privacy Pitstop for public-surface scanning, DSAR workflows for Sections 11–13, processor governance, infrastructure scanning, and an AI compliance assistant trained on the DPDP Act and 2025 Rules.',
+      'Consent Cockpit for Section 6 consent, TrustScope and Privacy Exposed for public-surface scanning, DSAR workflows for Sections 11–13, processor governance, infrastructure scanning, and an AI compliance assistant trained on the DPDP Act and 2025 Rules.',
   },
   {
     question: 'Who should use a DPDP compliance platform?',
     answer:
-      'DPOs, privacy leads, CISOs, and legal teams at organisations that collect data through websites, apps, or vendors, especially if they cannot prove consent, meet rights timelines, or see what trackers fire on their properties. Start with a free Privacy Pitstop scan, then scope the platform.',
+      'DPOs, privacy leads, CISOs, and legal teams at organisations that collect data through websites, apps, or vendors, especially if they cannot prove consent, meet rights timelines, or see what trackers fire on their properties. Start with a free Privacy Exposed scan, then scope the platform.',
   },
   {
     question: 'Is the DPDP Consultancy platform only for large enterprises?',

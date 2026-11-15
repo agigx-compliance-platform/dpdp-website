@@ -24,7 +24,7 @@ const platformLinks = [
 const resourceLinks = [
   { href: '/what-is-dpdp', label: 'What is DPDP' },
   { href: '/dpdp-compliance', label: 'DPDP compliance guide' },
-  { href: '/privacy-pitstop', label: 'Privacy Pitstop' },
+  { href: '/privacy-exposed', label: 'Privacy Exposed' },
 ]
 
 const companyLinks = [
