@@ -19,7 +19,7 @@ export function DemoCta({ title, body }: { title: string; body: string }) {
               <ArrowRight className="h-4 w-4" />
             </Button>
           </Link>
-          <Link href="/privacy-pitstop" className="text-sm text-muted-foreground hover:text-foreground">
+          <Link href="/privacy-exposed" className="text-sm text-muted-foreground hover:text-foreground">
             Or scan your site free first
           </Link>
         </div>

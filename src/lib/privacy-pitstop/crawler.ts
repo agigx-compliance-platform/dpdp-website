@@ -40,7 +40,7 @@ export async function fetchPage(url: string, pageClass: string, hops = 0): Promi
     const res = await fetch(url, {
       signal: controller.signal,
       headers: {
-        'User-Agent': 'PrivacyPitstopBot/2.0 (+https://dpdpconsultancy.in/privacy-pitstop)',
+        'User-Agent': 'PrivacyPitstopBot/2.0 (+https://dpdpconsultancy.in/privacy-exposed)',
         'Accept': 'text/html,application/xhtml+xml,text/plain',
         'Accept-Language': 'en-US,en;q=0.9',
         'Sec-GPC': '1',

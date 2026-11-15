@@ -46,7 +46,7 @@ async function fetchPage(url: string, pageClass: string): Promise<FetchedPage> {
     const res = await fetch(url, {
       signal: controller.signal,
       headers: {
-        'User-Agent': 'PrivacyPitstopBot/1.0 (+https://dpdpconsultancy.in/privacy-pitstop)',
+        'User-Agent': 'PrivacyPitstopBot/1.0 (+https://dpdpconsultancy.in/privacy-exposed)',
         'Accept': 'text/html,application/xhtml+xml',
         'Accept-Language': 'en-US,en;q=0.9',
         'Sec-GPC': '1',

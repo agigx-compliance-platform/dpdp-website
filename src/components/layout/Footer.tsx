@@ -13,7 +13,7 @@ const footerSections = [
     title: 'Products',
     links: [
       { label: 'All Products', href: '/products' },
-      { label: 'Privacy Pitstop', href: '/privacy-pitstop' },
+      { label: 'Privacy Exposed', href: '/privacy-exposed' },
       { label: 'Consent Management', href: '/consent-management' },
       { label: 'Cookie consent', href: '/cookie-consent' },
       { label: 'Policy and notice', href: '/policy-notice' },

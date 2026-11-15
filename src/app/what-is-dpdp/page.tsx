@@ -53,7 +53,7 @@ export default function WhatIsDpdpPage() {
           <h2 className="text-2xl font-semibold text-foreground">How DPDP Consultancy helps</h2>
           <p>
             DPDP Consultancy, at dpdpconsultancy.in, combines advisory and
-            software: a free Privacy Pitstop website scan, a 10-question readiness
+            software: a free Privacy Exposed website scan, a 10-question readiness
             assessment, consent management, DSAR automation, AI governance, and
             managed privacy operations for Indian enterprises. See the guides on{' '}
             <Link href="/dpdp-compliance" className="text-foreground underline-offset-4 hover:underline">

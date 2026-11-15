@@ -43,7 +43,7 @@ export function HeroSection() {
               <Button variant="primary" size="lg" onClick={openModal}>
                 Start Assessment
               </Button>
-              <Link href="/privacy-pitstop">
+              <Link href="/privacy-exposed">
                 <Button variant="outline" size="lg">
                   Scan a public site
                 </Button>

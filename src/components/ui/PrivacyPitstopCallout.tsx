@@ -39,7 +39,7 @@ export function PrivacyPitstopCallout() {
   }
   const pathname = usePathname()
 
-  if (!mounted || pathname === '/privacy-pitstop') return null
+  if (!mounted || pathname === '/privacy-exposed') return null
 
   return (
     <div className="fixed bottom-4 right-4 z-50 sm:bottom-6 sm:right-6">
@@ -52,11 +52,11 @@ export function PrivacyPitstopCallout() {
             exit={{ opacity: 0, scale: 0.8 }}
             transition={{ type: 'spring', stiffness: 300, damping: 24 }}
             onClick={() => setCollapsed(false)}
-            aria-label="Open Privacy Pitstop"
+            aria-label="Open Privacy Exposed"
             className="flex cursor-pointer items-center gap-2 rounded-full border border-border bg-card px-4 py-3 shadow-[var(--shadow-md)] transition-colors hover:border-primary/30"
           >
             <Shield className="h-5 w-5 text-primary" />
-            <span className="text-sm font-semibold text-foreground">Pitstop</span>
+            <span className="text-sm font-semibold text-foreground">Privacy Exposed</span>
           </motion.button>
         ) : (
           <motion.div
@@ -70,7 +70,7 @@ export function PrivacyPitstopCallout() {
             <div className="h-1 w-full bg-primary" />
             <div className="p-5">
               <div className="mb-2 flex items-start justify-between">
-                <p className="text-base font-semibold text-foreground">Privacy Pitstop</p>
+                <p className="text-base font-semibold text-foreground">Privacy Exposed</p>
                 <button
                   onClick={() => setCollapsed(true)}
                   aria-label="Minimize callout"
@@ -85,9 +85,9 @@ export function PrivacyPitstopCallout() {
               <p className="mb-4 text-xs text-muted-foreground/70">
                 No login. Findings become questions and a grievance draft.
               </p>
-              <Link href="/privacy-pitstop">
+              <Link href="/privacy-exposed">
                 <span className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90">
-                  Open Pitstop
+                  Open Privacy Exposed
                   <ArrowRight className="h-4 w-4" />
                 </span>
               </Link>

@@ -50,7 +50,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     },
     {
-      url: `${BASE_URL}/privacy-pitstop`,
+      url: `${BASE_URL}/privacy-exposed`,
       lastModified: now,
       changeFrequency: 'weekly',
       priority: 0.8,

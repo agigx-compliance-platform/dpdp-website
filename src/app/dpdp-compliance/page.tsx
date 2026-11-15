@@ -128,8 +128,8 @@ export default function DpdpCompliancePage() {
             applicability and a gap picture: what you collect, which vendors
             touch it, and what your website discloses versus what it loads.
             DPDP Consultancy’s free{' '}
-            <Link href="/privacy-pitstop" className="text-foreground underline-offset-4 hover:underline">
-              Privacy Pitstop
+            <Link href="/privacy-exposed" className="text-foreground underline-offset-4 hover:underline">
+              Privacy Exposed
             </Link>{' '}
             scan and{' '}
             <Link href="/questionnaire" className="text-foreground underline-offset-4 hover:underline">
