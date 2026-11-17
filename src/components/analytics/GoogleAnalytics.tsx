@@ -5,7 +5,13 @@ import { usePathname, useSearchParams } from 'next/navigation'
 
 const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID?.trim()
 
+/** Global Privacy Control: the browser asks sites not to track or share. We treat it as a no to analytics. */
+function hasGpcSignal(): boolean {
+  return (navigator as Navigator & { globalPrivacyControl?: boolean }).globalPrivacyControl === true
+}
+
 function hasAnalyticsConsent(): boolean {
+  if (hasGpcSignal()) return false
   return window.AgigxConsent?.getConsent()?.consentData?.analytics === true
 }
 
@@ -58,7 +64,7 @@ function GoogleAnalyticsTracker() {
     if (!GA_MEASUREMENT_ID) return
 
     const onConsent = (data: { consentData?: Record<string, boolean> }) => {
-      if (data.consentData?.analytics) {
+      if (data.consentData?.analytics && !hasGpcSignal()) {
         sendPageView(window.location.pathname + window.location.search)
       }
     }

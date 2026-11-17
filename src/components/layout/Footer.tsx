@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { PrivacyChoicesLink } from '@/components/consent/PrivacyChoicesLink'
 
 const footerSections = [
   {
@@ -72,6 +73,14 @@ export function Footer() {
                       <a href="/privacy-policy">Privacy Policy</a>
                       <a href="/cookie-policy">Cookie Policy</a>
                     </div>
+                  </li>
+                ) : null}
+                {'sdkPolicyLinks' in section && section.sdkPolicyLinks ? (
+                  <li className="flex flex-col items-start gap-2.5 text-sm text-muted-foreground">
+                    <PrivacyChoicesLink className="hover:text-foreground transition-colors" />
+                    <a href="/privacy-policy#your-rights" className="hover:text-foreground transition-colors">
+                      Your data rights
+                    </a>
                   </li>
                 ) : null}
                 {'sdkPolicyLinks' in section && section.sdkPolicyLinks ? (
