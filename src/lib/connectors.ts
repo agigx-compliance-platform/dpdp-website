@@ -121,6 +121,9 @@ export const CONNECTOR_TYPE_COUNT = CONNECTOR_CATEGORIES.reduce(
   0,
 )
 
+/** Marketing figure shown on the site in place of the exact catalog size. */
+export const CONNECTOR_TYPES_AVAILABLE = '50+'
+
 export const FUTURE_CONNECTOR_COUNT = FUTURE_CONNECTOR_CATEGORIES.reduce(
   (sum, cat) => sum + cat.items.length,
   0,

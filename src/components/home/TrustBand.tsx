@@ -1,4 +1,4 @@
-import { CONNECTOR_TYPE_COUNT } from '@/lib/connectors'
+import { CONNECTOR_TYPES_AVAILABLE } from '@/lib/connectors'
 import { formatMilestoneDate, getNextMilestone, isFullyInForce } from '@/lib/dpdp-timeline'
 import { WhyNow } from '@/components/home/WhyNow'
 
@@ -23,7 +23,7 @@ export function TrustBand() {
     },
     {
       label: 'Connector types',
-      value: String(CONNECTOR_TYPE_COUNT),
+      value: CONNECTOR_TYPES_AVAILABLE,
       extra: (
         <p className="mt-2 text-sm text-muted-foreground">
           From PostgreSQL, Snowflake, and S3 through Salesforce and Kafka.

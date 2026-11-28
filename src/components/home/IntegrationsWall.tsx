@@ -2,7 +2,7 @@ import { SectionWrapper } from '@/components/ui/SectionWrapper'
 import { ConnectorLogoRail } from '@/components/ui/ConnectorFamilyRails'
 import {
   CONNECTOR_CATEGORIES,
-  CONNECTOR_TYPE_COUNT,
+  CONNECTOR_TYPES_AVAILABLE,
   FUTURE_CONNECTOR_CATEGORIES,
 } from '@/lib/connectors'
 
@@ -14,7 +14,7 @@ export function IntegrationsWall() {
           Connectors
         </p>
         <h2 className="mt-3 whitespace-nowrap text-lg font-semibold tracking-tight sm:text-2xl md:text-3xl">
-          {CONNECTOR_TYPE_COUNT} connector types today. More can be added.
+          {CONNECTOR_TYPES_AVAILABLE} connector types available
         </h2>
         <p className="mt-4 max-w-2xl text-base text-muted-foreground">
           Live types on the moving rail. Further stores use the same inventory when you add them.
