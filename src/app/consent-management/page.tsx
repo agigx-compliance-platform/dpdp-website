@@ -6,6 +6,7 @@ import { FaqSection } from '@/components/seo/FaqSection'
 import { RelatedGuides } from '@/components/seo/RelatedGuides'
 import { ConsentShowcase } from '@/components/products/ConsentShowcase'
 import { DemoCta } from '@/components/products/DemoCta'
+import { ConsentDemoVideo } from '@/components/products/ConsentDemoVideo'
 import { CONSENT_MANAGEMENT_FAQS } from '@/lib/dpdp-faqs'
 
 const COVERAGE = [
@@ -108,6 +109,17 @@ export default function ConsentManagementPage() {
         </p>
         <div className="mt-8">
           <ConsentShowcase />
+        </div>
+      </SectionWrapper>
+
+      <SectionWrapper id="demo" className="py-10 md:py-14">
+        <h2 className="text-2xl font-semibold sm:text-3xl">Explore our 2-minute demo</h2>
+        <p className="mt-3 max-w-2xl text-muted-foreground">
+          Take a tour of Consent Cockpit: consent at collection, data requests and grievances, then purposes and
+          notices.
+        </p>
+        <div className="mt-8">
+          <ConsentDemoVideo />
         </div>
       </SectionWrapper>
 
